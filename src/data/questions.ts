@@ -7,7 +7,10 @@ export const questions: Question[] = [
   {
     id: "desktop-security-1",
     title: "Poste de travail non sécurisé",
+    instruction: "Voici une photo d'un poste de travail d'une personne en pause café.",
     image: desktopUnsafeImage,
+    imageWidth: 3060,
+    imageHeight: 4080,
     hotspots: [
       {
         id: "ordinateur-allume",
@@ -34,7 +37,10 @@ export const questions: Question[] = [
   {
     id: "linkedin-post-sensitive-data",
     title: "Publication LinkedIn avec informations sensibles",
+    instruction: "Voici un post LinkedIn d'une entreprise accueillant son nouveau comptable. Identifiez les quatre erreurs de cybersécurité illustrées dans l'image.",
     image: linkedinPostImage,
+    imageWidth: 1448,
+    imageHeight: 1086,
     hotspots: [
       {
         id: "mot-de-passe-post-it",

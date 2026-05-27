@@ -29,13 +29,10 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
 
   return (
     <main className="page game-page">
-      <p className="page__eyebrow">Manche exemple</p>
+      <p className="page__eyebrow">Problème {questionIndex + 1}</p>
       <h1>{question.title}</h1>
-      <p className="page__intro">{question.hotspots.length} anomalies à trouver.</p>
-
-      {roundScore !== null && (
-        <div className="game-page__score-badge">+{roundScore} point(s)</div>
-      )}
+      <p className="page__intro">{question.instruction}</p>
+      <p className="page__instruction">{question.hotspots.length} anomalies à trouver.</p>
 
       <div className="page__actions">
         {roundScore === null ? (
@@ -58,6 +55,10 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
         <button className="button button--secondary" onClick={onBackHome}>
           Retour accueil
         </button>
+
+        {roundScore !== null && (
+          <div className="game-page__score-badge">+{roundScore} point(s)</div>
+        )}
       </div>
 
       <PhaserGame ref={gameRef} question={question} />

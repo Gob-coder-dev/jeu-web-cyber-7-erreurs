@@ -25,6 +25,13 @@
   line-height: 1.6;
 }
 
+.page__instruction {
+  max-width: 680px;
+  color: var(--color-instruction);
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
 .page__actions {
   display: flex;
   flex-wrap: wrap;

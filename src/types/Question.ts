@@ -11,6 +11,9 @@ export type Hotspot = {
 export type Question = {
   id: string;
   title: string;
+  instruction: string;
   image: string;
+  imageWidth: number;
+  imageHeight: number;
   hotspots: Hotspot[];
 };
