@@ -10,7 +10,7 @@ type Page = "home" | "game" | "result";
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<Page>("home");
-  const [finalScore, setFinalScore] = useState(0);
+  const [score, setScore] = useState(0);
 
   function handleLogin(pseudo: string) {
     setUser({ pseudo });
@@ -31,7 +31,7 @@ function App() {
   }
 
   function handleGoResults(score: number) {
-    setFinalScore(prevFinalScore => prevFinalScore + score);
+    setScore(score);
     setPage("result");
   }
 
@@ -47,7 +47,7 @@ function App() {
   }
 
   if (page === "result") {
-    return <ResultPage score={finalScore} onBackHome={handleBackHome} />;
+    return <ResultPage score={score} onBackHome={handleBackHome} />;
   }
 
   return (

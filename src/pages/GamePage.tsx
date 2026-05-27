@@ -10,8 +10,10 @@ type GamePageProps = {
 
 function GamePage({ onBackHome, onGoResults }: GamePageProps) {
   const gameRef = useRef<PhaserGameHandle | null>(null);
-  const question = questions[1];
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const question = questions[questionIndex];
   const [roundScore, setRoundScore] = useState<number | null>(null);
+  const [totalScore, setTotalScore] = useState(0);
 
   function handleValidate() {
     const game = gameRef.current;
@@ -22,6 +24,7 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
 
     const score = game.validateSelections();
     setRoundScore(score);
+    setTotalScore(totalScore + score);
   }
 
   return (
@@ -39,8 +42,15 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
           <button className="button" onClick={handleValidate}>
             Valider
           </button>
+        ) : questionIndex < questions.length - 1 ? (
+          <button className="button" onClick={() => {
+            setQuestionIndex(questionIndex + 1);
+            setRoundScore(null);
+          }}>
+            Question suivante
+          </button>
         ) : (
-          <button className="button" onClick={() => onGoResults(roundScore)}>
+          <button className="button" onClick={() => onGoResults(totalScore)}>
             Voir les résultats
           </button>
         )}
