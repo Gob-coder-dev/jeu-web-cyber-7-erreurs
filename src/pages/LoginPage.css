@@ -1,0 +1,15 @@
+.login-page {
+  max-width: 720px;
+}
+
+.login-page__form {
+  width: min(100%, 460px);
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .login-page__form {
+    flex-direction: column;
+  }
+}

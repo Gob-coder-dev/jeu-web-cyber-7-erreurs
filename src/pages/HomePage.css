@@ -1,0 +1,24 @@
+.home-page {
+  position: relative;
+}
+
+.home-page::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 72px;
+  width: min(360px, 36vw);
+  height: min(360px, 36vw);
+  border: 1px solid rgba(54, 169, 225, 0.35);
+  background:
+    linear-gradient(135deg, rgba(54, 169, 225, 0.14), rgba(245, 158, 0, 0.12)),
+    var(--color-surface);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  z-index: -1;
+}
+
+@media (max-width: 720px) {
+  .home-page::after {
+    display: none;
+  }
+}

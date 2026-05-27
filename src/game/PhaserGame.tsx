@@ -8,7 +8,7 @@ type PhaserGameProps = {
 };
 
 export type PhaserGameHandle = {
-  validateSelections: () => void;
+  validateSelections: () => number;
 };
 
 const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
@@ -18,7 +18,7 @@ function PhaserGame({ question }, ref) {
 
   useImperativeHandle(ref, () => ({
       validateSelections: () => {
-        sceneRef.current?.validateSelections();
+        return sceneRef.current?.validateSelections() ?? 0;
       },
     }));
 

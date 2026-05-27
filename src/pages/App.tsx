@@ -30,8 +30,8 @@ function App() {
     setPage("home");
   }
 
-  function handleGameFinished(score: number) {
-    setFinalScore(score);
+  function handleGoResults(score: number) {
+    setFinalScore(prevFinalScore => prevFinalScore + score);
     setPage("result");
   }
 
@@ -40,7 +40,10 @@ function App() {
   }
 
   if (page === "game") {
-    return <GamePage onBackHome={handleBackHome} />;
+    return <GamePage
+      onBackHome={handleBackHome}
+      onGoResults={handleGoResults}
+    />;
   }
 
   if (page === "result") {

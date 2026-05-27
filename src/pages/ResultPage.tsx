@@ -1,3 +1,5 @@
+import "./ResultPage.css";
+
 type ResultPageProps = {
   score: number;
   onBackHome: () => void;
@@ -5,11 +7,12 @@ type ResultPageProps = {
 
 function ResultPage({ score, onBackHome }: ResultPageProps) {
   return (
-    <main>
+    <main className="page result-page">
+      <p className="page__eyebrow">Fin de manche</p>
       <h1>Résultat</h1>
-      <p>Score final : {score}</p>
+      <div className="result-page__score">Score final : {score}</div>
 
-      <button onClick={onBackHome}>Retour accueil</button>
+      <button className="button" onClick={onBackHome}>Retour accueil</button>
     </main>
   );
 }

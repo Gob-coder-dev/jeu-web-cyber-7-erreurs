@@ -5,7 +5,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private question: Question;
   private selectedMarkers: Phaser.GameObjects.Arc[] = [];
   private validatedHotspotIds = new Set<string>();
-  private roundScore = 0;
+  private roundScore: number = 0;
   private imageScale = 1;
 
   constructor(question: Question) {
@@ -104,5 +104,6 @@ export class CyberDifferenceScene extends Phaser.Scene {
         console.log("Mauvaise selection");
       }
     });
+    return this.roundScore;
   };
 }
