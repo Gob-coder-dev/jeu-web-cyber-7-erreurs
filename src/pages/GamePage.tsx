@@ -1,19 +1,27 @@
 import { questions } from "../data/questions";
 import { useRef, useState } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
+import type { Question } from "../types/Question";
 import "./GamePage.css";
+
+const numberQuestionWanted = 3;
 
 type GamePageProps = {
   onBackHome: () => void;
   onGoResults: (score: number) => void;
 };
 
+function getRandomQuestions(): Question[] {
+  return [...questions].sort(() => Math.random() - 0.5).sort(() => Math.random() - 0.5).slice(0, numberQuestionWanted);
+}
+
 function GamePage({ onBackHome, onGoResults }: GamePageProps) {
   const gameRef = useRef<PhaserGameHandle | null>(null);
+  const [selectedQuestions] = useState(getRandomQuestions);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [roundScore, setRoundScore] = useState<number | null>(null);
   const [totalScore, setTotalScore] = useState(0);
-  const question = questions[questionIndex];
+  const question = selectedQuestions[questionIndex];
 
   function handleValidate() {
     const game = gameRef.current;
@@ -37,7 +45,7 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
       <section className="game-page__content">
         <div className="game-page__topbar">
           <p className="page__eyebrow">
-            Question {questionIndex + 1} / {questions.length}
+            Question {questionIndex + 1} / {selectedQuestions.length}
           </p>
 
           <button className="button button--secondary" onClick={onBackHome}>
@@ -66,7 +74,7 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
             <button className="button" onClick={handleValidate}>
               Valider
             </button>
-          ) : questionIndex < questions.length - 1 ? (
+          ) : questionIndex < selectedQuestions.length - 1 ? (
             <button className="button" onClick={handleNextQuestion}>
               Question suivante
             </button>
