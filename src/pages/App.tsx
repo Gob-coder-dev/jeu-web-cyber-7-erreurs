@@ -4,13 +4,16 @@ import LoginPage from "./LoginPage";
 import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
 import type { User } from "../types/User";
+import { ScoreService } from "../services/scoreServices";
+import LeaderBoardPage from "./LeaderBoardPage";
 
-type Page = "home" | "game" | "result";
+type Page = "home" | "game" | "result" | "leaderboard";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<Page>("home");
   const [score, setScore] = useState(0);
+  let scores = new ScoreService();
 
   function handleLogin(pseudo: string) {
     setUser({ pseudo });
@@ -31,8 +34,13 @@ function App() {
   }
 
   function handleGoResults(score: number) {
+    scores.addScore({score, pseudo: user?.pseudo || "Anonyme", id: crypto.randomUUID(), date: new Date().toISOString()});
     setScore(score);
     setPage("result");
+  }
+
+  function handleGoLeaderBoard() {
+    setPage("leaderboard");
   }
 
   if (user === null) {
@@ -47,7 +55,11 @@ function App() {
   }
 
   if (page === "result") {
-    return <ResultPage score={score} onBackHome={handleBackHome} />;
+    return <ResultPage score={score} onBackHome={handleBackHome} onGoLeaderBoard={handleGoLeaderBoard} />;
+  }
+
+  if (page === "leaderboard") {
+    return <LeaderBoardPage scores={scores.getScores()} onBackHome={handleBackHome} />;
   }
 
   return (
