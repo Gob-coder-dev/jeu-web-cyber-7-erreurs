@@ -11,9 +11,9 @@ type GamePageProps = {
 function GamePage({ onBackHome, onGoResults }: GamePageProps) {
   const gameRef = useRef<PhaserGameHandle | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const question = questions[questionIndex];
   const [roundScore, setRoundScore] = useState<number | null>(null);
   const [totalScore, setTotalScore] = useState(0);
+  const question = questions[questionIndex];
 
   function handleValidate() {
     const game = gameRef.current;
@@ -24,44 +24,59 @@ function GamePage({ onBackHome, onGoResults }: GamePageProps) {
 
     const score = game.validateSelections();
     setRoundScore(score);
-    setTotalScore(totalScore + score);
+    setTotalScore((previousTotalScore) => previousTotalScore + score);
+  }
+
+  function handleNextQuestion() {
+    setQuestionIndex(questionIndex + 1);
+    setRoundScore(null);
   }
 
   return (
     <main className="page game-page">
-      <p className="page__eyebrow">Problème {questionIndex + 1}</p>
-      <h1>{question.title}</h1>
-      <p className="page__intro">{question.instruction}</p>
-      <p className="page__instruction">{question.hotspots.length} anomalies à trouver.</p>
+      <section className="game-page__content">
+        <div className="game-page__topbar">
+          <p className="page__eyebrow">
+            Question {questionIndex + 1} / {questions.length}
+          </p>
 
-      <div className="page__actions">
-        {roundScore === null ? (
-          <button className="button" onClick={handleValidate}>
-            Valider
+          <button className="button button--secondary" onClick={onBackHome}>
+            Retour accueil
           </button>
-        ) : questionIndex < questions.length - 1 ? (
-          <button className="button" onClick={() => {
-            setQuestionIndex(questionIndex + 1);
-            setRoundScore(null);
-          }}>
-            Question suivante
-          </button>
-        ) : (
-          <button className="button" onClick={() => onGoResults(totalScore)}>
-            Voir les résultats
-          </button>
-        )}
+        </div>
 
-        <button className="button button--secondary" onClick={onBackHome}>
-          Retour accueil
-        </button>
+        <header className="game-page__header">
+          <h1>{question.title}</h1>
+          <p className="page__intro">{question.instruction}</p>
+          <p className="game-page__instruction">
+            {question.hotspots.length} anomalies à trouver.
+          </p>
+        </header>
 
-        {roundScore !== null && (
-          <div className="game-page__score-badge">+{roundScore} point(s)</div>
-        )}
-      </div>
+        <PhaserGame ref={gameRef} question={question} />
 
-      <PhaserGame ref={gameRef} question={question} />
+        <div className="game-page__bottom-bar">
+          <div className="game-page__score-area">
+            {roundScore !== null && (
+              <div className="game-page__score-badge">+{roundScore} point(s)</div>
+            )}
+          </div>
+
+          {roundScore === null ? (
+            <button className="button" onClick={handleValidate}>
+              Valider
+            </button>
+          ) : questionIndex < questions.length - 1 ? (
+            <button className="button" onClick={handleNextQuestion}>
+              Question suivante
+            </button>
+          ) : (
+            <button className="button" onClick={() => onGoResults(totalScore)}>
+              Voir les résultats
+            </button>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
