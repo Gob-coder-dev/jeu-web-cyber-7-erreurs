@@ -32,83 +32,84 @@ function calculateGameSize(question: Question, availableWidth: number): GameSize
 }
 
 const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
-function PhaserGame({ question }, ref) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const sceneRef = useRef<CyberDifferenceScene | null>(null);
-  const [gameSize, setGameSize] = useState<GameSize | null>(null);
+  function PhaserGame({ question }, ref) {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const sceneRef = useRef<CyberDifferenceScene | null>(null);
+    const [gameSize, setGameSize] = useState<GameSize | null>(null);
 
-  useImperativeHandle(ref, () => ({
-      validateSelections: () => {
-        return sceneRef.current?.validateSelections() ?? 0;
-      },
-    }));
+    useImperativeHandle(ref, () => ({
+        validateSelections: () => {
+          return sceneRef.current?.validateSelections() ?? 0;
+        },
+      }));
 
-  useEffect(() => {
-    const container = containerRef.current;
+    useEffect(() => {
+      const container = containerRef.current;
 
-    if (container === null) {
-      return;
-    }
-
-    const gameContainer = container;
-
-    function updateGameSize() {
-      const availableWidth = gameContainer.clientWidth;
-
-      if (availableWidth <= 0) {
+      if (container === null) {
         return;
       }
 
-      const nextGameSize = calculateGameSize(question, availableWidth);
+      const gameContainer = container;
 
-      setGameSize((previousGameSize) => {
-        if (
-          previousGameSize?.width === nextGameSize.width &&
-          previousGameSize.height === nextGameSize.height
-        ) {
-          return previousGameSize;
+      function updateGameSize() {
+        const availableWidth = gameContainer.clientWidth;
+
+        if (availableWidth <= 0) {
+          return;
         }
 
-        return nextGameSize;
+        const nextGameSize = calculateGameSize(question, availableWidth);
+
+        setGameSize((previousGameSize) => {
+          if (
+            previousGameSize?.width === nextGameSize.width &&
+            previousGameSize.height === nextGameSize.height
+          ) {
+            return previousGameSize;
+          }
+
+          return nextGameSize;
+        });
+      }
+
+      updateGameSize();
+
+      const resizeObserver = new ResizeObserver(updateGameSize);
+      resizeObserver.observe(gameContainer);
+      window.addEventListener("resize", updateGameSize);
+
+      return () => {
+        resizeObserver.disconnect();
+        window.removeEventListener("resize", updateGameSize);
+      };
+    }, [question]);
+
+    useEffect(() => {
+      if (containerRef.current === null || gameSize === null) {
+        return;
+      }
+
+      const scene = new CyberDifferenceScene(question);
+      sceneRef.current = scene;
+
+      const game = new Phaser.Game({
+        type: Phaser.AUTO,
+        width: gameSize.width,
+        height: gameSize.height,
+        parent: containerRef.current,
+        scene: [scene],
+        backgroundColor: "#111827",
       });
-    }
 
-    updateGameSize();
+      return () => {
+        game.destroy(true);
+        sceneRef.current = null;
+      };
+    }, [question, gameSize]);
 
-    const resizeObserver = new ResizeObserver(updateGameSize);
-    resizeObserver.observe(gameContainer);
-    window.addEventListener("resize", updateGameSize);
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", updateGameSize);
-    };
-  }, [question]);
-
-  useEffect(() => {
-    if (containerRef.current === null || gameSize === null) {
-      return;
-    }
-
-    const scene = new CyberDifferenceScene(question);
-    sceneRef.current = scene;
-
-    const game = new Phaser.Game({
-      type: Phaser.AUTO,
-      width: gameSize.width,
-      height: gameSize.height,
-      parent: containerRef.current,
-      scene: [scene],
-      backgroundColor: "#111827",
-    });
-
-    return () => {
-      game.destroy(true);
-      sceneRef.current = null;
-    };
-  }, [question, gameSize]);
-
-  return <div className="phaser-game" ref={containerRef} />;
-});
+    return <div className="phaser-game" ref={containerRef} />;
+  }
+);
 
 export default PhaserGame;

@@ -6,7 +6,9 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private selectedMarkers: Phaser.GameObjects.Arc[] = [];
   private validatedHotspotIds = new Set<string>();
   private roundScore: number = 0;
+  private numberGoodAnswers: number = 0;
   private imageScale = 1;
+  private gameTimer: number = 0;
 
   constructor(question: Question) {
     super("CyberDifferenceScene");
@@ -15,6 +17,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
   preload() {
     this.load.image("question-image", this.question.image);
+    this.gameTimer = this.time.now;
   }
 
   create() {
@@ -89,7 +92,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
       });
 
       if (matchingHotspot) {
-        this.roundScore += 200;
+        this.numberGoodAnswers += 1;
         this.validatedHotspotIds.add(matchingHotspot.id);
 
         marker.setFillStyle(0x00ff00, 0.35);
@@ -104,6 +107,19 @@ export class CyberDifferenceScene extends Phaser.Scene {
         console.log("Mauvaise selection");
       }
     });
+    
+    // calcul du score total
+    const timeTaken = (this.time.now - this.gameTimer) / 1000;
+
+    this.roundScore = this.numberGoodAnswers * 20
+                      + Math.max(0, 20
+                        * this.numberGoodAnswers
+                        - timeTaken * 2
+                      )
+                      - (this.question.hotspots.length - this.numberGoodAnswers) * 5;
+
+    this.roundScore = Math.round(this.roundScore);
+    
     return this.roundScore;
   };
 }
