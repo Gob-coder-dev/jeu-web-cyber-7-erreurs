@@ -3,12 +3,18 @@ import type { Question } from "../../types/Question";
 
 export class CyberDifferenceScene extends Phaser.Scene {
   private question: Question;
-  private selectedMarkers: Phaser.GameObjects.Arc[] = [];
+  private selectedMarkers: {
+    marker: Phaser.GameObjects.Arc;
+    imageX: number;
+    imageY: number;
+  }[] = [];
   private validatedHotspotIds = new Set<string>();
-  private roundScore: number = 0;
   private numberGoodAnswers: number = 0;
   private imageScale = 1;
   private gameTimer: number = 0;
+  private hasValidated = false;
+  private questionImage?: Phaser.GameObjects.Image;
+  private debugHotspots: Phaser.GameObjects.Rectangle[] = [];
 
   constructor(question: Question) {
     super("CyberDifferenceScene");
@@ -22,15 +28,17 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
   create() {
     const image = this.add.image(0, 0, "question-image").setOrigin(0, 0);
+    this.questionImage = image;
 
-    this.imageScale = Math.min(
-      Number(this.scale.width) / image.width,
-      Number(this.scale.height) / image.height
-    );
+    this.resizeScene(Number(this.scale.width), Number(this.scale.height));
 
     image.setInteractive();
 
     image.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (this.hasValidated) {
+        return;
+      }
+
       if (this.selectedMarkers.length >= this.question.hotspots.length) {
         return;
       }
@@ -41,23 +49,31 @@ export class CyberDifferenceScene extends Phaser.Scene {
         .setStrokeStyle(3, 0x00aaff)
         .setInteractive();
 
-      this.selectedMarkers.push(marker);
+      this.selectedMarkers.push({
+        marker,
+        imageX: pointer.x / this.imageScale,
+        imageY: pointer.y / this.imageScale,
+      });
 
       //supprimer le marker au click pour permettre au joueur de corriger ses erreurs
       //suppression visuelle du marker
       marker.on("pointerdown", () => {
+        if (this.hasValidated) {
+          return;
+        }
+
         marker.destroy();
 
         //suppression du marker de la liste des markers selectionnés
         this.selectedMarkers = this.selectedMarkers.filter(
-          (selectedMarker) => selectedMarker !== marker
+          (selectedMarker) => selectedMarker.marker !== marker
         );
       });
     });
 
     // zone debug pour afficher les zones de bonne réponse
     this.question.hotspots.forEach((hotspot) => {
-      this.add
+      const debugHotspot = this.add
         .rectangle(
           hotspot.x * this.imageScale,
           hotspot.y * this.imageScale,
@@ -67,13 +83,48 @@ export class CyberDifferenceScene extends Phaser.Scene {
           0.25
         )
         .setOrigin(0, 0);
-    });
 
-    image.setScale(this.imageScale);
+      this.debugHotspots.push(debugHotspot);
+    });
   }
 
+  public resizeScene = (width: number, height: number) => {
+    if (this.questionImage === undefined) {
+      return;
+    }
+
+    this.imageScale = Math.min(
+      width / this.questionImage.width,
+      height / this.questionImage.height
+    );
+
+    this.questionImage.setScale(this.imageScale);
+
+    this.selectedMarkers.forEach(({ marker, imageX, imageY }) => {
+      marker.setPosition(imageX * this.imageScale, imageY * this.imageScale);
+    });
+
+    this.debugHotspots.forEach((debugHotspot, index) => {
+      const hotspot = this.question.hotspots[index];
+
+      debugHotspot.setPosition(
+        hotspot.x * this.imageScale,
+        hotspot.y * this.imageScale
+      );
+
+      debugHotspot.setSize(
+        hotspot.width * this.imageScale,
+        hotspot.height * this.imageScale
+      );
+    });
+  };
+
   public validateSelections = () => {
-    const scale = this.imageScale;
+    if (this.hasValidated) {
+      return 0;
+    }
+
+    this.hasValidated = true;
 
     this.selectedMarkers.forEach((marker) => {
       const matchingHotspot = this.question.hotspots.find((hotspot) => {
@@ -84,10 +135,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
         }
 
         return (
-          marker.x >= hotspot.x * scale &&
-          marker.x <= (hotspot.x + hotspot.width) * scale &&
-          marker.y >= hotspot.y * scale &&
-          marker.y <= (hotspot.y + hotspot.height) * scale
+          marker.imageX >= hotspot.x &&
+          marker.imageX <= (hotspot.x + hotspot.width) &&
+          marker.imageY >= hotspot.y &&
+          marker.imageY <= (hotspot.y + hotspot.height)
         );
       });
 
@@ -95,31 +146,27 @@ export class CyberDifferenceScene extends Phaser.Scene {
         this.numberGoodAnswers += 1;
         this.validatedHotspotIds.add(matchingHotspot.id);
 
-        marker.setFillStyle(0x00ff00, 0.35);
-        marker.setStrokeStyle(3, 0x00ff00);
+        marker.marker.setFillStyle(0x00ff00, 0.35);
+        marker.marker.setStrokeStyle(3, 0x00ff00);
 
-        console.log("Bonne zone :", matchingHotspot.label);
-        console.log("roundScore :", this.roundScore);
       } else {
-        marker.setFillStyle(0xff0000, 0.35);
-        marker.setStrokeStyle(3, 0xff0000);
-
-        console.log("Mauvaise selection");
+        marker.marker.setFillStyle(0xff0000, 0.35);
+        marker.marker.setStrokeStyle(3, 0xff0000);
       }
     });
     
     // calcul du score total
     const timeTaken = (this.time.now - this.gameTimer) / 1000;
 
-    this.roundScore = this.numberGoodAnswers * 20
-                      + Math.max(0, 20
-                        * this.numberGoodAnswers
-                        - timeTaken * 2
-                      )
-                      - (this.question.hotspots.length - this.numberGoodAnswers) * 5;
+    const roundScore = Math.round(
+                        this.numberGoodAnswers * 20
+                        + Math.max(0, 20
+                          * this.numberGoodAnswers
+                          - timeTaken * 2
+                        )
+                        - (this.question.hotspots.length - this.numberGoodAnswers) * 5
+                      );
 
-    this.roundScore = Math.round(this.roundScore);
-    
-    return this.roundScore;
+    return roundScore;
   };
 }

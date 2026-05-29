@@ -34,7 +34,9 @@ function calculateGameSize(question: Question, availableWidth: number): GameSize
 const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
   function PhaserGame({ question }, ref) {
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const phaserGameRef = useRef<Phaser.Game | null>(null);
     const sceneRef = useRef<CyberDifferenceScene | null>(null);
+    const currentQuestionRef = useRef<Question | null>(null);
     const [gameSize, setGameSize] = useState<GameSize | null>(null);
 
     useImperativeHandle(ref, () => ({
@@ -90,6 +92,18 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
         return;
       }
 
+      if (phaserGameRef.current !== null && currentQuestionRef.current === question) {
+        phaserGameRef.current.scale.resize(gameSize.width, gameSize.height);
+        sceneRef.current?.resizeScene(gameSize.width, gameSize.height);
+        return;
+      }
+
+      if (phaserGameRef.current !== null) {
+        phaserGameRef.current.destroy(true);
+        phaserGameRef.current = null;
+        sceneRef.current = null;
+      }
+
       const scene = new CyberDifferenceScene(question);
       sceneRef.current = scene;
 
@@ -100,13 +114,27 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
         parent: containerRef.current,
         scene: [scene],
         backgroundColor: "#111827",
+        input: {
+          mouse: {
+            preventDefaultWheel: false,
+          },
+          touch: {
+            capture: false,
+          },
+        },
       });
-
-      return () => {
-        game.destroy(true);
-        sceneRef.current = null;
-      };
+      phaserGameRef.current = game;
+      currentQuestionRef.current = question;
     }, [question, gameSize]);
+
+    useEffect(() => {
+      return () => {
+        phaserGameRef.current?.destroy(true);
+        phaserGameRef.current = null;
+        sceneRef.current = null;
+        currentQuestionRef.current = null;
+      };
+    }, []);
 
     return <div className="phaser-game" ref={containerRef} />;
   }
