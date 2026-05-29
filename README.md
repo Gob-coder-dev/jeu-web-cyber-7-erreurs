@@ -1,73 +1,198 @@
-# React + TypeScript + Vite
+# Cyber 7 erreurs
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Jeu web de sensibilisation a la cybersecurite. Le joueur parcourt des scenarios professionnels, observe des images et doit retrouver les anomalies de securite visibles.
 
-Currently, two official plugins are available:
+Le projet est construit avec React, TypeScript, Vite et Phaser.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Principe du jeu
 
-## React Compiler
+Le joueur se connecte avec un pseudo, choisit un scenario, puis repond a plusieurs questions liees par une courte histoire.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Chaque question affiche une image dans un canvas Phaser. Le joueur place des marqueurs sur les zones suspectes, puis valide sa selection.
 
-## Expanding the ESLint configuration
+Le score d'une question depend de trois elements :
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- bonnes reponses trouvees ;
+- temps mis pour repondre ;
+- anomalies non trouvees.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Le score d'un scenario correspond a la somme des scores de ses questions. Le score global correspond a la somme des scenarios termines.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Scenarios actuels
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### L'intrusion chez Novatek
+
+Clara publie trop d'informations sur LinkedIn. Un attaquant les utilise pour entrer dans les locaux et chercher le poste laisse ouvert par Julien.
+
+Questions :
+
+- Publication LinkedIn avec informations sensibles ;
+- Poste de travail non securise ;
+- Bureau laisse sans surveillance.
+
+### La boite mail de Sophie
+
+Sophie recoit plusieurs emails suspects dans la meme journee. Livraison, gain, promotion et offre personnalisee cherchent a la faire cliquer trop vite.
+
+Questions :
+
+- Email de phishing UPS ;
+- Email de phishing Amazon ;
+- Email de phishing Decathlon ;
+- Email de phishing Sephora.
+
+## Architecture
+
+```txt
+src/
+  data/
+    scenarios/
+      index.ts
+      physicalIntrusionScenario.ts
+      phishingInboxScenario.ts
+
+  game/
+    PhaserGame.tsx
+    scenes/
+      CyberDifferenceScene.ts
+
+  pages/
+    App.tsx
+    HomePage.tsx
+    GamePage.tsx
+    ResultPage.tsx
+    LeaderBoardPage.tsx
+    LoginPage.tsx
+
+  services/
+    scoreServices.ts
+
+  types/
+    Question.ts
+    Scenario.ts
+    Score.ts
+    User.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Role des principales parties
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### React
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+React gere les pages, la navigation, le choix du scenario, la progression du joueur et le score global.
+
+`App.tsx` contient l'etat principal :
+
+- utilisateur connecte ;
+- page active ;
+- scenario selectionne ;
+- score du scenario ;
+- score global ;
+- scenarios termines.
+
+### Phaser
+
+Phaser gere uniquement la zone interactive de l'image :
+
+- affichage de l'image ;
+- clics du joueur ;
+- creation et suppression des marqueurs ;
+- validation des hotspots ;
+- calcul du score de la question.
+
+La scene Phaser principale est `CyberDifferenceScene`.
+
+### Pont React / Phaser
+
+`PhaserGame.tsx` sert de pont entre React et Phaser.
+
+React affiche :
+
+```tsx
+<PhaserGame question={question} />
 ```
+
+Puis appelle la methode exposee par `ref` quand le joueur clique sur Valider :
+
+```ts
+validateSelections()
+```
+
+Cette methode appelle ensuite la scene Phaser pour calculer le score de la question.
+
+## Gestion des scenarios
+
+Un scenario est defini par le type suivant :
+
+```ts
+export type Scenario = {
+  id: string;
+  title: string;
+  description: string;
+  questions: Question[];
+};
+```
+
+Chaque fichier de scenario contient directement ses questions. Cela evite un gros fichier central et permet de garder ensemble :
+
+- l'histoire ;
+- les images ;
+- les instructions ;
+- les hotspots ;
+- les explications.
+
+La liste des scenarios disponibles est exportee depuis :
+
+```txt
+src/data/scenarios/index.ts
+```
+
+## Score et leaderboard
+
+Le leaderboard utilise actuellement `localStorage` via `ScoreService`.
+
+Etat actuel :
+
+- le score global est sauvegarde quand tous les scenarios sont termines ;
+- le classement affiche les scores sauvegardes ;
+- les donnees restent locales au navigateur.
+
+Evolution prevue :
+
+- rendre les pseudos uniques ;
+- sauvegarder la progression par pseudo ;
+- afficher dans le leaderboard les joueurs meme s'ils n'ont pas termine tous les scenarios ;
+- afficher sur chaque carte de scenario le score obtenu par le joueur.
+
+## Installation
+
+Installer les dependances :
+
+```bash
+npm install
+```
+
+Lancer le serveur de developpement :
+
+```bash
+npm run dev
+```
+
+Construire le projet :
+
+```bash
+npm run build
+```
+
+Verifier le lint :
+
+```bash
+npm run lint
+```
+
+## Notes de developpement
+
+- Les questions ne sont plus choisies aleatoirement.
+- Les questions sont jouees dans l'ordre defini par leur scenario.
+- Phaser ne connait pas les scenarios : il ne recoit qu'une question a la fois.
+- Le resize du canvas Phaser ne doit pas recreer toute la scene pour ne pas perdre les marqueurs ou le timer.
+- Les scores sont actuellement geres cote client avec `localStorage`.
