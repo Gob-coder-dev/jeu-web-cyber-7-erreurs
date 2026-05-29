@@ -59,6 +59,14 @@
   transform: translateY(-1px);
 }
 
+.button:disabled {
+  border-color: var(--color-border);
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  cursor: not-allowed;
+  transform: none;
+}
+
 .button:focus-visible {
   outline: 3px solid rgba(245, 158, 0, 0.32);
   outline-offset: 3px;

@@ -1,20 +1,47 @@
 import "./ResultPage.css";
 
 type ResultPageProps = {
-  score: number;
+  scenarioTitle: string;
+  scenarioScore: number;
+  globalScore: number;
+  hasCompletedAllScenarios: boolean;
   onBackHome: () => void;
   onGoLeaderBoard: () => void;
 };
 
-function ResultPage({ score, onBackHome, onGoLeaderBoard }: ResultPageProps) {
+function ResultPage({
+  scenarioTitle,
+  scenarioScore,
+  globalScore,
+  hasCompletedAllScenarios,
+  onBackHome,
+  onGoLeaderBoard,
+}: ResultPageProps) {
   return (
     <main className="page result-page">
-      <p className="page__eyebrow">Fin de manche</p>
-      <h1>Résultat</h1>
-      <div className="result-page__score">Score final : {score}</div>
+      <p className="page__eyebrow">Fin de scénario</p>
+      <h1>{scenarioTitle}</h1>
 
-      <button className="button" onClick={onBackHome}>Retour accueil</button>
-      <button className="button" onClick={onGoLeaderBoard}>Voir le classement</button>
+      <div className="result-page__scores">
+        <div className="result-page__score">
+          Score du scénario : {scenarioScore} pts
+        </div>
+        <div className="result-page__score result-page__score--global">
+          Score global : {globalScore} pts
+        </div>
+      </div>
+
+      <div className="page__actions">
+        <button className="button" onClick={onBackHome}>
+          Retour aux scénarios
+        </button>
+
+        {hasCompletedAllScenarios && (
+          <button className="button button--secondary" onClick={onGoLeaderBoard}>
+            Voir le classement
+          </button>
+        )}
+      </div>
     </main>
   );
 }
