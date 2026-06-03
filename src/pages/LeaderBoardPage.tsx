@@ -4,6 +4,7 @@ import "./LeaderBoardPage.css";
 
 type LeaderBoardPageProps = {
     scores: Score[];
+    currentPseudo: string;
     onBackHome: () => void;
 };
 
@@ -17,17 +18,28 @@ function getRankClassName(rank: number) {
     return ["leaderboard-rank", ...rankModifiers].join(" ");
 }
 
-function LeaderBoardPage({scores,onBackHome}: LeaderBoardPageProps) {
+function LeaderBoardPage({scores,currentPseudo,onBackHome}: LeaderBoardPageProps) {
+    const sortedScores = [...scores].sort((a, b) => b.score - a.score);
+    const topScores = sortedScores.slice(0, 12);
+    const currentPlayerIndex = sortedScores.findIndex(
+        (score) => score.pseudo === currentPseudo
+    );
+    const currentPlayerScore =
+        currentPlayerIndex === -1 ? null : sortedScores[currentPlayerIndex];
+    const currentPlayerRank = currentPlayerIndex + 1;
+    const shouldShowCurrentPlayerAside =
+        currentPlayerScore !== null && currentPlayerRank > 12;
 
-    return (
-        <main className="page__leaderboard-page">
-        <h1>Classement</h1>
-        <ol className="leaderboard-list">
-        {[...scores].sort((a, b) => b.score - a.score).map((score, index) => {
-            const rank = index + 1;
+    function renderScoreRow(score: Score, rank: number) {
+        const isCurrentPlayer = score.id === currentPlayerScore?.id;
 
-            return (
-            <li className="leaderboard-row" key={score.id}>
+        return (
+            <li
+                className={`leaderboard-row${
+                    isCurrentPlayer ? " leaderboard-row--current" : ""
+                }`}
+                key={score.id}
+            >
             <span className={getRankClassName(rank)}>
                 {rank}
             </span>
@@ -40,8 +52,28 @@ function LeaderBoardPage({scores,onBackHome}: LeaderBoardPageProps) {
                 {new Date(score.date).toLocaleDateString()}
             </span>
             </li>
-        )})}
+        );
+    }
+
+    return (
+        <main className="page__leaderboard-page">
+        <h1>Classement</h1>
+        <ol className="leaderboard-list">
+        {topScores.map((score, index) => {
+            const rank = index + 1;
+
+            return renderScoreRow(score, rank);
+        })}
         </ol>
+
+        {shouldShowCurrentPlayerAside && (
+            <section className="leaderboard-current-player">
+                <h2>Votre position</h2>
+                <ol className="leaderboard-list leaderboard-list--current">
+                    {renderScoreRow(currentPlayerScore, currentPlayerRank)}
+                </ol>
+            </section>
+        )}
 
         <button className="button button--primary" onClick={() => new ScoreService().clearScores()}>
             Effacer le classement

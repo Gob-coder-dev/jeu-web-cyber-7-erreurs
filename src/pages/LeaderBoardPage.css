@@ -25,6 +25,29 @@
   box-shadow: var(--shadow-soft);
 }
 
+.leaderboard-row--current {
+  border-color: rgba(54, 169, 225, 0.72);
+  background: linear-gradient(180deg, #ffffff 0%, #eef8fd 100%);
+  box-shadow:
+    0 0 0 3px rgba(54, 169, 225, 0.14),
+    var(--shadow-soft);
+}
+
+.leaderboard-current-player {
+  margin: -8px 0 32px;
+}
+
+.leaderboard-current-player h2 {
+  margin: 0 0 12px;
+  color: var(--color-primary-dark);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.leaderboard-list--current {
+  margin: 0;
+}
+
 .leaderboard-rank {
   width: 46px;
   height: 40px;

@@ -116,7 +116,13 @@ function App() {
   }
 
   if (page === "leaderboard") {
-    return <LeaderBoardPage scores={scoreService.getScores()} onBackHome={handleBackHome} />;
+    return (
+      <LeaderBoardPage
+        scores={scoreService.getScores()}
+        currentPseudo={user.pseudo}
+        onBackHome={handleBackHome}
+      />
+    );
   }
 
   return (
