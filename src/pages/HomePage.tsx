@@ -5,7 +5,7 @@ import "./HomePage.css";
 type HomePageProps = {
   user: User;
   scenarios: Scenario[];
-  completedScenarioIds: string[];
+  scenarioScoresCompleted: Record<string, number>;
   globalScore: number;
   onLogout: () => void;
   onGoLeaderBoard: () => void;
@@ -15,7 +15,7 @@ type HomePageProps = {
 function HomePage({
   user,
   scenarios,
-  completedScenarioIds,
+  scenarioScoresCompleted,
   globalScore,
   onLogout,
   onGoLeaderBoard,
@@ -29,29 +29,33 @@ function HomePage({
         Choisis un scénario, repère les anomalies et construis ton score global.
       </p>
 
-      <div className="home-page__score">Score global : {globalScore} pts</div>
+      <div className="home-page__score--global">Score global : {globalScore} pts</div>
 
       <section className="home-page__scenarios" aria-label="Scénarios">
         {scenarios.map((scenario) => {
-          const isCompleted = completedScenarioIds.includes(scenario.id);
+          const scenarioScore = scenarioScoresCompleted[scenario.id];
+          const hasScore = scenarioScore !== undefined;
 
           return (
             <article className="home-page__scenario" key={scenario.id}>
               <div className="home-page__scenario-meta">
                 <span>{scenario.questions.length} questions</span>
-                {isCompleted && <span>Terminé</span>}
+                {hasScore && <span>Terminé</span>}
               </div>
 
               <h2>{scenario.title}</h2>
               <p>{scenario.description}</p>
-
-              <button
-                className="button"
-                disabled={isCompleted}
-                onClick={() => onStartScenario(scenario)}
-              >
-                {isCompleted ? "Terminé" : "Lancer"}
-              </button>
+    
+              <div className="home-page__scenario-actions">
+                <button
+                  className="button"
+                  disabled={hasScore}
+                  onClick={() => onStartScenario(scenario)}
+                >
+                  {hasScore ? "Terminé" : "Lancer"}
+                </button>
+                {hasScore && <span className="home-page__score--scenario">{scenarioScore} pts</span>}
+              </div>
             </article>
           );
         })}

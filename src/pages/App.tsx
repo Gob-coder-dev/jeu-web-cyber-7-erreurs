@@ -19,10 +19,10 @@ function App() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
   const [globalScore, setGlobalScore] = useState(0);
-  const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
+  const [scenarioScoresCompleted, setScenarioScoresCompleted] = useState<Record<string, number>>({});
   const [hasSavedGlobalScore, setHasSavedGlobalScore] = useState(false);
 
-  const hasCompletedAllScenarios = completedScenarioIds.length === scenarios.length;
+  const hasCompletedAllScenarios = Object.keys(scenarioScoresCompleted).length === scenarios.length;
 
   function handleLogin(pseudo: string) {
     setUser({ pseudo });
@@ -35,12 +35,12 @@ function App() {
     setSelectedScenario(null);
     setScenarioScore(0);
     setGlobalScore(0);
-    setCompletedScenarioIds([]);
+    setScenarioScoresCompleted({});
     setHasSavedGlobalScore(false);
   }
 
   function handleStartScenario(scenario: Scenario) {
-    if (completedScenarioIds.includes(scenario.id)) {
+    if (scenarioScoresCompleted[scenario.id] !== undefined) {
       return;
     }
 
@@ -58,18 +58,19 @@ function App() {
       return;
     }
 
-    const scenarioAlreadyCompleted = completedScenarioIds.includes(selectedScenario.id);
-    const nextCompletedScenarioIds = scenarioAlreadyCompleted
-      ? completedScenarioIds
-      : [...completedScenarioIds, selectedScenario.id];
+    const scenarioAlreadyCompleted = scenarioScoresCompleted[selectedScenario.id] !== undefined;
+    const nextScenarioScoresCompleted = {
+      ...scenarioScoresCompleted,
+      [selectedScenario.id]: score
+    };
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
       : globalScore + score;
-    const hasCompletedEveryScenario = nextCompletedScenarioIds.length === scenarios.length;
+    const hasCompletedEveryScenario = Object.keys(nextScenarioScoresCompleted).length === scenarios.length;
 
     setScenarioScore(score);
     setGlobalScore(nextGlobalScore);
-    setCompletedScenarioIds(nextCompletedScenarioIds);
+    setScenarioScoresCompleted(nextScenarioScoresCompleted);
 
     if (hasCompletedEveryScenario && !hasSavedGlobalScore) {
       scoreService.addScore({
@@ -129,7 +130,7 @@ function App() {
     <HomePage
       user={user}
       scenarios={scenarios}
-      completedScenarioIds={completedScenarioIds}
+      scenarioScoresCompleted={scenarioScoresCompleted}
       globalScore={globalScore}
       onLogout={handleLogout}
       onGoLeaderBoard={handleGoLeaderBoard}
