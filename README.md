@@ -196,3 +196,4 @@ npm run lint
 - Phaser ne connait pas les scenarios : il ne recoit qu'une question a la fois.
 - Le resize du canvas Phaser ne doit pas recreer toute la scene pour ne pas perdre les marqueurs ou le timer.
 - Les scores sont actuellement geres cote client avec `localStorage`.
+- Les zones de bonnes réponses peuvent être affiché avec le raccourci Shift + D.

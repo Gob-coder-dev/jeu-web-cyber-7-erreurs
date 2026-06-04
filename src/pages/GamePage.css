@@ -30,6 +30,13 @@
   max-width: 100%;
 }
 
+.game-page__start-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
 .game-page__instruction {
   color: #dc2626;
   font-weight: 700;

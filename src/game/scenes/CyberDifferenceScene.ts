@@ -14,7 +14,9 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private gameTimer: number = 0;
   private hasValidated = false;
   private questionImage?: Phaser.GameObjects.Image;
+  private hotspotTooltip?: Phaser.GameObjects.Text;
   private debugHotspots: Phaser.GameObjects.Rectangle[] = [];
+  private showDebugHotspots: boolean = false;
 
   constructor(question: Question) {
     super("CyberDifferenceScene");
@@ -23,16 +25,83 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
   preload() {
     this.load.image("question-image", this.question.image);
-    this.gameTimer = this.time.now;
   }
 
   create() {
     const image = this.add.image(0, 0, "question-image").setOrigin(0, 0);
     this.questionImage = image;
 
+    this.hotspotTooltip = this.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        color: "#ffffff",
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        padding: { x: 10, y: 8 },
+        wordWrap: { width: 260 },
+      })
+      .setDepth(10)
+      .setOrigin(0, 0)
+      .setVisible(false);
+
     this.resizeScene(Number(this.scale.width), Number(this.scale.height));
 
     image.setInteractive();
+
+    const updateHotspotTooltip = (pointer: Phaser.Input.Pointer) => {
+      if (!this.hasValidated) {
+        this.hotspotTooltip?.setVisible(false);
+        return;
+      }
+
+      const imageX = pointer.x / this.imageScale;
+      const imageY = pointer.y / this.imageScale;
+
+      const hoveredHotspot = this.question.hotspots.find((hotspot) =>
+        imageX >= hotspot.x &&
+        imageX <= hotspot.x + hotspot.width &&
+        imageY >= hotspot.y &&
+        imageY <= hotspot.y + hotspot.height
+      );
+
+      if (!hoveredHotspot) {
+        this.hotspotTooltip?.setVisible(false);
+        return;
+      }
+
+      if (this.hotspotTooltip === undefined) {
+        return;
+      }
+
+      this.hotspotTooltip.setText(hoveredHotspot.explanation);
+
+      const tooltipWidth = this.hotspotTooltip.width;
+      const tooltipHeight = this.hotspotTooltip.height;
+      let tooltipX = pointer.x + 12;
+      let tooltipY = pointer.y + 12;
+
+      if (tooltipX + tooltipWidth > this.scale.width) {
+        tooltipX = pointer.x - tooltipWidth - 12;
+      }
+      if (tooltipX < 0) {
+        tooltipX = 0;
+      }
+
+      if (tooltipY + tooltipHeight > this.scale.height) {
+        tooltipY = pointer.y - tooltipHeight - 12;
+      }
+      if (tooltipY < 0) {
+        tooltipY = 0;
+      }
+
+      this.hotspotTooltip.setPosition(tooltipX, tooltipY);
+      this.hotspotTooltip.setVisible(true);
+    };
+
+    image.on("pointermove", updateHotspotTooltip);
+
+    image.on("pointerout", () => {
+      this.hotspotTooltip?.setVisible(false);
+    });
 
     image.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       if (this.hasValidated) {
@@ -53,6 +122,15 @@ export class CyberDifferenceScene extends Phaser.Scene {
         marker,
         imageX: pointer.x / this.imageScale,
         imageY: pointer.y / this.imageScale,
+      });
+
+      const updateMarkerTooltip = (markerPointer: Phaser.Input.Pointer) => {
+        updateHotspotTooltip(markerPointer);
+      };
+
+      marker.on("pointermove", updateMarkerTooltip);
+      marker.on("pointerout", () => {
+        this.hotspotTooltip?.setVisible(false);
       });
 
       //supprimer le marker au click pour permettre au joueur de corriger ses erreurs
@@ -82,10 +160,14 @@ export class CyberDifferenceScene extends Phaser.Scene {
           0x00ff00,
           0.25
         )
-        .setOrigin(0, 0);
+        .setOrigin(0, 0)
+        .setVisible(this.showDebugHotspots);
 
       this.debugHotspots.push(debugHotspot);
     });
+
+    this.gameTimer = this.time.now;
+    
   }
 
   public resizeScene = (width: number, height: number) => {
@@ -168,5 +250,12 @@ export class CyberDifferenceScene extends Phaser.Scene {
                       );
 
     return roundScore;
+  };
+
+  public toggleDebugHotspots = () => {
+    this.showDebugHotspots = !this.showDebugHotspots;
+    this.debugHotspots.forEach((hotspot) => {
+      hotspot.setVisible(this.showDebugHotspots);
+    });
   };
 }

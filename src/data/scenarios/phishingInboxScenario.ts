@@ -23,7 +23,7 @@ export const phishingInboxScenario: Scenario = {
         {
           id: "ups-expediteur-suspect",
           x: 70,
-          y: 120,
+          y: 110,
           width: 900,
           height: 40,
           label: "Expéditeur et domaine suspects",
@@ -33,7 +33,7 @@ export const phishingInboxScenario: Scenario = {
         {
           id: "ups-sujet-urgent",
           x: 65,
-          y: 65,
+          y: 60,
           width: 560,
           height: 42,
           label: "Objet avec délai limité",
@@ -42,18 +42,18 @@ export const phishingInboxScenario: Scenario = {
         },
         {
           id: "ups-demande-informations",
-          x: 515,
-          y: 710,
+          x: 535,
+          y: 730,
           width: 520,
-          height: 155,
+          height: 165,
           label: "Demande de données personnelles",
           explanation:
             "Le message demande adresse, téléphone et date de livraison. Il faut vérifier la légitimité avant de fournir ces informations.",
         },
         {
           id: "ups-lien-suspect",
-          x: 520,
-          y: 990,
+          x: 530,
+          y: 1030,
           width: 310,
           height: 105,
           label: "Lien suspect",
@@ -61,11 +61,11 @@ export const phishingInboxScenario: Scenario = {
             "Le lien visible ne ressemble pas à un domaine UPS officiel. Il ne faut pas cliquer sur un lien incohérent avec la marque.",
         },
         {
-          id: "ups-bouton-confirmation",
-          x: 520,
-          y: 1525,
-          width: 520,
-          height: 65,
+          id: "ups-pression-gain-temps",
+          x: 530,
+          y: 1425,
+          width: 570,
+          height: 115,
           label: "Bouton de confirmation",
           explanation:
             "Le bouton pousse à confirmer rapidement la livraison. Il faut passer par le site officiel plutôt que par le lien de l'email.",
@@ -132,16 +132,6 @@ export const phishingInboxScenario: Scenario = {
           explanation:
             "Le message affiche et demande de confirmer des données. Cela peut servir à collecter ou valider des informations personnelles.",
         },
-        {
-          id: "amazon-bouton-confirmation",
-          x: 570,
-          y: 850,
-          width: 495,
-          height: 70,
-          label: "Bouton de confirmation",
-          explanation:
-            "Le bouton invite à confirmer les données. Avant de cliquer, il faut vérifier l'adresse et passer par le site officiel.",
-        },
       ],
     },
     ///////////////////////////////////////////////////////////////////////
@@ -185,24 +175,14 @@ export const phishingInboxScenario: Scenario = {
             "Le message insiste sur une expiration aujourd'hui. L'urgence est souvent utilisée pour pousser à cliquer trop vite.",
         },
         {
-          id: "decathlon-bouton-action",
+          id: "decathlon-bouton-incohérent",
           x: 580,
           y: 880,
           width: 450,
           height: 68,
-          label: "Bouton d'action incitatif",
+          label: "Bouton incohérent avec l'offre",
           explanation:
-            "Le bouton pousse l'utilisateur à agir immédiatement. Avant de cliquer, il faut vérifier l'expéditeur et le lien.",
-        },
-        {
-          id: "decathlon-lien-desabonnement",
-          x: 740,
-          y: 1010,
-          width: 135,
-          height: 35,
-          label: "Lien de désabonnement",
-          explanation:
-            "Le lien de désabonnement peut aussi servir de piège pour inciter l'utilisateur à cliquer. Sur un email suspect, il vaut mieux ne cliquer sur aucun lien.",
+            "Le bouton propose de 'réserver' un vélo, alors que le mail dit plus haut que le vélo est déjà réservé. Cette incohérence est un indice de mail brouillon fait rapidement pour une arnaque.",
         },
       ],
     },
@@ -237,6 +217,16 @@ export const phishingInboxScenario: Scenario = {
             "Une offre cadeau inattendue peut être utilisée pour pousser l'utilisateur à cliquer sans vérifier.",
         },
         {
+          id: "sephora-prenom-identique-mail",
+          x: 610,
+          y: 470,
+          width: 200,
+          height: 50,
+          label: "Nom client identique au mail",
+          explanation:
+            "Le mail montre un texte de salutation suivit du mail mais sans @gmail.com. Ce type de personnalisation maladroite est un indice de mail frauduleux très automatisé qui tente de paraître personnalisé sans réussir à le faire de manière crédible.",
+        },
+        {
           id: "sephora-donnees-personnelles",
           x: 550,
           y: 610,
@@ -245,26 +235,6 @@ export const phishingInboxScenario: Scenario = {
           label: "Données personnelles affichées",
           explanation:
             "Le message affiche un identifiant et une adresse email. Un attaquant peut utiliser ces éléments pour rendre son message crédible.",
-        },
-        {
-          id: "sephora-bouton-reclamation",
-          x: 625,
-          y: 842,
-          width: 380,
-          height: 70,
-          label: "Bouton de réclamation",
-          explanation:
-            "Le bouton incite à réclamer le cadeau. Il faut vérifier l'expéditeur et passer par le site officiel avant toute action.",
-        },
-        {
-          id: "sephora-lien-desabonnement",
-          x: 735,
-          y: 988,
-          width: 170,
-          height: 35,
-          label: "Lien de désabonnement",
-          explanation:
-            "Le lien de désabonnement peut être utilisé pour pousser l'utilisateur à cliquer malgré sa méfiance. Dans un email suspect, il vaut mieux éviter tous les liens.",
         },
       ],
     },

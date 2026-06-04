@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
 import type { Scenario } from "../types/Scenario";
 import "./GamePage.css";
@@ -14,7 +14,42 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [roundScore, setRoundScore] = useState<number | null>(null);
   const [totalScore, setTotalScore] = useState(0);
+  const [showImage, setShowImage] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+  const [buttonReady, setButtonReady] = useState(false);
   const question = scenario.questions[questionIndex];
+
+  // Raccourci clavier Maj+D pour basculer les zones de debug
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.shiftKey && event.key === 'D') {
+        gameRef.current?.toggleDebugHotspots();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    setShowImage(false);
+    setButtonReady(false);
+    setCountdown(3);
+
+    const countdownInterval = window.setInterval(() => {
+      setCountdown((previousCountdown) => {
+        if (previousCountdown <= 1) {
+          setButtonReady(true);
+          window.clearInterval(countdownInterval);
+          return 0;
+        }
+
+        return previousCountdown - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(countdownInterval);
+  }, [questionIndex]);
 
   function handleValidate() {
     const game = gameRef.current;
@@ -54,29 +89,45 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
           </p>
         </header>
 
-        <PhaserGame ref={gameRef} question={question} />
-
-        <div className="game-page__bottom-bar">
-          <div className="game-page__score-area">
-            {roundScore !== null && (
-              <div className="game-page__score-badge">+{roundScore} point(s)</div>
-            )}
+        {!showImage ? (
+          <div className="game-page__start-panel">
+            <button
+              className="button"
+              disabled={!buttonReady}
+              onClick={() => setShowImage(true)}
+            >
+              {buttonReady
+                ? "Afficher l'image"
+                : `Afficher l'image dans ${countdown}s`}
+            </button>
           </div>
+        ) : (
+          <>
+            <PhaserGame ref={gameRef} question={question} />
 
-          {roundScore === null ? (
-            <button className="button" onClick={handleValidate}>
-              Valider
-            </button>
-          ) : questionIndex < scenario.questions.length - 1 ? (
-            <button className="button" onClick={handleNextQuestion}>
-              Question suivante
-            </button>
-          ) : (
-            <button className="button" onClick={() => onGoResults(totalScore)}>
-              Voir les résultats
-            </button>
-          )}
-        </div>
+            <div className="game-page__bottom-bar">
+              <div className="game-page__score-area">
+                {roundScore !== null && (
+                  <div className="game-page__score-badge">{roundScore >= 0 ? '+' : ''}{roundScore} point(s)</div>
+                )}
+              </div>
+
+              {roundScore === null ? (
+                <button className="button" onClick={handleValidate}>
+                  Valider
+                </button>
+              ) : questionIndex < scenario.questions.length - 1 ? (
+                <button className="button" onClick={handleNextQuestion}>
+                  Question suivante
+                </button>
+              ) : (
+                <button className="button" onClick={() => onGoResults(totalScore)}>
+                  Voir les résultats
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </section>
     </main>
   );
