@@ -71,7 +71,7 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
         <div className="game-page__bottom-bar">
           <div className="game-page__score-area">
             {roundScore !== null && (
-              <div className="game-page__score-badge">+{roundScore} point(s)</div>
+              <div className="game-page__score-badge">{roundScore >= 0 ? '+' : ''}{roundScore} point(s)</div>
             )}
           </div>
 
