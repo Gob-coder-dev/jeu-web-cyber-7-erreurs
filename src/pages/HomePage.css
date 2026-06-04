@@ -66,13 +66,34 @@
   text-transform: uppercase;
 }
 
-.home-page__scenario-actions {
+.home-page__scenario-footer {
   width: 100%;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-page__scenario .home-page__scenario-replay-note {
+  margin: 0;
+  color: var(--color-success);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.home-page__scenario-actions {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.home-page__button--replay {
+  color: var(--color-primary-dark);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
 }
 
 .home-page::after {
@@ -97,5 +118,14 @@
 
   .home-page__scenarios {
     grid-template-columns: 1fr;
+  }
+
+  .home-page__scenario-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .home-page__score--scenario {
+    align-self: flex-end;
   }
 }

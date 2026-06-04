@@ -45,16 +45,23 @@ function HomePage({
 
               <h2>{scenario.title}</h2>
               <p>{scenario.description}</p>
-    
-              <div className="home-page__scenario-actions">
-                <button
-                  className="button"
-                  disabled={hasScore}
-                  onClick={() => onStartScenario(scenario)}
-                >
-                  {hasScore ? "Terminé" : "Lancer"}
-                </button>
-                {hasScore && <span className="home-page__score--scenario">{scenarioScore} pts</span>}
+
+              <div className="home-page__scenario-footer">
+                {hasScore && (
+                  <p className="home-page__scenario-replay-note">
+                    Score conservé. Rejouer ne modifie pas le score global.
+                  </p>
+                )}
+
+                <div className="home-page__scenario-actions">
+                  <button
+                    className={`button${hasScore ? " home-page__button--replay" : ""}`}
+                    onClick={() => onStartScenario(scenario)}
+                  >
+                    {hasScore ? "Rejouer" : "Lancer"}
+                  </button>
+                  {hasScore && <span className="home-page__score--scenario">{scenarioScore} pts</span>}
+                </div>
               </div>
             </article>
           );

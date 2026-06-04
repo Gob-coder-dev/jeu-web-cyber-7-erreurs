@@ -40,9 +40,6 @@ function App() {
   }
 
   function handleStartScenario(scenario: Scenario) {
-    if (scenarioScoresCompleted[scenario.id] !== undefined) {
-      return;
-    }
 
     setSelectedScenario(scenario);
     setPage("game");
@@ -59,10 +56,12 @@ function App() {
     }
 
     const scenarioAlreadyCompleted = scenarioScoresCompleted[selectedScenario.id] !== undefined;
-    const nextScenarioScoresCompleted = {
-      ...scenarioScoresCompleted,
-      [selectedScenario.id]: score
-    };
+    const nextScenarioScoresCompleted = scenarioAlreadyCompleted
+      ? scenarioScoresCompleted
+      : {
+          ...scenarioScoresCompleted,
+          [selectedScenario.id]: score
+        };
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
       : globalScore + score;
