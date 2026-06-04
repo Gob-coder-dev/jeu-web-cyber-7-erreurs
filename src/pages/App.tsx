@@ -6,12 +6,14 @@ import ResultPage from "./ResultPage";
 import type { User } from "../types/User";
 import type { Scenario } from "../types/Scenario";
 import { ScoreService } from "../services/scoreServices";
+import { UserService } from "../services/userServices";
 import LeaderBoardPage from "./LeaderBoardPage";
 import { scenarios } from "../data/scenarios";
 
 type Page = "home" | "game" | "result" | "leaderboard";
 
 const scoreService = new ScoreService();
+const userService = new UserService();
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -20,12 +22,32 @@ function App() {
   const [scenarioScore, setScenarioScore] = useState(0);
   const [globalScore, setGlobalScore] = useState(0);
   const [scenarioScoresCompleted, setScenarioScoresCompleted] = useState<Record<string, number>>({});
+  const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
   const [hasSavedGlobalScore, setHasSavedGlobalScore] = useState(false);
 
   const hasCompletedAllScenarios = Object.keys(scenarioScoresCompleted).length === scenarios.length;
 
   function handleLogin(pseudo: string) {
-    setUser({ pseudo });
+    const existingUser = userService.getUserByPseudo(pseudo);
+    
+    if (existingUser) {
+      // Charger l'utilisateur existant avec sa progression
+      setUser(existingUser);
+      setCompletedScenarioIds(existingUser.completedScenarioIds);
+      setGlobalScore(existingUser.globalScore);
+    } else {
+      // Créer un nouveau compte
+      const newUser: User = {
+        pseudo,
+        completedScenarioIds: [],
+        globalScore: 0,
+      };
+      userService.addUser(newUser);
+      setUser(newUser);
+      setCompletedScenarioIds([]);
+      setGlobalScore(0);
+    }
+    
     setPage("home");
   }
 
@@ -40,6 +62,9 @@ function App() {
   }
 
   function handleStartScenario(scenario: Scenario) {
+    if (completedScenarioIds.includes(scenario.id)) {
+      return;
+    }
 
     setSelectedScenario(scenario);
     setPage("game");
@@ -55,21 +80,35 @@ function App() {
       return;
     }
 
-    const scenarioAlreadyCompleted = scenarioScoresCompleted[selectedScenario.id] !== undefined;
-    const nextScenarioScoresCompleted = scenarioAlreadyCompleted
-      ? scenarioScoresCompleted
-      : {
-          ...scenarioScoresCompleted,
-          [selectedScenario.id]: score
-        };
+    const scenarioAlreadyCompleted = completedScenarioIds.includes(selectedScenario.id);
+    const nextCompletedScenarioIds = scenarioAlreadyCompleted
+      ? completedScenarioIds
+      : [
+          ...completedScenarioIds,
+          selectedScenario.id
+        ];
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
       : globalScore + score;
-    const hasCompletedEveryScenario = Object.keys(nextScenarioScoresCompleted).length === scenarios.length;
+    const hasCompletedEveryScenario = nextCompletedScenarioIds.length === scenarios.length;
 
     setScenarioScore(score);
     setGlobalScore(nextGlobalScore);
-    setScenarioScoresCompleted(nextScenarioScoresCompleted);
+    setCompletedScenarioIds(nextCompletedScenarioIds);
+    
+    if (user === null) {
+      return;
+    }
+
+
+     // Mettre à jour l'utilisateur dans le localStorage
+    const updatedUser: User = {
+        ...user,
+        completedScenarioIds: nextCompletedScenarioIds,
+        globalScore: nextGlobalScore,
+      };
+      setUser(updatedUser);
+      userService.updateUser(updatedUser);
 
     if (hasCompletedEveryScenario && !hasSavedGlobalScore) {
       scoreService.addScore({
