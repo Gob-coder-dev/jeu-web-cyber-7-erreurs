@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
 import type { Scenario } from "../types/Scenario";
 import "./GamePage.css";
@@ -15,6 +15,18 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
   const [roundScore, setRoundScore] = useState<number | null>(null);
   const [totalScore, setTotalScore] = useState(0);
   const question = scenario.questions[questionIndex];
+
+  // Raccourci clavier Maj+D pour basculer les zones de debug
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.shiftKey && event.key === 'D') {
+        gameRef.current?.toggleDebugHotspots();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   function handleValidate() {
     const game = gameRef.current;

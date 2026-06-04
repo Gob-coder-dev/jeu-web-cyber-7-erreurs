@@ -15,6 +15,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private hasValidated = false;
   private questionImage?: Phaser.GameObjects.Image;
   private debugHotspots: Phaser.GameObjects.Rectangle[] = [];
+  private showDebugHotspots: boolean = false;
 
   constructor(question: Question) {
     super("CyberDifferenceScene");
@@ -82,7 +83,8 @@ export class CyberDifferenceScene extends Phaser.Scene {
           0x00ff00,
           0.25
         )
-        .setOrigin(0, 0);
+        .setOrigin(0, 0)
+        .setVisible(this.showDebugHotspots);
 
       this.debugHotspots.push(debugHotspot);
     });
@@ -168,5 +170,12 @@ export class CyberDifferenceScene extends Phaser.Scene {
                       );
 
     return roundScore;
+  };
+
+  public toggleDebugHotspots = () => {
+    this.showDebugHotspots = !this.showDebugHotspots;
+    this.debugHotspots.forEach((hotspot) => {
+      hotspot.setVisible(this.showDebugHotspots);
+    });
   };
 }

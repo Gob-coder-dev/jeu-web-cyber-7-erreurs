@@ -9,6 +9,7 @@ type PhaserGameProps = {
 
 export type PhaserGameHandle = {
   validateSelections: () => number;
+  toggleDebugHotspots: () => void;
 };
 
 type GameSize = {
@@ -42,6 +43,9 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
     useImperativeHandle(ref, () => ({
         validateSelections: () => {
           return sceneRef.current?.validateSelections() ?? 0;
+        },
+        toggleDebugHotspots: () => {
+          sceneRef.current?.toggleDebugHotspots();
         },
       }));
 
