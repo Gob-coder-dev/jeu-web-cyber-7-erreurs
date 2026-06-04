@@ -25,7 +25,6 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
   preload() {
     this.load.image("question-image", this.question.image);
-    this.gameTimer = this.time.now;
   }
 
   create() {
@@ -166,6 +165,9 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
       this.debugHotspots.push(debugHotspot);
     });
+
+    this.gameTimer = this.time.now;
+    
   }
 
   public resizeScene = (width: number, height: number) => {
