@@ -19,11 +19,9 @@ type GameSize = {
 
 function calculateGameSize(question: Question, availableWidth: number): GameSize {
   const maxWidth = Math.min(availableWidth, question.imageWidth);
-  const maxHeight = Math.min(window.innerHeight * 0.72, question.imageHeight);
   const scale = Math.min(
     maxWidth / question.imageWidth,
-    maxHeight / question.imageHeight,
-    1
+    1,4
   );
 
   return {
