@@ -90,7 +90,6 @@ function App() {
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
       : globalScore + score;
-    const hasCompletedEveryScenario = nextCompletedScenarioIds.length === scenarios.length;
 
     setScenarioScore(score);
     setGlobalScore(nextGlobalScore);
@@ -110,7 +109,7 @@ function App() {
       setUser(updatedUser);
       userService.updateUser(updatedUser);
 
-    if (hasCompletedEveryScenario && !hasSavedGlobalScore) {
+    if (!hasSavedGlobalScore) {
       scoreService.addScore({
         score: nextGlobalScore,
         pseudo: user?.pseudo || "Anonyme",
