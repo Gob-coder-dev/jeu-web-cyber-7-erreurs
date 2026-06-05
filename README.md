@@ -197,3 +197,4 @@ npm run lint
 - Le resize du canvas Phaser ne doit pas recreer toute la scene pour ne pas perdre les marqueurs ou le timer.
 - Les scores sont actuellement geres cote client avec `localStorage`.
 - Les zones de bonnes réponses peuvent être affiché avec le raccourci Shift + D.
+- Le timer pour afficher les images dans les scénarios peut être mis à 0 avec le raccourci Shift + T.
