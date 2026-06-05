@@ -36,11 +36,10 @@ function ResultPage({
           Retour aux scénarios
         </button>
 
-        {hasCompletedAllScenarios && (
-          <button className="button button--secondary" onClick={onGoLeaderBoard}>
-            Voir le classement
-          </button>
-        )}
+
+        <button className="button button--secondary" onClick={onGoLeaderBoard}>
+          Voir le classement
+        </button>
       </div>
     </main>
   );
