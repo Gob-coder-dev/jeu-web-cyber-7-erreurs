@@ -17,13 +17,18 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
   const [showImage, setShowImage] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [buttonReady, setButtonReady] = useState(false);
+  const [timerDisabled, setTimerDisabled] = useState(false);
   const question = scenario.questions[questionIndex];
 
-  // Raccourci clavier Maj+D pour basculer les zones de debug
+  // Raccourcis clavier: Shift + D pour debug, Shift + T pour désactiver le timer
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.shiftKey && event.key === 'D') {
         gameRef.current?.toggleDebugHotspots();
+      }
+      if (event.shiftKey && event.key === 'T') {
+        event.preventDefault();
+        setTimerDisabled((prev) => !prev);
       }
     };
 
@@ -35,6 +40,10 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
     setShowImage(false);
     setButtonReady(false);
     setCountdown(3);
+    if (timerDisabled) {
+      setButtonReady(true);
+      return;
+    }
 
     const countdownInterval = window.setInterval(() => {
       setCountdown((previousCountdown) => {
@@ -49,7 +58,7 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
     }, 1000);
 
     return () => window.clearInterval(countdownInterval);
-  }, [questionIndex]);
+  }, [questionIndex, timerDisabled]);
 
   function handleValidate() {
     const game = gameRef.current;
