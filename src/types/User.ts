@@ -1,5 +1,7 @@
 export type User = {
+  id: string;
   pseudo: string;
   completedScenarioIds: string[];
-  globalScore: number;
+  score: number;
+  date: string;
 };

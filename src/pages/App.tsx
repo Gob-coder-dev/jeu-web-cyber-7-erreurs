@@ -5,14 +5,12 @@ import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
 import type { User } from "../types/User";
 import type { Scenario } from "../types/Scenario";
-import { ScoreService } from "../services/scoreServices";
 import { UserService } from "../services/userServices";
 import LeaderBoardPage from "./LeaderBoardPage";
 import { scenarios } from "../data/scenarios";
 
 type Page = "home" | "game" | "result" | "leaderboard";
 
-const scoreService = new ScoreService();
 const userService = new UserService();
 
 function App() {
@@ -34,13 +32,15 @@ function App() {
       // Charger l'utilisateur existant avec sa progression
       setUser(existingUser);
       setCompletedScenarioIds(existingUser.completedScenarioIds);
-      setGlobalScore(existingUser.globalScore);
+      setGlobalScore(existingUser.score);
     } else {
       // Créer un nouveau compte
       const newUser: User = {
+        id: crypto.randomUUID(),
         pseudo,
         completedScenarioIds: [],
-        globalScore: 0,
+        score: 0,
+        date: new Date().toISOString(),
       };
       userService.addUser(newUser);
       setUser(newUser);
@@ -104,20 +104,21 @@ function App() {
     const updatedUser: User = {
         ...user,
         completedScenarioIds: nextCompletedScenarioIds,
-        globalScore: nextGlobalScore,
+        score: nextGlobalScore,
+        date: new Date().toISOString(),
       };
       setUser(updatedUser);
       userService.updateUser(updatedUser);
 
-    if (!hasSavedGlobalScore) {
-      scoreService.addScore({
+/*    if (!hasSavedGlobalScore) {
+      userService.addScore({
         score: nextGlobalScore,
         pseudo: user?.pseudo || "Anonyme",
         id: crypto.randomUUID(),
         date: new Date().toISOString(),
       });
       setHasSavedGlobalScore(true);
-    }
+    }*/
 
     setPage("result");
   }
@@ -156,7 +157,7 @@ function App() {
   if (page === "leaderboard") {
     return (
       <LeaderBoardPage
-        scores={scoreService.getScores()}
+        scores={userService.getScores()}
         currentPseudo={user.pseudo}
         onBackHome={handleBackHome}
       />

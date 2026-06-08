@@ -1,4 +1,6 @@
 import type { User } from "../types/User";
+import type { Score } from "../types/Score";
+import type { ScoreService } from "../services/scoreServices";
 
 const USER_STORAGE_KEY = "cyber-game-user";
 
@@ -35,5 +37,27 @@ export class UserService {
 
     public clearUsers(): void {
         localStorage.removeItem(USER_STORAGE_KEY);
+    }
+
+    public getScoreByPseudo(pseudo: string): Score | undefined {
+        return this.getScores().find((score) => score.pseudo === pseudo);
+    }
+
+    public getScores(): Score[] {
+        const scores = localStorage.getItem(USER_STORAGE_KEY);
+        if (scores?.includes("globalScore")) {
+            return JSON.parse(scores) as Score[];
+        }
+
+        if (scores === null){
+            return [];
+        }
+
+        return JSON.parse(scores) as Score[];
+    }
+
+    public addScore(score: Score): void {
+        const currentScores = this.getScores();
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify([...currentScores, score]));
     }
 }
