@@ -62,9 +62,9 @@ function App() {
   }
 
   function handleStartScenario(scenario: Scenario) {
-    if (completedScenarioIds.includes(scenario.id)) {
+    /*if (completedScenarioIds.includes(scenario.id)) {
       return;
-    }
+    }*/
 
     setSelectedScenario(scenario);
     setPage("game");
@@ -95,12 +95,20 @@ function App() {
     setGlobalScore(nextGlobalScore);
     setCompletedScenarioIds(nextCompletedScenarioIds);
     
+    const scenarioAlreadyCompletedt = scenarioScoresCompleted[selectedScenario.id] !== undefined;
+    const nextScenarioScoresCompleted = scenarioAlreadyCompletedt
+      ? scenarioScoresCompleted
+      : {
+          ...scenarioScoresCompleted,
+          [selectedScenario.id]: score
+        };
+    setScenarioScoresCompleted(nextScenarioScoresCompleted);
+
+
     if (user === null) {
       return;
     }
 
-
-     // Mettre à jour l'utilisateur dans le localStorage
     const updatedUser: User = {
         ...user,
         completedScenarioIds: nextCompletedScenarioIds,
@@ -109,16 +117,6 @@ function App() {
       };
       setUser(updatedUser);
       userService.updateUser(updatedUser);
-
-/*    if (!hasSavedGlobalScore) {
-      userService.addScore({
-        score: nextGlobalScore,
-        pseudo: user?.pseudo || "Anonyme",
-        id: crypto.randomUUID(),
-        date: new Date().toISOString(),
-      });
-      setHasSavedGlobalScore(true);
-    }*/
 
     setPage("result");
   }
