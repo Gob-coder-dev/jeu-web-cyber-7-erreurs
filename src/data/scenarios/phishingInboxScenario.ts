@@ -10,6 +10,8 @@ export const phishingInboxScenario: Scenario = {
   title: "La boîte mail de Sophie",
   description:
     "Sophie reçoit plusieurs emails suspects dans la même journée. Aidez-la à identifier les indices qui montrent que ces messages peuvent être des tentatives de phishing.",
+  globalAttackScenario:
+    "Sophie reçoit quatre emails différents en une même journée. D'abord, un email prétendant provenir d'UPS avec un faux domaine, créant une urgence pour un colis en attente. Quelques heures plus tard, elle reçoit un email Amazon annonçant un gain inexplicable avec des emojis sensationnels. Ensuite, c'est Decathlon qui lui offre un vélo gratuit. Finalement, Sephora lui propose une offre exclusive. Au bout du compte, Sophie finit par céder, elle reconnaît à peine que le domaine n'est pas officiel et clique sur le lien. Sophie saisit plusieurs de ses informations personnelles sur un faux formulaire. L'attaquant a collecté : adresses résidentielles, numéros de téléphone, identifiants bancaires, adresses email. Ces informations sont vendues sur le darknet à d'autres cybercriminels ou utilisées pour des vols d'identité massifs. Cela démontre comment une seule erreur peut mener à une cascade de violations si l'utilisateur ne reste pas vigilant.",
   questions: [
     {
       id: "email-phishing-ups",

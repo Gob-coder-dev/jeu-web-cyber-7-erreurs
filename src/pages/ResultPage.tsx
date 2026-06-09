@@ -1,6 +1,8 @@
 import "./ResultPage.css";
+import type { Scenario } from "../types/Scenario";
 
 type ResultPageProps = {
+  scenario?: Scenario;
   scenarioTitle: string;
   scenarioScore: number;
   globalScore: number;
@@ -10,6 +12,7 @@ type ResultPageProps = {
 };
 
 function ResultPage({
+  scenario,
   scenarioTitle,
   scenarioScore,
   globalScore,
@@ -30,6 +33,15 @@ function ResultPage({
           Score global : {globalScore} pts
         </div>
       </div>
+
+      {scenario?.globalAttackScenario && (
+        <div className="result-page__attack-section">
+          <h2>Scénario d'attaque complet</h2>
+          <p className="result-page__attack-text">
+            {scenario.globalAttackScenario}
+          </p>
+        </div>
+      )}
 
       <div className="page__actions">
         <button className="button" onClick={onBackHome}>

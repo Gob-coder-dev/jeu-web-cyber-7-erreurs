@@ -18,3 +18,28 @@
 .result-page__score--global {
   border-left-color: var(--color-success);
 }
+
+.result-page__attack-section {
+  margin-top: 32px;
+  padding: 28px;
+  background: var(--color-surface);
+  border-left: 6px solid var(--color-primary);
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+}
+
+.result-page__attack-section h2 {
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  color: var(--color-primary-dark);
+  font-weight: 800;
+}
+
+.result-page__attack-text {
+  color: var(--color-text);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+

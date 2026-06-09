@@ -142,6 +142,7 @@ function App() {
   if (page === "result") {
     return (
       <ResultPage
+        scenario={selectedScenario || undefined}
         scenarioTitle={selectedScenario?.title || "Scénario"}
         scenarioScore={scenarioScore}
         globalScore={globalScore}

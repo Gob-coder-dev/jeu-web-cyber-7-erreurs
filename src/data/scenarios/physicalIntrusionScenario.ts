@@ -9,6 +9,8 @@ export const physicalIntrusionScenario: Scenario = {
   title: "L'intrusion dans les locaux",
   description:
     "Clara, community manager de l'entreprise, fait un mauvais usage de LinkedIn. Julien, quant à lui, est un nouveau comptable dans l'entreprise et est négligent au niveau de la sécurité de son poste de travail.",
+  globalAttackScenario:
+    "Un attaquant découvre la publication LinkedIn de Clara présentant Julien. La photo contient des informations sensibles : un mot de passe visible, le système d'exploitation et même des détails personnels (manga, football, rendez-vous médical). L'attaquant utilise ces informations pour préparer une intrusion physique et quelques jours plus tard pendant le rendez-vous médical de Julien, l'attaquant se présente à la porte de l'entreprise en prétendant être un fournisseur. Il repère le bureau de Julien grâce à la photo LinkedIn et déverouille l'ordinateur avec le mot de passe écrit sur le post-it près du clavier. L'attaquant insère une clé USB malveillante et un malware s'installe sur l'ordinateur Windows de Julien permettant de récupérer toutes les informations confidentielles concernant l'entreprise. L'une des plus grandes failles : la négligence humaine combinée à la surexposition d'informations en ligne.",
   questions: [
     {
       id: "linkedin-post-sensitive-data",
