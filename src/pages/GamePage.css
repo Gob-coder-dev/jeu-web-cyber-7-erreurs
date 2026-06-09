@@ -9,7 +9,17 @@
   width: min(100%, 920px);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  align-items: start;
+}
+
+.game-page--image-pas-visible .game-page__content {
+  align-items: center;
+  gap: 120px;
+}
+
+.game-page--image-visible .game-page__content {
+  align-items: start;
+  gap: 30px;
 }
 
 .game-page__topbar,
@@ -18,28 +28,67 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  width: 100%;
 }
 
 .game-page__header {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 40px;
+  align-items: start;
+  text-align: left;
+}
+
+.game-page--image-pas-visible .game-page__header {
+  align-items: center;
+  text-align: center;
+  gap: 40px;
+}
+
+.game-page--image-visible .game-page__header {
+  align-items: start;
+  text-align: left;
+  gap: 24px;
 }
 
 .game-page__header h1 {
   max-width: 100%;
+  line-height: 1.04;
+}
+
+.game-page--image-pas-visible .game-page__header h1 {
+  font-size: 2.4rem;
+}
+
+.game-page--image-visible .game-page__header h1 {
+  font-size: 1.95rem;
+}
+
+.game-page__header .page__intro {
+  line-height: 1.7;
+}
+
+.game-page--image-pas-visible .game-page__header .page__intro {
+  font-size: 2rem;
+}
+
+.game-page--image-visible .game-page__header .page__intro {
+  font-size: 1.08rem;
 }
 
 .game-page__start-panel {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
+  justify-content:center;
+  align-items:center;
+  min-height: 100px;
+  padding-top: 18px;
+  width: 100%;
 }
 
 .game-page__instruction {
   color: #dc2626;
   font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .game-page__score-area {

@@ -78,7 +78,7 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
   }
 
   return (
-    <main className="page game-page">
+    <main className={`page game-page ${showImage ? "game-page--image-visible" : "game-page--image-pas-visible"}`}>
       <section className="game-page__content">
         <div className="game-page__topbar">
           <p className="page__eyebrow">
