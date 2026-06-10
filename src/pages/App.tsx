@@ -100,8 +100,6 @@ function App() {
           [selectedScenario.id]: score
         };
     setScenarioScoresCompleted(nextScenarioScoresCompleted);
-    console.log("nextScenarioScoresCompleted", nextScenarioScoresCompleted);
-    console.log("testScenarioAlreadyCompleted", testScenarioAlreadyCompleted);
 
 
     if (user === null) {
