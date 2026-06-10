@@ -5,7 +5,6 @@ import "./HomePage.css";
 type HomePageProps = {
   user: User;
   scenarios: Scenario[];
-  scenarioScoresCompleted: Record<string, number>;
   globalScore: number;
   onLogout: () => void;
   onGoLeaderBoard: () => void;
@@ -15,7 +14,6 @@ type HomePageProps = {
 function HomePage({
   user,
   scenarios,
-  scenarioScoresCompleted,
   globalScore,
   onLogout,
   onGoLeaderBoard,
@@ -33,7 +31,7 @@ function HomePage({
 
       <section className="home-page__scenarios" aria-label="Scénarios">
         {scenarios.map((scenario) => {
-          const scenarioScore = scenarioScoresCompleted[scenario.id];
+          const scenarioScore = user.scenarioScores[scenario.id];
           const hasScore = scenarioScore !== undefined;
 
           return (
