@@ -66,22 +66,31 @@
 
 .game-page__header .page__intro {
   line-height: 1.7;
+  color: #000000;
 }
 
 .game-page--image-pas-visible .game-page__header .page__intro {
   font-size: 2rem;
+  max-width: 1000px;
+  width: min(100%, 1000px);
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: justify;
+  border: 4px solid var(--color-primary-dark);
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
 }
 
 .game-page--image-visible .game-page__header .page__intro {
   font-size: 1.08rem;
 }
-
 .game-page__start-panel {
   display: flex;
+  flex-direction: column;
   justify-content:center;
   align-items:center;
+  gap: 16px;
   min-height: 100px;
-  padding-top: 18px;
   width: 100%;
 }
 

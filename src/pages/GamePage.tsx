@@ -93,13 +93,13 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
         <header className="game-page__header">
           <h1>{question.title}</h1>
           <p className="page__intro">{question.instruction}</p>
-          <p className="game-page__instruction">
-            {question.hotspots.length} anomalies à trouver.
-          </p>
         </header>
 
         {!showImage ? (
           <div className="game-page__start-panel">
+            <p className="game-page__instruction">
+            {question.hotspots.length} anomalies à trouver.
+            </p>
             <button
               className="button"
               disabled={!buttonReady}
@@ -112,6 +112,9 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
           </div>
         ) : (
           <>
+            <p className="game-page__instruction">
+            {question.hotspots.length} anomalies à trouver.
+            </p>
             <PhaserGame ref={gameRef} question={question} />
 
             <div className="game-page__bottom-bar">
