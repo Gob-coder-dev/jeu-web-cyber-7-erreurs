@@ -23,7 +23,6 @@ function App() {
   const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
   const [hasSavedGlobalScore, setHasSavedGlobalScore] = useState(false);
 
-  const hasCompletedAllScenarios = Object.keys(scenarioScoresCompleted).length === scenarios.length;
 
   function handleLogin(pseudo: string) {
     const existingUser = userService.getUserByPseudo(pseudo);
@@ -39,7 +38,7 @@ function App() {
         id: crypto.randomUUID(),
         pseudo,
         completedScenarioIds: [],
-        score: 0,
+        score: -1,
         scenarioScores: {},
         date: new Date().toISOString(),
       };
@@ -84,6 +83,7 @@ function App() {
           ...completedScenarioIds,
           selectedScenario.id
         ];
+    score < 0 ? score = 0 : score;
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
       : globalScore + score;
@@ -144,7 +144,6 @@ function App() {
         scenarioTitle={selectedScenario?.title || "Scénario"}
         scenarioScore={scenarioScore}
         globalScore={globalScore}
-        hasCompletedAllScenarios={hasCompletedAllScenarios}
         onBackHome={handleBackHome}
         onGoLeaderBoard={handleGoLeaderBoard}
       />
@@ -154,7 +153,7 @@ function App() {
   if (page === "leaderboard") {
     return (
       <LeaderBoardPage
-        scores={userService.getScores()}
+        scores={userService.getScores().filter(score => score.score >= 0)}
         currentPseudo={user.pseudo}
         onBackHome={handleBackHome}
       />
