@@ -40,6 +40,7 @@ function App() {
         pseudo,
         completedScenarioIds: [],
         score: 0,
+        scenarioScores: {},
         date: new Date().toISOString(),
       };
       userService.addUser(newUser);
@@ -62,10 +63,6 @@ function App() {
   }
 
   function handleStartScenario(scenario: Scenario) {
-    /*if (completedScenarioIds.includes(scenario.id)) {
-      return;
-    }*/
-
     setSelectedScenario(scenario);
     setPage("game");
   }
@@ -95,14 +92,16 @@ function App() {
     setGlobalScore(nextGlobalScore);
     setCompletedScenarioIds(nextCompletedScenarioIds);
     
-    const scenarioAlreadyCompletedt = scenarioScoresCompleted[selectedScenario.id] !== undefined;
-    const nextScenarioScoresCompleted = scenarioAlreadyCompletedt
+    const testScenarioAlreadyCompleted = scenarioScoresCompleted[selectedScenario.id] !== undefined;
+    const nextScenarioScoresCompleted = testScenarioAlreadyCompleted
       ? scenarioScoresCompleted
       : {
           ...scenarioScoresCompleted,
           [selectedScenario.id]: score
         };
     setScenarioScoresCompleted(nextScenarioScoresCompleted);
+    console.log("nextScenarioScoresCompleted", nextScenarioScoresCompleted);
+    console.log("testScenarioAlreadyCompleted", testScenarioAlreadyCompleted);
 
 
     if (user === null) {
@@ -113,6 +112,7 @@ function App() {
         ...user,
         completedScenarioIds: nextCompletedScenarioIds,
         score: nextGlobalScore,
+        scenarioScores: nextScenarioScoresCompleted,
         date: new Date().toISOString(),
       };
       setUser(updatedUser);
@@ -167,7 +167,6 @@ function App() {
     <HomePage
       user={user}
       scenarios={scenarios}
-      scenarioScoresCompleted={scenarioScoresCompleted}
       globalScore={globalScore}
       onLogout={handleLogout}
       onGoLeaderBoard={handleGoLeaderBoard}
