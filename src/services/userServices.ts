@@ -1,6 +1,5 @@
 import type { User } from "../types/User";
 import type { Score } from "../types/Score";
-import type { ScoreService } from "../services/scoreServices";
 
 const USER_STORAGE_KEY = "cyber-game-user";
 
