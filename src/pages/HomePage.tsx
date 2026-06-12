@@ -27,7 +27,9 @@ function HomePage({
         Choisis un scénario, repère les anomalies et construis ton score global.
       </p>
 
-      <div className="home-page__score--global">Score global : {globalScore} pts</div>
+      <div className="home-page__score--global">
+        Score global : {globalScore} pts
+      </div>
 
       <section className="home-page__scenarios" aria-label="Scénarios">
         {scenarios.map((scenario) => {
@@ -38,28 +40,26 @@ function HomePage({
             <article className="home-page__scenario" key={scenario.id}>
               <div className="home-page__scenario-meta">
                 <span>{scenario.questions.length} questions</span>
-                {hasScore && <span>Terminé</span>}
+                <span className="home-page__status-slot">
+                  {hasScore && "Terminé"}
+                </span>
+                <span className="home-page__score-slot">
+                  {hasScore && (
+                    <span className="home-page__score--scenario">
+                      {scenarioScore} pts
+                    </span>
+                  )}
+                </span>
               </div>
 
-              <h2>{scenario.title}</h2>
-              <p>{scenario.description}</p>
-
-              <div className="home-page__scenario-footer">
-                {hasScore && (
-                  <p className="home-page__scenario-replay-note">
-                    Score conservé. Rejouer ne modifie pas le score global.
-                  </p>
-                )}
-
-                <div className="home-page__scenario-actions">
-                  <button
-                    className={`button${hasScore ? " home-page__button--replay" : ""}`}
-                    onClick={() => onStartScenario(scenario)}
-                  >
-                    {hasScore ? "Rejouer" : "Lancer"}
-                  </button>
-                  {hasScore && <span className="home-page__score--scenario">{scenarioScore} pts</span>}
-                </div>
+              <div className="home-page__scenario-main">
+                <h2>{scenario.title}</h2>
+                <button
+                  className="button home-page__button--play"
+                  onClick={() => onStartScenario(scenario)}
+                >
+                  Jouer
+                </button>
               </div>
             </article>
           );
