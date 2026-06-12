@@ -23,7 +23,6 @@ function App() {
   const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
   const [hasSavedGlobalScore, setHasSavedGlobalScore] = useState(false);
 
-  const hasCompletedAllScenarios = Object.keys(scenarioScoresCompleted).length === scenarios.length;
 
   function handleLogin(pseudo: string) {
     const existingUser = userService.getUserByPseudo(pseudo);
@@ -39,7 +38,8 @@ function App() {
         id: crypto.randomUUID(),
         pseudo,
         completedScenarioIds: [],
-        score: 0,
+        score: -1,
+        scenarioScores: {},
         date: new Date().toISOString(),
       };
       userService.addUser(newUser);
@@ -62,10 +62,6 @@ function App() {
   }
 
   function handleStartScenario(scenario: Scenario) {
-    /*if (completedScenarioIds.includes(scenario.id)) {
-      return;
-    }*/
-
     setSelectedScenario(scenario);
     setPage("game");
   }
@@ -87,6 +83,7 @@ function App() {
           ...completedScenarioIds,
           selectedScenario.id
         ];
+    score < 0 ? score = 0 : score;
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
       : globalScore + score;
@@ -95,8 +92,8 @@ function App() {
     setGlobalScore(nextGlobalScore);
     setCompletedScenarioIds(nextCompletedScenarioIds);
     
-    const scenarioAlreadyCompletedt = scenarioScoresCompleted[selectedScenario.id] !== undefined;
-    const nextScenarioScoresCompleted = scenarioAlreadyCompletedt
+    const testScenarioAlreadyCompleted = scenarioScoresCompleted[selectedScenario.id] !== undefined;
+    const nextScenarioScoresCompleted = testScenarioAlreadyCompleted
       ? scenarioScoresCompleted
       : {
           ...scenarioScoresCompleted,
@@ -113,6 +110,7 @@ function App() {
         ...user,
         completedScenarioIds: nextCompletedScenarioIds,
         score: nextGlobalScore,
+        scenarioScores: nextScenarioScoresCompleted,
         date: new Date().toISOString(),
       };
       setUser(updatedUser);
@@ -146,7 +144,6 @@ function App() {
         scenarioTitle={selectedScenario?.title || "Scénario"}
         scenarioScore={scenarioScore}
         globalScore={globalScore}
-        hasCompletedAllScenarios={hasCompletedAllScenarios}
         onBackHome={handleBackHome}
         onGoLeaderBoard={handleGoLeaderBoard}
       />
@@ -156,7 +153,7 @@ function App() {
   if (page === "leaderboard") {
     return (
       <LeaderBoardPage
-        scores={userService.getScores()}
+        scores={userService.getScores().filter(score => score.score >= 0)}
         currentPseudo={user.pseudo}
         onBackHome={handleBackHome}
       />
@@ -167,7 +164,6 @@ function App() {
     <HomePage
       user={user}
       scenarios={scenarios}
-      scenarioScoresCompleted={scenarioScoresCompleted}
       globalScore={globalScore}
       onLogout={handleLogout}
       onGoLeaderBoard={handleGoLeaderBoard}

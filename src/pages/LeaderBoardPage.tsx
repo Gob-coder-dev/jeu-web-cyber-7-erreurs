@@ -1,6 +1,6 @@
 import type { Score } from "../types/Score";
-import { ScoreService } from "../services/scoreServices";
 import "./LeaderBoardPage.css";
+import { UserService } from "../services/userServices";
 
 type LeaderBoardPageProps = {
     scores: Score[];
@@ -75,7 +75,7 @@ function LeaderBoardPage({scores,currentPseudo,onBackHome}: LeaderBoardPageProps
             </section>
         )}
 
-        <button className="button button--primary" onClick={() => new ScoreService().clearScores()}>
+        <button className="button button--primary" onClick={() => new UserService().clearUsers()}>
             Effacer le classement
         </button>
         

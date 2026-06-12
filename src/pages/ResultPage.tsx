@@ -6,7 +6,6 @@ type ResultPageProps = {
   scenarioTitle: string;
   scenarioScore: number;
   globalScore: number;
-  hasCompletedAllScenarios: boolean;
   onBackHome: () => void;
   onGoLeaderBoard: () => void;
 };
@@ -16,7 +15,6 @@ function ResultPage({
   scenarioTitle,
   scenarioScore,
   globalScore,
-  hasCompletedAllScenarios,
   onBackHome,
   onGoLeaderBoard,
 }: ResultPageProps) {
