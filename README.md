@@ -6,9 +6,11 @@ Le projet est construit avec React, TypeScript, Vite et Phaser.
 
 ## Principe du jeu
 
-Le joueur se connecte avec un pseudo, choisit un scenario, puis repond a plusieurs questions liees par une courte histoire.
+Le joueur se connecte avec un pseudo. Si ce pseudo existe deja dans le stockage local, sa progression est rechargee. Sinon, un nouveau profil est cree.
 
-Chaque question affiche une image dans un canvas Phaser. Le joueur place des marqueurs sur les zones suspectes, puis valide sa selection.
+Depuis l'accueil, le joueur choisit un scenario. Chaque scenario contient plusieurs questions liees par une histoire.
+
+Avant chaque image, le jeu affiche un court ecran de presentation avec un compte a rebours. Quand l'image est visible, le joueur place des marqueurs sur les zones suspectes puis valide sa selection.
 
 Le score d'une question depend de trois elements :
 
@@ -16,13 +18,15 @@ Le score d'une question depend de trois elements :
 - temps mis pour repondre ;
 - anomalies non trouvees.
 
-Le score d'un scenario correspond a la somme des scores de ses questions. Le score global correspond a la somme des scenarios termines.
+Le score d'un scenario correspond a la somme des scores de ses questions. Le score global correspond a la somme des scenarios termines par le joueur.
+
+Un scenario deja termine peut etre rejoue, mais son score conserve n'est pas remplace et le score global n'est pas modifie.
 
 ## Scenarios actuels
 
-### L'intrusion chez Novatek
+### L'intrusion dans les locaux
 
-Clara publie trop d'informations sur LinkedIn. Un attaquant les utilise pour entrer dans les locaux et chercher le poste laisse ouvert par Julien.
+Clara publie trop d'informations sur LinkedIn. Julien, nouveau comptable, est negligent avec son poste de travail. Un attaquant utilise ces erreurs pour preparer une intrusion physique.
 
 Questions :
 
@@ -66,6 +70,7 @@ src/
 
   services/
     scoreServices.ts
+    userServices.ts
 
   types/
     Question.ts
@@ -78,16 +83,17 @@ src/
 
 ### React
 
-React gere les pages, la navigation, le choix du scenario, la progression du joueur et le score global.
+React gere les pages, la navigation, le choix du scenario, la progression du joueur et le leaderboard.
 
 `App.tsx` contient l'etat principal :
 
 - utilisateur connecte ;
 - page active ;
 - scenario selectionne ;
-- score du scenario ;
+- score du scenario en cours ;
 - score global ;
-- scenarios termines.
+- scenarios termines ;
+- scores par scenario.
 
 ### Phaser
 
@@ -97,7 +103,9 @@ Phaser gere uniquement la zone interactive de l'image :
 - clics du joueur ;
 - creation et suppression des marqueurs ;
 - validation des hotspots ;
-- calcul du score de la question.
+- calcul du score de la question ;
+- affichage des explications apres validation ;
+- affichage optionnel des zones de debug.
 
 La scene Phaser principale est `CyberDifferenceScene`.
 
@@ -119,6 +127,14 @@ validateSelections()
 
 Cette methode appelle ensuite la scene Phaser pour calculer le score de la question.
 
+Le pont expose aussi :
+
+```ts
+toggleDebugHotspots()
+```
+
+pour afficher ou cacher les zones de bonnes reponses pendant le debug.
+
 ## Gestion des scenarios
 
 Un scenario est defini par le type suivant :
@@ -129,16 +145,18 @@ export type Scenario = {
   title: string;
   description: string;
   questions: Question[];
+  globalAttackScenario?: string;
 };
 ```
 
-Chaque fichier de scenario contient directement ses questions. Cela evite un gros fichier central et permet de garder ensemble :
+Chaque fichier de scenario contient directement ses questions. Cela permet de garder ensemble :
 
 - l'histoire ;
 - les images ;
 - les instructions ;
 - les hotspots ;
-- les explications.
+- les explications ;
+- le scenario d'attaque complet affiche en fin de scenario.
 
 La liste des scenarios disponibles est exportee depuis :
 
@@ -146,22 +164,33 @@ La liste des scenarios disponibles est exportee depuis :
 src/data/scenarios/index.ts
 ```
 
-## Score et leaderboard
+## Progression et leaderboard
 
-Le leaderboard utilise actuellement `localStorage` via `ScoreService`.
+La progression utilise `localStorage` via `UserService`.
 
-Etat actuel :
+Le type utilisateur courant est :
 
-- le score global est sauvegarde quand tous les scenarios sont termines ;
-- le classement affiche les scores sauvegardes ;
-- les donnees restent locales au navigateur.
+```ts
+export type User = {
+  id: string;
+  pseudo: string;
+  completedScenarioIds: string[];
+  score: number;
+  scenarioScores: { [scenarioId: string]: number };
+  date: string;
+};
+```
 
-Evolution prevue :
+Le pseudo sert de cle de reprise : si un joueur se reconnecte avec le meme pseudo sur le meme navigateur, sa progression est rechargee.
 
-- rendre les pseudos uniques ;
-- sauvegarder la progression par pseudo ;
-- afficher dans le leaderboard les joueurs meme s'ils n'ont pas termine tous les scenarios ;
-- afficher sur chaque carte de scenario le score obtenu par le joueur.
+Le leaderboard affiche les utilisateurs sauvegardes, tries par score. Il met aussi en avant la position du joueur courant si elle n'est pas dans le top affiche.
+
+Les donnees sont locales au navigateur. Il n'y a pas encore de backend.
+
+## Raccourcis de debug
+
+- `Shift + D` : affiche ou cache les zones de bonnes reponses.
+- `Shift + T` : active ou desactive le timer avant affichage de l'image.
 
 ## Installation
 
@@ -196,5 +225,4 @@ npm run lint
 - Phaser ne connait pas les scenarios : il ne recoit qu'une question a la fois.
 - Le resize du canvas Phaser ne doit pas recreer toute la scene pour ne pas perdre les marqueurs ou le timer.
 - Les scores sont actuellement geres cote client avec `localStorage`.
-- Les zones de bonnes réponses peuvent être affiché avec le raccourci Shift + D.
-- Le timer pour afficher les images dans les scénarios peut être mis à 0 avec le raccourci Shift + T.
+- Le README et `agent.md` doivent etre mis a jour quand le flux de jeu change.
