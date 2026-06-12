@@ -15,6 +15,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private hasValidated = false;
   private questionImage?: Phaser.GameObjects.Image;
   private hotspotTooltip?: Phaser.GameObjects.Text;
+  private currentTooltipHotspotId: string | null = null;
   private debugHotspots: Phaser.GameObjects.Rectangle[] = [];
   private showDebugHotspots: boolean = false;
 
@@ -34,8 +35,8 @@ export class CyberDifferenceScene extends Phaser.Scene {
     this.hotspotTooltip = this.add
       .text(0, 0, "", {
         fontSize: "14px",
-        color: "#ffffff",
-        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        color: "#000000",
+        backgroundColor: "rgba(255, 255, 255, 1)",
         padding: { x: 10, y: 8 },
         wordWrap: { width: 260 },
       })
@@ -49,6 +50,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
     const updateHotspotTooltip = (pointer: Phaser.Input.Pointer) => {
       if (!this.hasValidated) {
+        this.currentTooltipHotspotId = null;
         this.hotspotTooltip?.setVisible(false);
         return;
       }
@@ -64,6 +66,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
       );
 
       if (!hoveredHotspot) {
+        this.currentTooltipHotspotId = null;
         this.hotspotTooltip?.setVisible(false);
         return;
       }
@@ -72,25 +75,40 @@ export class CyberDifferenceScene extends Phaser.Scene {
         return;
       }
 
+      // Si on affiche déjà la bulle d'explication, la laisser comme ça.
+      if (this.currentTooltipHotspotId === hoveredHotspot.id && this.hotspotTooltip.visible) {
+        return;
+      }
+
+      // Donner l'id de l'hotspot actuel pour que les mouvements de la souris ne repositionne pas l'explication.
+      this.currentTooltipHotspotId = hoveredHotspot.id;
       this.hotspotTooltip.setText(hoveredHotspot.explanation);
 
+      // Positionne l'explication près de la zone du hotspot (à droite si possible).
       const tooltipWidth = this.hotspotTooltip.width;
       const tooltipHeight = this.hotspotTooltip.height;
-      let tooltipX = pointer.x + 12;
-      let tooltipY = pointer.y + 12;
 
+      const hotspotX = hoveredHotspot.x * this.imageScale;
+      const hotspotY = hoveredHotspot.y * this.imageScale;
+      const hotspotW = hoveredHotspot.width * this.imageScale;
+      const hotspotH = hoveredHotspot.height * this.imageScale;
+
+      let tooltipX = hotspotX + hotspotW + 12;
+      let tooltipY = hotspotY;
+
+      // S'il n'y a pas la place à droite, place à gauche de l'hotspot.
       if (tooltipX + tooltipWidth > this.scale.width) {
-        tooltipX = pointer.x - tooltipWidth - 12;
+        tooltipX = hotspotX - tooltipWidth - 12;
       }
       if (tooltipX < 0) {
-        tooltipX = 0;
+        tooltipX = 12;
       }
 
       if (tooltipY + tooltipHeight > this.scale.height) {
-        tooltipY = pointer.y - tooltipHeight - 12;
+        tooltipY = this.scale.height - tooltipHeight - 12;
       }
       if (tooltipY < 0) {
-        tooltipY = 0;
+        tooltipY = 12;
       }
 
       this.hotspotTooltip.setPosition(tooltipX, tooltipY);
