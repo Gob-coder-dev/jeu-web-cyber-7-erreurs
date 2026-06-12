@@ -32,6 +32,7 @@ function App() {
       setUser(existingUser);
       setCompletedScenarioIds(existingUser.completedScenarioIds);
       setGlobalScore(existingUser.score);
+      setScenarioScoresCompleted(existingUser.scenarioScores);
     } else {
       // Créer un nouveau compte
       const newUser: User = {
