@@ -22,72 +22,78 @@ function ResultPage({
 }: ResultPageProps) {
   return (
     <main className="page result-page">
-      <p className="page__eyebrow">Fin de scénario</p>
-      <h1>{scenarioTitle}</h1>
-
-      <div className="result-page__scores">
-        <div className="result-page__score result-page__score--scenario">
-          Score du scénario : {scenarioScore} pts
+      <header className="result-page__hero">
+        <div className="result-page__hero-main">
+          <p className="page__eyebrow">Fin de scénario</p>
+          <h1>{scenarioTitle}</h1>
         </div>
-        <div className="result-page__score result-page__score--global">
-          Score global : {globalScore} pts
+
+        <div className="result-page__scores">
+          <div className="result-page__score result-page__score--scenario">
+            Score du scénario : {scenarioScore} pts
+          </div>
+          <div className="result-page__score result-page__score--global">
+            Score global : {globalScore} pts
+          </div>
         </div>
-      </div>
-      {scenarioRoundScores.length > 0 && (
-        <section
-          className="result-page__round-scores"
-          aria-label="Scores par question"
-        >
-          <h2>Détail par question</h2>
+      </header>
 
-          <ol className="result-page__round-score-list">
-            {scenarioRoundScores.map((score, index) => {
-              const question = scenario?.questions[index];
+      <div className="result-page__content-grid">
+        {scenario?.globalAttackScenario && (
+          <section className="result-page__attack-section">
+            <h2>Scénario d'attaque complet</h2>
+            <p className="result-page__attack-text">
+              {scenario.globalAttackScenario}
+            </p>
+          </section>
+        )}
 
-              return (
-                <li
-                  className="result-page__round-score-item"
-                  key={question?.id ?? index}
-                >
-                  <span className="result-page__round-score-rank">
-                    Q{index + 1}
-                  </span>
+        {scenarioRoundScores.length > 0 && (
+          <section
+            className="result-page__round-scores"
+            aria-label="Scores par question"
+          >
+            <h2>Détail par question</h2>
 
-                  <span className="result-page__round-score-label">
-                    {question?.title ?? `Question ${index + 1}`}
-                  </span>
+            <ol className="result-page__round-score-list">
+              {scenarioRoundScores.map((score, index) => {
+                const question = scenario?.questions[index];
 
-                  <span
-                    className={`result-page__round-score-value${
-                      score < 0
-                        ? " result-page__round-score-value--negative"
-                        : ""
-                    }`}
+                return (
+                  <li
+                    className="result-page__round-score-item"
+                    key={question?.id ?? index}
                   >
-                    {score >= 0 ? "+" : ""}
-                    {score} pts
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-        </section>
-      )}
+                    <span className="result-page__round-score-rank">
+                      Q{index + 1}
+                    </span>
 
-      {scenario?.globalAttackScenario && (
-        <div className="result-page__attack-section">
-          <h2>Scénario d'attaque complet</h2>
-          <p className="result-page__attack-text">
-            {scenario.globalAttackScenario}
-          </p>
-        </div>
-      )}
+                    <span className="result-page__round-score-label">
+                      {question?.title ?? `Question ${index + 1}`}
+                    </span>
+
+                    <span
+                      className={`result-page__round-score-value${
+                        score < 0
+                          ? " result-page__round-score-value--negative"
+                          : ""
+                      }`}
+                    >
+                      {score >= 0 ? "+" : ""}
+                      {score} pts
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )}
+      </div>
 
       <div className="page__actions">
         <button className="button" onClick={onBackHome}>
           Retour aux scénarios
         </button>
-
 
         <button className="button button--secondary" onClick={onGoLeaderBoard}>
           Voir le classement

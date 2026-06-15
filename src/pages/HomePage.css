@@ -2,6 +2,34 @@
   position: relative;
 }
 
+.home-page__hero {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.home-page__hero-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.home-page__hero-main h1 {
+  font-size: clamp(2.2rem, 4vw, 3.35rem);
+}
+
+.home-page__hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
 .home-page__score--global {
   border-left: 6px solid var(--color-success);
   border-radius: 6px;
@@ -117,6 +145,16 @@
 @media (max-width: 720px) {
   .home-page::after {
     display: none;
+  }
+
+  .home-page__hero {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .home-page__hero-actions {
+    align-items: stretch;
+    justify-content: flex-start;
   }
 
   .home-page__scenarios {

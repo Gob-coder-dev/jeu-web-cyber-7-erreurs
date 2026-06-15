@@ -21,15 +21,28 @@ function HomePage({
 }: HomePageProps) {
   return (
     <main className="page home-page">
-      <p className="page__eyebrow">Simulation cybersécurité</p>
-      <h1>Bienvenue {user.pseudo}</h1>
-      <p className="page__intro">
-        Choisis un scénario, repère les anomalies et construis ton score global.
-      </p>
+      <header className="home-page__hero">
+        <div className="home-page__hero-main">
+          <p className="page__eyebrow">Simulation cybersécurité</p>
+          <h1>Bienvenue {user.pseudo}</h1>
+          <p className="page__intro">
+            Choisis un scénario, repère les anomalies et construis ton score global.
+          </p>
 
-      <div className="home-page__score--global">
-        Score global : {globalScore} pts
-      </div>
+          <div className="home-page__score--global">
+            Score global : {globalScore} pts
+          </div>
+        </div>
+
+        <div className="home-page__hero-actions">
+          <button className="button button--secondary" onClick={onLogout}>
+            Se déconnecter
+          </button>
+          <button className="button" onClick={onGoLeaderBoard}>
+            Voir le classement
+          </button>
+        </div>
+      </header>
 
       <section className="home-page__scenarios" aria-label="Scénarios">
         {scenarios.map((scenario) => {
@@ -66,14 +79,6 @@ function HomePage({
         })}
       </section>
 
-      <div className="page__actions">
-        <button className="button" onClick={onGoLeaderBoard}>
-          Voir le classement
-        </button>
-        <button className="button button--secondary" onClick={onLogout}>
-          Se déconnecter
-        </button>
-      </div>
     </main>
   );
 }
