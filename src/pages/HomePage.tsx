@@ -1,5 +1,7 @@
+import { useState } from "react";
 import type { Scenario } from "../types/Scenario";
 import type { User } from "../types/User";
+import { ConfirmReplayModal } from "../components/ConfirmReplayModal";
 import "./HomePage.css";
 
 type HomePageProps = {
@@ -19,6 +21,19 @@ function HomePage({
   onGoLeaderBoard,
   onStartScenario,
 }: HomePageProps) {
+  const [scenarioToReplay, setScenarioToReplay] = useState<Scenario | null>(null);
+
+  function handleStartScenario(scenario: Scenario) {
+    const hasPlayed = user.scenarioScores[scenario.id] !== undefined;
+
+    if (!hasPlayed) {
+      onStartScenario(scenario);
+      return;
+    }
+
+    setScenarioToReplay(scenario);
+  }
+
   return (
     <main className="page home-page">
       <header className="home-page__hero">
@@ -69,7 +84,7 @@ function HomePage({
                 <h2>{scenario.title}</h2>
                 <button
                   className="button home-page__button--play"
-                  onClick={() => onStartScenario(scenario)}
+                  onClick={() => handleStartScenario(scenario)}
                 >
                   Jouer
                 </button>
@@ -79,6 +94,15 @@ function HomePage({
         })}
       </section>
 
+      {scenarioToReplay !== null && (
+        <ConfirmReplayModal
+          onCancel={() => setScenarioToReplay(null)}
+          onConfirm={() => {
+            onStartScenario(scenarioToReplay);
+            setScenarioToReplay(null);
+          }}
+        />
+      )}
     </main>
   );
 }

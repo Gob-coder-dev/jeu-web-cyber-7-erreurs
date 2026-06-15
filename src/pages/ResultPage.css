@@ -44,7 +44,7 @@
 .result-page__content-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+  grid-template-columns: minmax(0, 63fr) minmax(320px, 37fr);
   gap: 24px;
   align-items: start;
 }
