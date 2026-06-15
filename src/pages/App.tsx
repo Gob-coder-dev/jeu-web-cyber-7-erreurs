@@ -18,10 +18,10 @@ function App() {
   const [page, setPage] = useState<Page>("home");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
+  const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
   const [globalScore, setGlobalScore] = useState(0);
   const [scenarioScoresCompleted, setScenarioScoresCompleted] = useState<Record<string, number>>({});
   const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
-  const [hasSavedGlobalScore, setHasSavedGlobalScore] = useState(false);
 
 
   function handleLogin(pseudo: string) {
@@ -31,6 +31,7 @@ function App() {
       // Charger l'utilisateur existant avec sa progression
       setUser(existingUser);
       setCompletedScenarioIds(existingUser.completedScenarioIds);
+      setScenarioScoresCompleted(existingUser.scenarioScores);
       setGlobalScore(existingUser.score);
     } else {
       // Créer un nouveau compte
@@ -45,6 +46,7 @@ function App() {
       userService.addUser(newUser);
       setUser(newUser);
       setCompletedScenarioIds([]);
+      setScenarioScoresCompleted({});
       setGlobalScore(0);
     }
     
@@ -56,9 +58,9 @@ function App() {
     setPage("home");
     setSelectedScenario(null);
     setScenarioScore(0);
+    setScenarioRoundScores([]);
     setGlobalScore(0);
     setScenarioScoresCompleted({});
-    setHasSavedGlobalScore(false);
   }
 
   function handleStartScenario(scenario: Scenario) {
@@ -71,10 +73,12 @@ function App() {
     setPage("home");
   }
 
-  function handleGoResults(score: number) {
+  function handleGoResults(score: number, roundScores: number[]) {
     if (selectedScenario === null) {
       return;
     }
+
+    const normalizedScore = Math.max(0, score);
 
     const scenarioAlreadyCompleted = completedScenarioIds.includes(selectedScenario.id);
     const nextCompletedScenarioIds = scenarioAlreadyCompleted
@@ -83,12 +87,12 @@ function App() {
           ...completedScenarioIds,
           selectedScenario.id
         ];
-    score < 0 ? score = 0 : score;
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
-      : globalScore + score;
+      : globalScore + normalizedScore;
 
-    setScenarioScore(score);
+    setScenarioScore(normalizedScore);
+    setScenarioRoundScores(roundScores);
     setGlobalScore(nextGlobalScore);
     setCompletedScenarioIds(nextCompletedScenarioIds);
     
@@ -97,7 +101,7 @@ function App() {
       ? scenarioScoresCompleted
       : {
           ...scenarioScoresCompleted,
-          [selectedScenario.id]: score
+          [selectedScenario.id]: normalizedScore
         };
     setScenarioScoresCompleted(nextScenarioScoresCompleted);
 
@@ -143,6 +147,7 @@ function App() {
         scenario={selectedScenario || undefined}
         scenarioTitle={selectedScenario?.title || "Scénario"}
         scenarioScore={scenarioScore}
+        scenarioRoundScores={scenarioRoundScores}
         globalScore={globalScore}
         onBackHome={handleBackHome}
         onGoLeaderBoard={handleGoLeaderBoard}

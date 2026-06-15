@@ -6,6 +6,7 @@ type ResultPageProps = {
   scenarioTitle: string;
   scenarioScore: number;
   globalScore: number;
+  scenarioRoundScores: number[];
   onBackHome: () => void;
   onGoLeaderBoard: () => void;
 };
@@ -15,6 +16,7 @@ function ResultPage({
   scenarioTitle,
   scenarioScore,
   globalScore,
+  scenarioRoundScores,
   onBackHome,
   onGoLeaderBoard,
 }: ResultPageProps) {
@@ -24,13 +26,53 @@ function ResultPage({
       <h1>{scenarioTitle}</h1>
 
       <div className="result-page__scores">
-        <div className="result-page__score">
+        <div className="result-page__score result-page__score--scenario">
           Score du scénario : {scenarioScore} pts
         </div>
         <div className="result-page__score result-page__score--global">
           Score global : {globalScore} pts
         </div>
       </div>
+      {scenarioRoundScores.length > 0 && (
+        <section
+          className="result-page__round-scores"
+          aria-label="Scores par question"
+        >
+          <h2>Détail par question</h2>
+
+          <ol className="result-page__round-score-list">
+            {scenarioRoundScores.map((score, index) => {
+              const question = scenario?.questions[index];
+
+              return (
+                <li
+                  className="result-page__round-score-item"
+                  key={question?.id ?? index}
+                >
+                  <span className="result-page__round-score-rank">
+                    Q{index + 1}
+                  </span>
+
+                  <span className="result-page__round-score-label">
+                    {question?.title ?? `Question ${index + 1}`}
+                  </span>
+
+                  <span
+                    className={`result-page__round-score-value${
+                      score < 0
+                        ? " result-page__round-score-value--negative"
+                        : ""
+                    }`}
+                  >
+                    {score >= 0 ? "+" : ""}
+                    {score} pts
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      )}
 
       {scenario?.globalAttackScenario && (
         <div className="result-page__attack-section">
