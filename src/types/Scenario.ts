@@ -5,5 +5,4 @@ export type Scenario = {
   title: string;
   description: string;
   questions: Question[];
-  globalAttackScenario?: string;
 };

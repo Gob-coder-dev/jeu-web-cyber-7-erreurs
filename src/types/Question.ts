@@ -12,6 +12,7 @@ export type Question = {
   id: string;
   title: string;
   instruction: string;
+  attackScenario: string;
   image: string;
   imageWidth: number;
   imageHeight: number;

@@ -9,14 +9,14 @@ export const physicalIntrusionScenario: Scenario = {
   title: "L'intrusion dans les locaux",
   description:
     "Clara, community manager de l'entreprise, fait un mauvais usage de LinkedIn. Julien, quant à lui, est un nouveau comptable dans l'entreprise et est négligent au niveau de la sécurité de son poste de travail.",
-  globalAttackScenario:
-    "Un attaquant découvre la publication LinkedIn de Clara présentant Julien. La photo contient des informations sensibles : un mot de passe visible, le système d'exploitation et même des détails personnels (manga, football, rendez-vous médical). L'attaquant utilise ces informations pour préparer une intrusion physique et quelques jours plus tard pendant le rendez-vous médical de Julien, l'attaquant se présente à la porte de l'entreprise en prétendant être un fournisseur. Il repère le bureau de Julien grâce à la photo LinkedIn et déverouille l'ordinateur avec le mot de passe écrit sur le post-it près du clavier. L'attaquant insère une clé USB malveillante et un malware s'installe sur l'ordinateur Windows de Julien permettant de récupérer toutes les informations confidentielles concernant l'entreprise. L'une des plus grandes failles : la négligence humaine combinée à la surexposition d'informations en ligne.",
   questions: [
     {
       id: "linkedin-post-sensitive-data",
       title: "Publication LinkedIn avec informations sensibles",
       instruction:
         "Clara publie une photo pour présenter le nouveau comptable Julien dans l'entreprise. Repérez les informations qui pourraient aider un attaquant à préparer une intrusion.",
+      attackScenario: 
+        "La publication avait l’air positive : accueillir un nouveau collègue, montrer la vie de l’entreprise, créer de la proximité. Mais pour un observateur malveillant, elle devient une fiche de renseignement. Nom, rôle, environnement technique, habitudes et centres d’intérêt : chaque détail alimente le dossier de l’attaquant.",
       image: linkedinPostImage,
       imageWidth: 1448,
       imageHeight: 1086,
@@ -79,6 +79,8 @@ export const physicalIntrusionScenario: Scenario = {
       title: "Poste de travail non sécurisé",
       instruction:
         "Julien part en pause quelques minutes. Comme souvent, il quitte son poste trop vite. Identifiez les erreurs visibles sur son bureau.",
+      attackScenario:
+        "Cette scène montre une faille très simple : l’absence de verrouillage. L’attaque ne nécessite pas toujours une technique avancée. Dans certains cas, l’accès commence par un bureau laissé ouvert et un mot de passe affiché à la vue de tous.",
       image: desktopUnsafeImage,
       imageWidth: 3060,
       imageHeight: 4080,
@@ -111,6 +113,8 @@ export const physicalIntrusionScenario: Scenario = {
       title: "Bureau laissé sans surveillance",
       instruction:
         "Un attaquant s'introduit dans les locaux et cherche un poste exploitable. Le bureau de Julien est accessible pendant son absence. Que peut exploiter l'attaquant sur ce bureau ?",
+      attackScenario:
+        "Mode opératoire probable : l’attaquant découvre la publication LinkedIn présentant Julien. La photo contient des informations sensibles : un mot de passe visible, le système d'exploitation et même des détails personnels (manga, football, rendez-vous médical). L'attaquant utilise ces informations pour préparer une intrusion physique et quelques jours plus tard pendant le rendez-vous médical de Julien, l'attaquant se présente à la porte de l'entreprise en prétendant être un fournisseur. Il repère le bureau de Julien grâce à la photo LinkedIn et déverouille l'ordinateur avec le mot de passe écrit sur le post-it près du clavier. L'attaquant insère une clé USB malveillante et un malware s'installe sur l'ordinateur Windows de Julien permettant de récupérer toutes les informations confidentielles concernant l'entreprise. L'une des plus grandes failles : la négligence humaine combinée à la surexposition d'informations en ligne. Conclusion de l’enquête : l’intrusion n’a pas reposé sur une seule erreur, mais sur une chaîne de petits détails négligés. Une photo trop bavarde, un poste non verrouillé, un mot de passe visible et du matériel accessible peuvent suffire à transformer une simple visite en incident de sécurité.",
       image: desktopPauseImage,
       imageWidth: 2400,
       imageHeight: 3000,

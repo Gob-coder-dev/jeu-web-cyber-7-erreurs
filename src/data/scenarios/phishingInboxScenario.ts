@@ -10,14 +10,14 @@ export const phishingInboxScenario: Scenario = {
   title: "La boîte mail de Sophie",
   description:
     "Sophie reçoit plusieurs emails suspects dans la même journée. Aidez-la à identifier les indices qui montrent que ces messages peuvent être des tentatives de phishing.",
-  globalAttackScenario:
-    "Sophie reçoit quatre emails différents en une même journée. D'abord, un email prétendant provenir d'UPS avec un faux domaine, créant une urgence pour un colis en attente. Quelques heures plus tard, elle reçoit un email Amazon annonçant un gain inexplicable avec des emojis sensationnels. Ensuite, c'est Decathlon qui lui offre un vélo gratuit. Finalement, Sephora lui propose une offre exclusive. Au bout du compte, Sophie finit par céder, elle reconnaît à peine que le domaine n'est pas officiel et clique sur le lien. Sophie saisit plusieurs de ses informations personnelles sur un faux formulaire. L'attaquant a collecté : adresses résidentielles, numéros de téléphone, identifiants bancaires, adresses email. Ces informations sont vendues sur le darknet à d'autres cybercriminels ou utilisées pour des vols d'identité massifs. Cela démontre comment une seule erreur peut mener à une cascade de violations si l'utilisateur ne reste pas vigilant.",
   questions: [
     {
       id: "email-phishing-ups",
       title: "Email de phishing UPS",
       instruction:
         "Sophie reçoit un mail de livraison urgente. Observez cet email et sélectionnez les indices qui doivent l'alerter.",
+      attackScenario:
+        "Ce message cherche à créer un sentiment d’urgence autour d’un sujet banal : la livraison d’un colis. C’est précisément ce qui le rend efficace. L’attaquant n’a pas besoin d’être original, il doit seulement tomber au bon moment, avec le bon prétexte.",
       image: emailPhishingUpsImage,
       imageWidth: 1618,
       imageHeight: 2198,
@@ -80,6 +80,8 @@ export const phishingInboxScenario: Scenario = {
       title: "Email de phishing Amazon",
       instruction:
         "Un second message annonce une récompense inattendue. Repérez les signes qui montrent que cet email ne doit pas être considéré comme fiable.",
+      attackScenario:
+        "Ici, l’appât n’est plus l’urgence, mais la récompense. Le message tente de faire baisser la vigilance en donnant l’impression que la victime a quelque chose à gagner.",
       image: emailPhishingAmazonImage,
       imageWidth: 1592,
       imageHeight: 1188,
@@ -142,6 +144,8 @@ export const phishingInboxScenario: Scenario = {
       title: "Email de phishing Decathlon",
       instruction:
         "Sophie reçoit ensuite une offre commerciale. Retrouvez les indices qui montrent qu'il peut s'agir d'une tentative de phishing.",
+      attackScenario:
+        "Ce message mélange récompense et urgence. Il promet un avantage, puis menace de le faire disparaître. Cette combinaison est fréquente : l’attaquant crée d’abord l’envie, puis impose une décision rapide.",
       image: emailPhishingDecathlonImage,
       imageWidth: 1589,
       imageHeight: 1195,
@@ -194,6 +198,8 @@ export const phishingInboxScenario: Scenario = {
       title: "Email de phishing Sephora",
       instruction:
         "En fin de journée, Sophie reçoit un autre email d'offre. Sélectionnez les éléments qui doivent faire douter Sophie.",
+      attackScenario:
+        "Le message tente de paraître personnel, mais il sonne faux. Dans une attaque réelle, même une personnalisation approximative peut suffire si la victime est fatiguée, pressée ou habituée à recevoir beaucoup d’emails commerciaux.",
       image: emailPhishingSephoraImage,
       imageWidth: 1585,
       imageHeight: 1138,

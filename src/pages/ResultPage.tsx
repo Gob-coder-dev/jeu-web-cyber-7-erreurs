@@ -1,4 +1,5 @@
 import "./ResultPage.css";
+import { useEffect, useState } from "react";
 import type { Scenario } from "../types/Scenario";
 
 type ResultPageProps = {
@@ -20,6 +21,16 @@ function ResultPage({
   onBackHome,
   onGoLeaderBoard,
 }: ResultPageProps) {
+  const [attackSlideIndex, setAttackSlideIndex] = useState(0);
+  const attackSlides =
+    scenario?.questions
+      ?.map((question) => question.attackScenario)
+      ?.filter((slide) => slide && slide.trim().length > 0) ?? [];
+
+  useEffect(() => {
+    setAttackSlideIndex(0);
+  }, [scenario?.questions]);
+
   return (
     <main className="page result-page">
       <header className="result-page__hero">
@@ -39,12 +50,49 @@ function ResultPage({
       </header>
 
       <div className="result-page__content-grid">
-        {scenario?.globalAttackScenario && (
+        {attackSlides.length > 0 && (
           <section className="result-page__attack-section">
-            <h2>Scénario d'attaque complet</h2>
+            <div className="result-page__attack-header">
+              <button
+                className="result-page__attack-arrow-button"
+                type="button"
+                onClick={() =>
+                  setAttackSlideIndex((previousIndex) =>
+                    Math.max(previousIndex - 1, 0)
+                  )
+                }
+                disabled={attackSlideIndex <= 0}
+                aria-label="Diapositive précédente"
+              >
+                {"<"}
+              </button>
+
+              <h2>Scénario d'attaque complet</h2>
+
+              <button
+                className="result-page__attack-arrow-button"
+                type="button"
+                onClick={() =>
+                  setAttackSlideIndex((previousIndex) =>
+                    Math.min(previousIndex + 1, attackSlides.length - 1)
+                  )
+                }
+                disabled={attackSlideIndex >= attackSlides.length - 1}
+                aria-label="Diapositive suivante"
+              >
+                {">"}
+              </button>
+            </div>
+
             <p className="result-page__attack-text">
-              {scenario.globalAttackScenario}
+              {attackSlides[attackSlideIndex]}
             </p>
+
+            {attackSlides.length > 1 && (
+              <div className="result-page__attack-pagination">
+                {attackSlideIndex + 1}/{attackSlides.length}
+              </div>
+            )}
           </section>
         )}
 
