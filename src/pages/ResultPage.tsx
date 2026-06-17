@@ -1,6 +1,7 @@
 import "./ResultPage.css";
 import { useState } from "react";
 import type { Scenario } from "../types/Scenario";
+import { formatPieceCode, formatPieceTitle } from "../utils/formatGameLabels";
 
 type ResultPageProps = {
   scenario?: Scenario;
@@ -22,18 +23,35 @@ function ResultPage({
   onGoLeaderBoard,
 }: ResultPageProps) {
   const [attackSlideIndex, setAttackSlideIndex] = useState(0);
-  const attackSlides = [
-    ...(scenario?.questions.map((question) => question.attackScenario) ?? []),
-    scenario?.globalAttackScenario,
-  ].filter(
-    (slide): slide is string =>
-      slide !== undefined && slide.trim().length > 0
-  );
+  const globalAttackSlides =
+    scenario?.globalAttackScenario !== undefined &&
+    scenario.globalAttackScenario.trim().length > 0
+      ? [
+          {
+            title: "Scénario d'attaque complet",
+            text: scenario.globalAttackScenario,
+            questionIndex: null,
+          },
+        ]
+      : [];
+  const questionAttackSlides =
+    scenario?.questions
+      .map((question, index) => ({
+        title: `Explication d'attaque - ${formatPieceTitle(
+          question.title,
+          index
+        )}`,
+        text: question.attackScenario,
+        questionIndex: index,
+      }))
+      .filter((slide) => slide.text.trim().length > 0) ?? [];
+  const attackSlides = [...globalAttackSlides, ...questionAttackSlides];
   const lastAttackSlideIndex = Math.max(attackSlides.length - 1, 0);
   const currentAttackSlideIndex = Math.min(
     attackSlideIndex,
     lastAttackSlideIndex
   );
+  const currentAttackSlide = attackSlides[currentAttackSlideIndex];
 
   return (
     <main className="page result-page">
@@ -71,7 +89,7 @@ function ResultPage({
                 {"<"}
               </button>
 
-              <h2>Scénario d'attaque complet</h2>
+              <h2>{currentAttackSlide.title}</h2>
 
               <button
                 className="result-page__attack-arrow-button"
@@ -89,7 +107,7 @@ function ResultPage({
             </div>
 
             <p className="result-page__attack-text">
-              {attackSlides[currentAttackSlideIndex]}
+              {currentAttackSlide.text}
             </p>
 
             {attackSlides.length > 1 && (
@@ -105,23 +123,31 @@ function ResultPage({
             className="result-page__round-scores"
             aria-label="Scores par question"
           >
-            <h2>Détail par question</h2>
+            <h2>Détail par pièce</h2>
 
             <ol className="result-page__round-score-list">
               {scenarioRoundScores.map((score, index) => {
                 const question = scenario?.questions[index];
+                const isCurrentQuestionSlide =
+                  currentAttackSlide?.questionIndex === index;
 
                 return (
                   <li
-                    className="result-page__round-score-item"
+                    className={`result-page__round-score-item${
+                      isCurrentQuestionSlide
+                        ? " result-page__round-score-item--current"
+                        : ""
+                    }`}
                     key={question?.id ?? index}
                   >
                     <span className="result-page__round-score-rank">
-                      Q{index + 1}
+                      {formatPieceCode(index)}
                     </span>
 
                     <span className="result-page__round-score-label">
-                      {question?.title ?? `Question ${index + 1}`}
+                      {question !== undefined
+                        ? formatPieceTitle(question.title, index)
+                        : `Pièce ${index + 1}`}
                     </span>
 
                     <span

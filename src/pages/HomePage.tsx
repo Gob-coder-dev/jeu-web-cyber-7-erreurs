@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Scenario } from "../types/Scenario";
 import type { User } from "../types/User";
 import { ConfirmReplayModal } from "../components/ConfirmReplayModal";
+import { formatScenarioTitle } from "../utils/formatGameLabels";
 import "./HomePage.css";
 
 type HomePageProps = {
@@ -60,7 +61,7 @@ function HomePage({
       </header>
 
       <section className="home-page__scenarios" aria-label="Scénarios">
-        {scenarios.map((scenario) => {
+        {scenarios.map((scenario, index) => {
           const scenarioScore = user.scenarioScores[scenario.id];
           const hasScore = scenarioScore !== undefined;
 
@@ -81,7 +82,7 @@ function HomePage({
               </div>
 
               <div className="home-page__scenario-main">
-                <h2>{scenario.title}</h2>
+                <h2>{formatScenarioTitle(scenario.title, index)}</h2>
                 <button
                   className="button home-page__button--play"
                   onClick={() => handleStartScenario(scenario)}

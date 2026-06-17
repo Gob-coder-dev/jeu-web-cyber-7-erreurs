@@ -17,7 +17,7 @@ function ScenarioIntroPage({
       <section className="scenario-intro-page__panel">
         <div className="scenario-intro-page__content">
           <p className="page__eyebrow">Introduction du dossier</p>
-          <h1>{scenario.title}</h1>
+          <h1>Dossier - {scenario.title}</h1>
           <p className="scenario-intro-page__description">
             {scenario.description}
           </p>

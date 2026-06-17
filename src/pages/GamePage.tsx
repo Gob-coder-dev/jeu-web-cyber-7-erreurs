@@ -1,6 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
 import type { Scenario } from "../types/Scenario";
+import {
+  formatOrderNumber,
+  formatPieceTitle,
+} from "../utils/formatGameLabels";
 import "./GamePage.css";
 
 type GamePageProps = {
@@ -9,7 +13,11 @@ type GamePageProps = {
   onGoResults: (score: number, roundScores: number[]) => void;
 };
 
-function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
+function GamePage({
+  scenario,
+  onBackHome,
+  onGoResults,
+}: GamePageProps) {
   const gameRef = useRef<PhaserGameHandle | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [roundScores, setRoundScores] = useState<number[]>([]);
@@ -83,7 +91,8 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
       <section className="game-page__content">
         <div className="game-page__topbar">
           <p className="page__eyebrow">
-            {scenario.title} - Question {questionIndex + 1} / {scenario.questions.length}
+            Dossier - {scenario.title} - Pièce{" "}
+            {formatOrderNumber(questionIndex)} / {formatOrderNumber(scenario.questions.length - 1)}
           </p>
 
           <button className="button button--secondary" onClick={onBackHome}>
@@ -92,7 +101,7 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
         </div>
 
         <header className="game-page__header">
-          <h1>{question.title}</h1>
+          <h1>{formatPieceTitle(question.title, questionIndex)}</h1>
           <p className="page__intro">{question.instruction}</p>
         </header>
 
@@ -133,7 +142,7 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
                 </button>
               ) : questionIndex < scenario.questions.length - 1 ? (
                 <button className="button" onClick={handleNextQuestion}>
-                  Question suivante
+                  Pièce suivante
                 </button>
               ) : (
                 <button className="button" onClick={() => onGoResults(totalScore, roundScores)}>

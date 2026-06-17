@@ -160,7 +160,11 @@ function App() {
     return (
       <ResultPage
         scenario={selectedScenario || undefined}
-        scenarioTitle={selectedScenario?.title || "Scénario"}
+        scenarioTitle={
+          selectedScenario !== null
+            ? `Dossier - ${selectedScenario.title}`
+            : "Scénario"
+        }
         scenarioScore={scenarioScore}
         scenarioRoundScores={scenarioRoundScores}
         globalScore={globalScore}
