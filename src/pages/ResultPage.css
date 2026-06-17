@@ -168,8 +168,10 @@
 .result-page__attack-text {
   color: var(--color-text);
   font-size: 1.05rem;
+  font-weight: 700;
   line-height: 1.75;
   margin: 0;
+  white-space: pre-line;
 }
 
 @media (max-width: 720px) {

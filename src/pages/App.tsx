@@ -3,13 +3,14 @@ import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
+import ScenarioIntroPage from "./ScenarioIntroPage";
 import type { User } from "../types/User";
 import type { Scenario } from "../types/Scenario";
 import { UserService } from "../services/userServices";
 import LeaderBoardPage from "./LeaderBoardPage";
 import { scenarios } from "../data/scenarios";
 
-type Page = "home" | "game" | "result" | "leaderboard";
+type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
 
 const userService = new UserService();
 
@@ -65,6 +66,10 @@ function App() {
 
   function handleStartScenario(scenario: Scenario) {
     setSelectedScenario(scenario);
+    setPage("scenarioIntro");
+  }
+
+  function handleStartGame() {
     setPage("game");
   }
 
@@ -129,6 +134,16 @@ function App() {
 
   if (user === null) {
     return <LoginPage onLogin={handleLogin} />;
+  }
+
+  if (page === "scenarioIntro" && selectedScenario !== null) {
+    return (
+      <ScenarioIntroPage
+        scenario={selectedScenario}
+        onStartGame={handleStartGame}
+        onBackHome={handleBackHome}
+      />
+    );
   }
 
   if (page === "game" && selectedScenario !== null) {
