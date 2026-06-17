@@ -68,6 +68,8 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
       nextRoundScores[questionIndex] = score;
       return nextRoundScores;
     });
+
+    gameRef.current?.toggleDebugHotspots();
   }
 
   function handleNextQuestion() {
