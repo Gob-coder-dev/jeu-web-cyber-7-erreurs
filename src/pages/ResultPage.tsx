@@ -1,5 +1,5 @@
 import "./ResultPage.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Scenario } from "../types/Scenario";
 
 type ResultPageProps = {
@@ -22,14 +22,18 @@ function ResultPage({
   onGoLeaderBoard,
 }: ResultPageProps) {
   const [attackSlideIndex, setAttackSlideIndex] = useState(0);
-  const attackSlides =
-    scenario?.questions
-      ?.map((question) => question.attackScenario)
-      ?.filter((slide) => slide && slide.trim().length > 0) ?? [];
-
-  useEffect(() => {
-    setAttackSlideIndex(0);
-  }, [scenario?.questions]);
+  const attackSlides = [
+    ...(scenario?.questions.map((question) => question.attackScenario) ?? []),
+    scenario?.globalAttackScenario,
+  ].filter(
+    (slide): slide is string =>
+      slide !== undefined && slide.trim().length > 0
+  );
+  const lastAttackSlideIndex = Math.max(attackSlides.length - 1, 0);
+  const currentAttackSlideIndex = Math.min(
+    attackSlideIndex,
+    lastAttackSlideIndex
+  );
 
   return (
     <main className="page result-page">
@@ -61,7 +65,7 @@ function ResultPage({
                     Math.max(previousIndex - 1, 0)
                   )
                 }
-                disabled={attackSlideIndex <= 0}
+                disabled={currentAttackSlideIndex <= 0}
                 aria-label="Diapositive précédente"
               >
                 {"<"}
@@ -74,10 +78,10 @@ function ResultPage({
                 type="button"
                 onClick={() =>
                   setAttackSlideIndex((previousIndex) =>
-                    Math.min(previousIndex + 1, attackSlides.length - 1)
+                    Math.min(previousIndex + 1, lastAttackSlideIndex)
                   )
                 }
-                disabled={attackSlideIndex >= attackSlides.length - 1}
+                disabled={currentAttackSlideIndex >= lastAttackSlideIndex}
                 aria-label="Diapositive suivante"
               >
                 {">"}
@@ -85,12 +89,12 @@ function ResultPage({
             </div>
 
             <p className="result-page__attack-text">
-              {attackSlides[attackSlideIndex]}
+              {attackSlides[currentAttackSlideIndex]}
             </p>
 
             {attackSlides.length > 1 && (
               <div className="result-page__attack-pagination">
-                {attackSlideIndex + 1}/{attackSlides.length}
+                {currentAttackSlideIndex + 1}/{attackSlides.length}
               </div>
             )}
           </section>

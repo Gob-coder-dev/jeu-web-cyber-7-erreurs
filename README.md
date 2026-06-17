@@ -26,24 +26,45 @@ Un scenario deja termine peut etre rejoue, mais son score conserve n'est pas rem
 
 ### L'intrusion dans les locaux
 
-Clara publie trop d'informations sur LinkedIn. Julien, nouveau comptable, est negligent avec son poste de travail. Un attaquant utilise ces erreurs pour preparer une intrusion physique.
+Orialys a subi une intrusion discrète. L'enquête remonte jusqu'à Julien, le nouveau comptable, puis à une publication LinkedIn trop bavarde et à un poste de travail laissé vulnérable.
 
 Questions :
 
-- Publication LinkedIn avec informations sensibles ;
-- Poste de travail non securise ;
-- Bureau laisse sans surveillance.
+- La photo qui en disait trop ;
+- Le poste abandonné pendant la pause.
 
-### La boite mail de Sophie
+### La boîte aux leurres de Mélanie
 
-Sophie recoit plusieurs emails suspects dans la meme journee. Livraison, gain, promotion et offre personnalisee cherchent a la faire cliquer trop vite.
+Mélanie reçoit plusieurs emails suspects dans la même journée. Livraison, gain, promotion et offre personnalisée cherchent à la faire cliquer trop vite.
 
 Questions :
 
-- Email de phishing UPS ;
-- Email de phishing Amazon ;
-- Email de phishing Decathlon ;
-- Email de phishing Sephora.
+- Le colis trop pressé ;
+- Le cadeau tombé du ciel ;
+- La promotion qui force la main ;
+- La personnalisation maladroite.
+
+### La voix du directeur fantôme
+
+Une comptable effectue un virement urgent après un appel supposé du directeur. L'enquête montre une fraude préparée avec des informations publiques, un appel sous pression et des emails d'apparence professionnelle.
+
+Questions :
+
+- La carte postale numérique ;
+- La voix qui pressait le pas ;
+- La facture tombée pendant l'appel ;
+- La confirmation qui referme le piège.
+
+### Le trajet qui avait des oreilles
+
+Un document confidentiel de Crédo Agriculture se retrouve chez un concurrent. L'enquête suit les déplacements du prestataire Cédric : réseaux sociaux, travail en transport, Wi-Fi douteux et faux portail captif.
+
+Questions :
+
+- La plainte du métro sur les réseaux ;
+- Le travail dans le train ;
+- La fin du trajet ;
+- Le portail trop curieux.
 
 ## Architecture
 
@@ -52,8 +73,10 @@ src/
   data/
     scenarios/
       index.ts
-      physicalIntrusionScenario.ts
-      phishingInboxScenario.ts
+      scenario1.ts
+      scenario2.ts
+      scenario3.ts
+      scenario4.ts
 
   game/
     PhaserGame.tsx
