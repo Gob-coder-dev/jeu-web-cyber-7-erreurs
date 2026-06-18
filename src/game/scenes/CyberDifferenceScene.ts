@@ -91,7 +91,6 @@ export class CyberDifferenceScene extends Phaser.Scene {
       const hotspotX = hoveredHotspot.x * this.imageScale;
       const hotspotY = hoveredHotspot.y * this.imageScale;
       const hotspotW = hoveredHotspot.width * this.imageScale;
-      const hotspotH = hoveredHotspot.height * this.imageScale;
 
       let tooltipX = hotspotX + hotspotW + 12;
       let tooltipY = hotspotY;

@@ -21,7 +21,7 @@ function calculateGameSize(question: Question, availableWidth: number): GameSize
   const maxWidth = Math.min(availableWidth, question.imageWidth);
   const scale = Math.min(
     maxWidth / question.imageWidth,
-    1,4
+    1.4
   );
 
   return {

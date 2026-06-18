@@ -1,24 +1,37 @@
 import { useRef, useState, useEffect } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
 import type { Scenario } from "../types/Scenario";
+import {
+  formatOrderNumber,
+  formatPieceTitle,
+} from "../utils/formatGameLabels";
 import "./GamePage.css";
 
 type GamePageProps = {
   scenario: Scenario;
   onBackHome: () => void;
-  onGoResults: (score: number) => void;
+  onGoResults: (score: number, roundScores: number[]) => void;
 };
 
-function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
+function GamePage({
+  scenario,
+  onBackHome,
+  onGoResults,
+}: GamePageProps) {
   const gameRef = useRef<PhaserGameHandle | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [roundScore, setRoundScore] = useState<number | null>(null);
-  const [totalScore, setTotalScore] = useState(0);
+  const [roundScores, setRoundScores] = useState<number[]>([]);
   const [showImage, setShowImage] = useState(false);
   const [countdown, setCountdown] = useState(3);
-  const [buttonReady, setButtonReady] = useState(false);
   const [timerDisabled, setTimerDisabled] = useState(false);
   const question = scenario.questions[questionIndex];
+  const currentRoundScore = roundScores[questionIndex];
+  const hasValidatedCurrentQuestion = currentRoundScore !== undefined;
+  const totalScore = roundScores.reduce(
+    (previousTotalScore, roundScore) => previousTotalScore + roundScore,
+    0
+  );
+  const buttonReady = timerDisabled || countdown === 0;
 
   // Raccourcis clavier: Shift + D pour debug, Shift + T pour désactiver le timer
   useEffect(() => {
@@ -37,28 +50,18 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
   }, []);
 
   useEffect(() => {
-    setShowImage(false);
-    setButtonReady(false);
-    setCountdown(3);
-    if (timerDisabled) {
-      setButtonReady(true);
+    if (timerDisabled || showImage || countdown <= 0) {
       return;
     }
 
     const countdownInterval = window.setInterval(() => {
       setCountdown((previousCountdown) => {
-        if (previousCountdown <= 1) {
-          setButtonReady(true);
-          window.clearInterval(countdownInterval);
-          return 0;
-        }
-
-        return previousCountdown - 1;
+        return Math.max(0, previousCountdown - 1);
       });
     }, 1000);
 
     return () => window.clearInterval(countdownInterval);
-  }, [questionIndex, timerDisabled]);
+  }, [countdown, showImage, timerDisabled]);
 
   function handleValidate() {
     const game = gameRef.current;
@@ -68,13 +71,19 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
     }
 
     const score = game.validateSelections();
-    setRoundScore(score);
-    setTotalScore((previousTotalScore) => previousTotalScore + score);
+    setRoundScores((previousRoundScores) => {
+      const nextRoundScores = [...previousRoundScores];
+      nextRoundScores[questionIndex] = score;
+      return nextRoundScores;
+    });
+
+    gameRef.current?.toggleDebugHotspots();
   }
 
   function handleNextQuestion() {
-    setQuestionIndex(questionIndex + 1);
-    setRoundScore(null);
+    setQuestionIndex((previousQuestionIndex) => previousQuestionIndex + 1);
+    setShowImage(false);
+    setCountdown(3);
   }
 
   return (
@@ -82,7 +91,8 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
       <section className="game-page__content">
         <div className="game-page__topbar">
           <p className="page__eyebrow">
-            {scenario.title} - Question {questionIndex + 1} / {scenario.questions.length}
+            Dossier - {scenario.title} - Pièce{" "}
+            {formatOrderNumber(questionIndex)} / {formatOrderNumber(scenario.questions.length - 1)}
           </p>
 
           <button className="button button--secondary" onClick={onBackHome}>
@@ -91,7 +101,7 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
         </div>
 
         <header className="game-page__header">
-          <h1>{question.title}</h1>
+          <h1>{formatPieceTitle(question.title, questionIndex)}</h1>
           <p className="page__intro">{question.instruction}</p>
         </header>
 
@@ -119,21 +129,23 @@ function GamePage({ scenario, onBackHome, onGoResults }: GamePageProps) {
 
             <div className="game-page__bottom-bar">
               <div className="game-page__score-area">
-                {roundScore !== null && (
-                  <div className="game-page__score-badge">{roundScore >= 0 ? '+' : ''}{roundScore} point(s)</div>
+                {hasValidatedCurrentQuestion && (
+                  <div className="game-page__score-badge">
+                    {currentRoundScore >= 0 ? '+' : ''}{currentRoundScore} point(s)
+                  </div>
                 )}
               </div>
 
-              {roundScore === null ? (
+              {!hasValidatedCurrentQuestion ? (
                 <button className="button" onClick={handleValidate}>
                   Valider
                 </button>
               ) : questionIndex < scenario.questions.length - 1 ? (
                 <button className="button" onClick={handleNextQuestion}>
-                  Question suivante
+                  Pièce suivante
                 </button>
               ) : (
-                <button className="button" onClick={() => onGoResults(totalScore)}>
+                <button className="button" onClick={() => onGoResults(totalScore, roundScores)}>
                   Voir les résultats
                 </button>
               )}

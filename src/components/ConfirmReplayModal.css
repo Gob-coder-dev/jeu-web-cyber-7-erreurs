@@ -1,0 +1,64 @@
+.replay-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+  background: rgba(8, 16, 32, 0.55);
+}
+
+.replay-modal {
+  width: min(100%, 440px);
+  padding: 24px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 24px 70px rgba(8, 16, 32, 0.25);
+}
+
+.replay-modal h2 {
+  margin: 0 0 12px;
+}
+
+.replay-modal p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.replay-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.confirm-replay-modal__button--play {
+  padding-right: 28px;
+  background: var(--color-success);
+  border-color: var(--color-success);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%);
+}
+
+.confirm-replay-modal__button--play:hover {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.confirm-replay-modal__button--cancel {
+  background: var(--color-instruction);
+  border-color: var(--color-instruction);
+}
+
+.confirm-replay-modal__button--cancel:hover {
+  background: #a92f2f;
+  border-color: #a92f2f;
+}
+
+@media (max-width: 720px) {
+  .replay-modal__actions {
+    flex-direction: column-reverse;
+  }
+}

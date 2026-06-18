@@ -3,13 +3,14 @@ import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
+import ScenarioIntroPage from "./ScenarioIntroPage";
 import type { User } from "../types/User";
 import type { Scenario } from "../types/Scenario";
 import { UserService } from "../services/userServices";
 import LeaderBoardPage from "./LeaderBoardPage";
 import { scenarios } from "../data/scenarios";
 
-type Page = "home" | "game" | "result" | "leaderboard";
+type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
 
 const userService = new UserService();
 
@@ -18,10 +19,10 @@ function App() {
   const [page, setPage] = useState<Page>("home");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
+  const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
   const [globalScore, setGlobalScore] = useState(0);
   const [scenarioScoresCompleted, setScenarioScoresCompleted] = useState<Record<string, number>>({});
   const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
-  const [hasSavedGlobalScore, setHasSavedGlobalScore] = useState(false);
 
 
   function handleLogin(pseudo: string) {
@@ -31,6 +32,7 @@ function App() {
       // Charger l'utilisateur existant avec sa progression
       setUser(existingUser);
       setCompletedScenarioIds(existingUser.completedScenarioIds);
+      setScenarioScoresCompleted(existingUser.scenarioScores);
       setGlobalScore(existingUser.score);
       setScenarioScoresCompleted(existingUser.scenarioScores);
     } else {
@@ -46,6 +48,7 @@ function App() {
       userService.addUser(newUser);
       setUser(newUser);
       setCompletedScenarioIds([]);
+      setScenarioScoresCompleted({});
       setGlobalScore(0);
     }
     
@@ -57,13 +60,17 @@ function App() {
     setPage("home");
     setSelectedScenario(null);
     setScenarioScore(0);
+    setScenarioRoundScores([]);
     setGlobalScore(0);
     setScenarioScoresCompleted({});
-    setHasSavedGlobalScore(false);
   }
 
   function handleStartScenario(scenario: Scenario) {
     setSelectedScenario(scenario);
+    setPage("scenarioIntro");
+  }
+
+  function handleStartGame() {
     setPage("game");
   }
 
@@ -72,10 +79,12 @@ function App() {
     setPage("home");
   }
 
-  function handleGoResults(score: number) {
+  function handleGoResults(score: number, roundScores: number[]) {
     if (selectedScenario === null) {
       return;
     }
+
+    const normalizedScore = Math.max(0, score);
 
     const scenarioAlreadyCompleted = completedScenarioIds.includes(selectedScenario.id);
     const nextCompletedScenarioIds = scenarioAlreadyCompleted
@@ -84,12 +93,12 @@ function App() {
           ...completedScenarioIds,
           selectedScenario.id
         ];
-    score < 0 ? score = 0 : score;
     const nextGlobalScore = scenarioAlreadyCompleted
       ? globalScore
-      : globalScore + score;
+      : globalScore + normalizedScore;
 
-    setScenarioScore(score);
+    setScenarioScore(normalizedScore);
+    setScenarioRoundScores(roundScores);
     setGlobalScore(nextGlobalScore);
     setCompletedScenarioIds(nextCompletedScenarioIds);
     
@@ -98,7 +107,7 @@ function App() {
       ? scenarioScoresCompleted
       : {
           ...scenarioScoresCompleted,
-          [selectedScenario.id]: score
+          [selectedScenario.id]: normalizedScore
         };
     setScenarioScoresCompleted(nextScenarioScoresCompleted);
 
@@ -128,6 +137,16 @@ function App() {
     return <LoginPage onLogin={handleLogin} />;
   }
 
+  if (page === "scenarioIntro" && selectedScenario !== null) {
+    return (
+      <ScenarioIntroPage
+        scenario={selectedScenario}
+        onStartGame={handleStartGame}
+        onBackHome={handleBackHome}
+      />
+    );
+  }
+
   if (page === "game" && selectedScenario !== null) {
     return (
       <GamePage
@@ -142,8 +161,13 @@ function App() {
     return (
       <ResultPage
         scenario={selectedScenario || undefined}
-        scenarioTitle={selectedScenario?.title || "Scénario"}
+        scenarioTitle={
+          selectedScenario !== null
+            ? `Dossier - ${selectedScenario.title}`
+            : "Scénario"
+        }
         scenarioScore={scenarioScore}
+        scenarioRoundScores={scenarioRoundScores}
         globalScore={globalScore}
         onBackHome={handleBackHome}
         onGoLeaderBoard={handleGoLeaderBoard}
