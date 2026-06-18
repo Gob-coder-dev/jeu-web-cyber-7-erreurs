@@ -21,15 +21,15 @@ export const scenario4: Scenario = {
       attackScenario:
         "Le post voulait simplement se plaindre des transports. Mais dans le carnet d'un attaquant, il devient une traque. Il donne un lieu, une date et une cible pour atteindre une entreprise. L'attaquant peut juste aller à cette gare et à attendre Cédric pour le suivre et l'espionner.",
       image: socialPostImage,
-      imageWidth: 485,
-      imageHeight: 638,
+      imageWidth: 822,
+      imageHeight: 976,
       hotspots: [
         {
           id: "commute-place-visible",
-          x: 8,
-          y: 76,
-          width: 455,
-          height: 44,
+          x: 430,
+          y: 100,
+          width: 140,
+          height: 50,
           label: "Lieu du déplacement visible",
           explanation:
             "Sur l'image on distingue clairement où il se situe. Cela peut faire référence à une gare qu'il utilise souvent",
@@ -37,9 +37,9 @@ export const scenario4: Scenario = {
         {
           id: "commute-daily-work-complaint",
           x: 8,
-          y: 116,
-          width: 450,
-          height: 74,
+          y: 150,
+          width: 600,
+          height: 40,
           label: "Plainte de ne pas aller travailler",
           explanation:
             "Dans son commentaire, il se plaint de ne pas pouvoir aller travailler. On comprend donc qu'il utilise ce transport tous les jours pour aller travailler",
@@ -50,7 +50,7 @@ export const scenario4: Scenario = {
       id: "working-in-public-transport",
       title: "Le travail dans le train",
       instruction:
-        "Pour retracer son parcours avant le vol de document, Cédric vous montre tous ses trajets. Pendant ce déplacement, Cédric vous informe qu'il doit absolument travailler parce qu'avec toute cette histoire, il a pris du retard sur son travail. Il se met donc à travailler à côté de vous.",
+        "Pour retracer son parcours avant le vol de documents, Vous prenez les transports avec Cédric. Pendant ce déplacement, Cédric vous informe qu'il doit absolument travailler parce qu'avec toute cette histoire, il a pris du retard sur ses tâches. Il se met donc à travailler à côté de vous.",
       attackScenario:
         "Ici, l'attaquant n'a pas besoin de malware. Il lui suffit d'un angle de vue, d'un appareil photo discret ou d'une personne inattentive.\n\nLe travail nomade est pratique, mais il transforme parfois les transports en salle de réunion ouverte ou en vol facile. Un document confidentiel affiché dans un train n'est plus seulement entre les mains du prestataire, il est potentiellement devant tout le wagon.",
       image: trainWorkTempImage,
@@ -94,7 +94,7 @@ export const scenario4: Scenario = {
       id: "wrong-wifi-network",
       title: "La fin du trajet",
       instruction:
-        "Arrivé sur place, Cédric nous informe qu'il était arrivé en retard à sa réunion à cause d'un énième problème de transport. Il dit s'être donc connecté rapidement au Wi-Fi disponible. Vous regardez donc son historique Wi-fi.",
+        "Arrivé sur place, Cédric nous informe qu'il était en retard à sa réunion à cause d'un énième problème de transport. Il dit s'être donc connecté rapidement au Wi-Fi disponible. Vous regardez donc son historique Wi-Fi.",
       attackScenario:
         "Le mauvais Wi-Fi n'a pas besoin d'avoir un nom effrayant. Au contraire, il doit avoir l'air banal. Il doit ressembler au réseau que tout le monde choisit sans réfléchir.\n\nDans une enquête cyber, les faux-semblants sont souvent les meilleurs déguisements. Ici, le réseau suspect ne force personne à entrer. Il attend qu'on le choisisse.",
       image: wifiListImage,
@@ -103,20 +103,20 @@ export const scenario4: Scenario = {
       hotspots: [
         {
           id: "wifi-similar-network-names",
-          x: 590,
-          y: 505,
-          width: 350,
-          height: 45,
+          x: 940,
+          y: 395,
+          width: 250,
+          height: 40,
           label: "Réseaux Wi-Fi aux noms très proches",
           explanation:
             "Plusieurs réseaux ont des noms presque identiques. Un attaquant peut créer un faux réseau ressemblant au vrai pour piéger les utilisateurs pressés.",
         },
         {
           id: "wifi-open-network",
-          x: 580,
-          y: 550,
-          width: 530,
-          height: 150,
+          x: 940,
+          y: 430,
+          width: 470,
+          height: 120,
           label: "Réseau non sécurisé",
           explanation:
             "Un réseau ouvert ou mal protégé augmente les risques d'interception ou de redirection vers de fausses pages.",

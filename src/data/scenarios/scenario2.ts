@@ -9,7 +9,7 @@ export const scenario2: Scenario = {
   id: "phishing-inbox-melanie",
   title: "La boite mail de Mélanie",
   description:
-    "Mélanie, assistante administrative, a reçu plusieurs emails de tentatives de connexion non identifiés dans la même journée sur plusieurs de des compte clientdeservice en ligne : UPS, Amazon, Sephora et Decathlon. Le lendemain, une tentative de connexion inhabituelle est détectée sur le compte de Mélanie dans le service interne.\n\nDétective, vous examinez la boîte mail de Mélanie. Vous découvrez des messages suspectsd'entreprises auxquels Mélanie a reçu les tentatives de connexion.",
+    "Mélanie, assistante administrative, a reçu plusieurs emails de tentatives de connexion non identifiées dans la même journée sur plusieurs de ses comptes client de service en ligne : UPS, Amazon, Sephora et Decathlon. Le lendemain, une tentative de connexion inhabituelle est détectée sur le compte de Mélanie dans le service interne.\n\nDétective, vous examinez la boîte mail de Mélanie. Vous y découvrez des messages suspects.",
   globalAttackScenario:
     "Mode opératoire probable : l'attaquant a bombardé Mélanie avec plusieurs appâts différents dans la même journée. Livraison urgente, cadeau, offre limitée, marque connue. Ce qui a dû la pousser, avec l'appât du gain,à cliquer sur ces faux liens et à remplir des informations personnelles.L'hacker a donc pu récolter ses informations et les a utilisées pour se connecter sur les sites de base. Chaque message teste une émotion différente.\n\nConclusion de l'enquête : le phishing ne repose pas seulement sur des fautes ou des emails grossiers. Il repose surtout sur la pression, la curiosité, la récompense et l'habitude. Le bon réflexe consiste à vérifier l'expéditeur, éviter les liens directs, passer par les sites officiels et signaler les messages douteux.\n\nBon réflexe à retenir\n\nAvant de cliquer, vérifier l'adresse réelle de l'expéditeur, l'URL, le contexte de la demande et le niveau d'urgence. En cas de doute, ne pas cliquer : signaler ou passer par un canal officiel.",
   questions: [
@@ -195,7 +195,7 @@ export const scenario2: Scenario = {
     {
       id: "sephora-clumsy-personalization",
       title: "Le Coffret",
-      instruction: "Un dernier mail suspect concerne une offre Sephora suspecte.",
+      instruction: "Un dernier mail concerne une offre Sephora suspecte.",
       attackScenario:
         "Le message tente de paraître personnel, mais il sonne faux. Dans une attaque réelle, même une personnalisation approximative peut suffire si la victime est fatiguée, pressée ou habituée à recevoir beaucoup d'emails commerciaux.",
       image: emailPhishingSephoraImage,
