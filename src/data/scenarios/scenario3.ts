@@ -9,9 +9,9 @@ export const scenario3: Scenario = {
   id: "director-voice-fraud",
   title: "La voix de la directrice fantôme",
   description:
-    "L'entreprise PepsCorp est en état d'alerte. Selon les employés présents sur site, la comptable Claire Martin aurait effectué un virement urgent vers un nouveau RIB fournisseur après avoir reçu un appel de la directrice lui-même.\n\nLe problème, c'est que le directeur affirme n'avoir jamais passé cet appel. Il était en congé à l'étranger au moment des faits et dit ne pas avoir eu accès à son téléphone professionnel pendant plusieurs heures.\n\nLa comptable est persuadée d'avoir suivi une consigne officielle. Aucun logiciel malveillant n'a été détecté sur le poste de Claire. Aucun compte administrateur ne semble avoir été compromis.",
+    "L'entreprise PepsCorp est en état d'alerte. Selon les employés présents sur site, la comptable Claire Martin aurait effectué un virement urgent vers un nouveau RIB fournisseur après avoir reçu un appel de la directrice elle-même.\n\nLe problème, c'est que la directrice affirme n'avoir jamais passé cet appel. Elle était en déplacement à l'étranger au moment des faits et dit ne pas avoir eu accès à son téléphone professionnel pendant plusieurs heures.\n\nLa comptable est persuadée d'avoir suivi une consigne officielle. Aucun logiciel malveillant n'a été détecté sur le poste de Claire. Aucun compte administrateur ne semble avoir été compromis.",
   globalAttackScenario:
-    "Mode opératoire probable : l'attaquant a commencé par collecter des informations publiques sur le directeur de PepsCorp. Une publication lui a appris que le dirigeant était en vacances, à l'étranger, et donc potentiellement moins joignable.\n\nIl a ensuite appelé Claire en se faisant passer pour lui. Le scénario était simple mais efficace : mauvaise connexion, urgence, confidentialité, virement fournisseur et contournement exceptionnel de la procédure.\n\nPendant l'appel, il a envoyé un email contenant une facture et un nouveau RIB pour donner du poids à sa demande. Une fois le virement effectué, il a envoyé un dernier message de confirmation afin de rassurer la comptable et retarder les vérifications.\n\nConclusion de l'enquête : l'attaque n'a pas reposé sur un piratage technique avancé. Elle a reposé sur une usurpation crédible, préparée grâce à des informations publiques et renforcée par une pression psychologique. Le directeur n'a jamais appelé, mais l'attaquant savait exactement comment faire parler son ombre.\n\nBon réflexe à retenir\n\nToute demande de virement, de changement de RIB ou de paiement urgent doit être vérifiée par un canal indépendant et officiel. Il faut refuser les contournements de procédure, même lorsqu'ils semblent venir d'un supérieur hiérarchique.\n\nEn cas de doute, il faut suspendre l'action, contacter la personne via un numéro connu, prévenir un responsable et signaler la tentative.",
+    "Mode opératoire probable : l'attaquant a commencé par collecter des informations publiques sur la directrice de PepsCorp. Une publication lui a appris que le dirigeant était en vacances, à l'étranger, et donc potentiellement moins joignable.\n\nIl a ensuite appelé Claire en se faisant passer pour lui. Le scénario était simple mais efficace : mauvaise connexion, urgence, confidentialité, virement fournisseur et contournement exceptionnel de la procédure.\n\nPendant l'appel, il a envoyé un email contenant une facture et un nouveau RIB pour donner du poids à sa demande. Une fois le virement effectué, il a envoyé un dernier message de confirmation afin de rassurer la comptable et retarder les vérifications.\n\nConclusion de l'enquête : l'attaque n'a pas reposé sur un piratage technique avancé. Elle a reposé sur une usurpation crédible, préparée grâce à des informations publiques et renforcée par une pression psychologique. la directrice n'a jamais appelé, mais l'attaquant savait exactement comment faire parler son ombre.\n\nBon réflexe à retenir\n\nToute demande de virement, de changement de RIB ou de paiement urgent doit être vérifiée par un canal indépendant et officiel. Il faut refuser les contournements de procédure, même lorsqu'ils semblent venir d'un supérieur hiérarchique.\n\nEn cas de doute, il faut suspendre l'action, contacter la personne via un numéro connu, prévenir un responsable et signaler la tentative.",
   questions: [
     {
       id: "director-public-trip-post",
@@ -32,7 +32,7 @@ export const scenario3: Scenario = {
           height: 40,
           label: "Dates de vacances visibles",
           explanation:
-            "Les dates d'absence de la directrice sont publiques. Un attaquant peut s'en servir pour savoir quand il sera difficilement joignable.",
+            "Les dates d'absence de la directrice sont publiques. Un attaquant peut s'en servir pour savoir quand elle sera difficilement joignable.",
         },
         {
           id: "director-trip-location",
@@ -75,7 +75,7 @@ export const scenario3: Scenario = {
           height: 95,
           label: "Prétexte de mauvaise connexion",
           explanation:
-            "La supposée directrice explique qu'il appelle depuis l'étranger avec peu de réseau. Cela justifie un appel court et limite les possibilités de vérification.",
+            "La supposée directrice explique qu'elle appelle depuis l'étranger avec peu de réseau. Cela justifie un appel court et limite les possibilités de vérification.",
         },
         {
           id: "call-big-gain-pressure",
@@ -157,7 +157,7 @@ export const scenario3: Scenario = {
           height: 58,
           label: "Adresse d'expéditeur suspecte",
           explanation:
-            "Le nom affiché peut imiter le directeur ou un fournisseur, mais l'adresse réelle doit être vérifiée attentivement.",
+            "Le nom affiché peut imiter la directrice ou un fournisseur, mais l'adresse réelle doit être vérifiée attentivement.",
         },
         {
           id: "invoice-unprofessional-file-name",
