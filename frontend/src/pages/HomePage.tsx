@@ -87,7 +87,7 @@ function HomePage({
                   className="button home-page__button--play"
                   onClick={() => handleStartScenario(scenario)}
                 >
-                  Jouer
+                  <span>Jouer</span>
                 </button>
               </div>
             </article>
