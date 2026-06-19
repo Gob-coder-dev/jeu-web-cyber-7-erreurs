@@ -2,11 +2,14 @@
 
 Jeu web de sensibilisation a la cybersecurite. Le joueur parcourt des scenarios professionnels, observe des images et doit retrouver les anomalies de securite visibles.
 
-Le projet est construit avec React, TypeScript, Vite et Phaser.
+Le projet est maintenant separe en deux applications :
+
+- `frontend/` : application React, TypeScript, Vite et Phaser.
+- `backend/` : API Node.js, Express et TypeScript.
 
 ## Principe du jeu
 
-Le joueur se connecte avec un pseudo. Si ce pseudo existe deja dans le stockage local, sa progression est rechargee. Sinon, un nouveau profil est cree.
+Le joueur se connecte avec un pseudo. Pour l'instant, le frontend utilise encore la progression locale historique, mais un backend Express est en cours de mise en place pour stocker les joueurs et les scores cote serveur.
 
 Depuis l'accueil, le joueur choisit un scenario. Chaque scenario contient plusieurs questions liees par une histoire.
 
@@ -26,42 +29,42 @@ Un scenario deja termine peut etre rejoue, mais son score conserve n'est pas rem
 
 ### L'intrusion dans les locaux
 
-Orialys a subi une intrusion discrète. L'enquête remonte jusqu'à Julien, le nouveau comptable, puis à une publication LinkedIn trop bavarde et à un poste de travail laissé vulnérable.
+Orialys a subi une intrusion discrete. L'enquete remonte jusqu'a Julien, le nouveau comptable, puis a une publication LinkedIn trop bavarde et a un poste de travail laisse vulnerable.
 
 Questions :
 
 - La photo qui en disait trop ;
-- Le poste abandonné pendant la pause.
+- Le poste abandonne pendant la pause.
 
-### La boîte aux leurres de Mélanie
+### La boite aux leurres de Melanie
 
-Mélanie reçoit plusieurs emails suspects dans la même journée. Livraison, gain, promotion et offre personnalisée cherchent à la faire cliquer trop vite.
+Melanie recoit plusieurs emails suspects dans la meme journee. Livraison, gain, promotion et offre personnalisee cherchent a la faire cliquer trop vite.
 
 Questions :
 
-- Le colis trop pressé ;
-- Le cadeau tombé du ciel ;
+- Le colis trop presse ;
+- Le cadeau tombe du ciel ;
 - La promotion qui force la main ;
 - La personnalisation maladroite.
 
-### La voix du directeur fantôme
+### La voix du directeur fantome
 
-Une comptable effectue un virement urgent après un appel supposé du directeur. L'enquête montre une fraude préparée avec des informations publiques, un appel sous pression et des emails d'apparence professionnelle.
+Une comptable effectue un virement urgent apres un appel suppose du directeur. L'enquete montre une fraude preparee avec des informations publiques, un appel sous pression et des emails d'apparence professionnelle.
 
 Questions :
 
-- La carte postale numérique ;
+- La carte postale numerique ;
 - La voix qui pressait le pas ;
-- La facture tombée pendant l'appel ;
-- La confirmation qui referme le piège.
+- La facture tombee pendant l'appel ;
+- La confirmation qui referme le piege.
 
 ### Le trajet qui avait des oreilles
 
-Un document confidentiel de Crédo Agriculture se retrouve chez un concurrent. L'enquête suit les déplacements du prestataire Cédric : réseaux sociaux, travail en transport, Wi-Fi douteux et faux portail captif.
+Un document confidentiel de Credo Agriculture se retrouve chez un concurrent. L'enquete suit les deplacements du prestataire Cedric : reseaux sociaux, travail en transport, Wi-Fi douteux et faux portail captif.
 
 Questions :
 
-- La plainte du métro sur les réseaux ;
+- La plainte du metro sur les reseaux ;
 - Le travail dans le train ;
 - La fin du trajet ;
 - Le portail trop curieux.
@@ -69,42 +72,65 @@ Questions :
 ## Architecture
 
 ```txt
-src/
+frontend/
+  src/
+    data/
+      scenarios/
+        index.ts
+        scenario1.ts
+        scenario2.ts
+        scenario3.ts
+        scenario4.ts
+
+    game/
+      PhaserGame.tsx
+      scenes/
+        CyberDifferenceScene.ts
+
+    pages/
+      App.tsx
+      HomePage.tsx
+      GamePage.tsx
+      ResultPage.tsx
+      LeaderBoardPage.tsx
+      LoginPage.tsx
+
+    services/
+      scoreServices.ts
+      userServices.ts
+
+    types/
+      Question.ts
+      Scenario.ts
+      Score.ts
+      User.ts
+
+backend/
   data/
-    scenarios/
-      index.ts
-      scenario1.ts
-      scenario2.ts
-      scenario3.ts
-      scenario4.ts
+    companies/
+      demo.json
 
-  game/
-    PhaserGame.tsx
-    scenes/
-      CyberDifferenceScene.ts
-
-  pages/
-    App.tsx
-    HomePage.tsx
-    GamePage.tsx
-    ResultPage.tsx
-    LeaderBoardPage.tsx
-    LoginPage.tsx
-
-  services/
-    scoreServices.ts
-    userServices.ts
-
-  types/
-    Question.ts
-    Scenario.ts
-    Score.ts
-    User.ts
+  src/
+    app.ts
+    index.ts
+    controllers/
+      users.controller.ts
+      scores.controller.ts
+      leaderboard.controller.ts
+    repositories/
+      companyJson.repository.ts
+    routes/
+      users.routes.ts
+      scores.routes.ts
+      leaderboard.routes.ts
+    services/
+      users.service.ts
+      scores.service.ts
+    types/
+      CompanyData.ts
 ```
 
-## Role des principales parties
-
-### React
+## Frontend
 
 React gere les pages, la navigation, le choix du scenario, la progression du joueur et le leaderboard.
 
@@ -158,9 +184,103 @@ toggleDebugHotspots()
 
 pour afficher ou cacher les zones de bonnes reponses pendant le debug.
 
+## Backend
+
+Le backend est une API Express en TypeScript situee dans `backend/`.
+
+Il est en cours de construction. L'objectif est de remplacer progressivement le stockage `localStorage` du frontend par un stockage serveur base sur des fichiers JSON, avec a terme un fichier JSON par entreprise.
+
+Pour simplifier le developpement actuel, le backend travaille sur une entreprise de demonstration et un stockage temporaire en memoire dans `companyJson.repository.ts`.
+
+### Routes actuelles
+
+Les routes sont branchees dans `backend/src/app.ts`.
+
+```txt
+/api/users
+/api/scores
+```
+
+Routes utilisateurs :
+
+```txt
+GET  /api/users/:id
+POST /api/users
+```
+
+Routes scores :
+
+```txt
+GET   /api/scores/users/:userId/scenarios/:scenarioId
+GET   /api/scores/users/:userId
+PATCH /api/scores/users/:userId/scenarios/:scenarioId
+```
+
+`PATCH` sert a enregistrer le score d'un scenario pour un utilisateur.
+
+### Couches backend
+
+Le backend suit cette separation :
+
+```txt
+routes
+  -> definissent les URL
+
+controllers
+  -> lisent req/res, valident les entrees HTTP et renvoient les reponses
+
+services
+  -> portent les regles metier
+
+repositories
+  -> lisent/ecrivent le stockage
+```
+
+`companyJson.repository.ts` simule actuellement le stockage avec un objet `CompanyData` en memoire. Plus tard, cette couche devra lire et ecrire les fichiers JSON dans `backend/data/companies/`.
+
+### Structure de donnees backend
+
+Le type principal est defini dans :
+
+```txt
+backend/src/types/CompanyData.ts
+```
+
+```ts
+export type CompanyData = {
+  companyId: string;
+  companyName: string;
+  users: User[];
+};
+
+export type User = {
+  id: string;
+  pseudo: string;
+  pseudoKey: string;
+  hashedPassword: string | null;
+  emailAddress: string | null;
+  globalScore: number;
+  completedScenarioIds: string[];
+  scenarioScores: Record<string, ScenarioScore>;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ScenarioScore = {
+  score: number;
+  completedAt: string;
+};
+```
+
+`scenarioScores` est un objet indexe par `scenarioId`, ce qui permet de retrouver rapidement le score d'un scenario :
+
+```ts
+user.scenarioScores[scenarioId]
+```
+
 ## Gestion des scenarios
 
-Un scenario est defini par le type suivant :
+Un scenario frontend est defini par le type suivant :
 
 ```ts
 export type Scenario = {
@@ -184,31 +304,27 @@ Chaque fichier de scenario contient directement ses questions. Cela permet de ga
 La liste des scenarios disponibles est exportee depuis :
 
 ```txt
-src/data/scenarios/index.ts
+frontend/src/data/scenarios/index.ts
 ```
 
 ## Progression et leaderboard
 
-La progression utilise `localStorage` via `UserService`.
+Le frontend historique utilise encore `localStorage` via `UserService`.
 
-Le type utilisateur courant est :
+Le backend ajoute une nouvelle cible de stockage :
 
-```ts
-export type User = {
-  id: string;
-  pseudo: string;
-  completedScenarioIds: string[];
-  score: number;
-  scenarioScores: { [scenarioId: string]: number };
-  date: string;
-};
+```txt
+backend/data/companies/*.json
 ```
 
-Le pseudo sert de cle de reprise : si un joueur se reconnecte avec le meme pseudo sur le meme navigateur, sa progression est rechargee.
+Le fichier `demo.json` sert d'exemple. Les vrais fichiers clients et scores ne doivent pas etre exposes publiquement ni commits s'ils contiennent des donnees reelles.
 
-Le leaderboard affiche les utilisateurs sauvegardes, tries par score. Il met aussi en avant la position du joueur courant si elle n'est pas dans le top affiche.
+Etat actuel :
 
-Les donnees sont locales au navigateur. Il n'y a pas encore de backend.
+- le frontend n'est pas encore completement branche au backend ;
+- le backend expose deja des routes utilisateurs et scores ;
+- le repository backend utilise encore un stockage en memoire ;
+- la lecture/ecriture reelle des fichiers JSON reste a implementer.
 
 ## Raccourcis de debug
 
@@ -217,28 +333,55 @@ Les donnees sont locales au navigateur. Il n'y a pas encore de backend.
 
 ## Installation
 
-Installer les dependances :
+Installer les dependances frontend :
 
 ```bash
+cd frontend
 npm install
 ```
 
-Lancer le serveur de developpement :
+Installer les dependances backend :
 
 ```bash
+cd backend
+npm install
+```
+
+## Commandes
+
+Lancer le frontend :
+
+```bash
+cd frontend
 npm run dev
 ```
 
-Construire le projet :
+Lancer le backend :
 
 ```bash
+cd backend
+npm run dev
+```
+
+Construire le frontend :
+
+```bash
+cd frontend
 npm run build
 ```
 
-Verifier le lint :
+Verifier le lint frontend :
 
 ```bash
+cd frontend
 npm run lint
+```
+
+Le backend n'a pas encore de `tsconfig.json` ni de script de build dedie. Une verification TypeScript ponctuelle peut etre lancee avec :
+
+```bash
+cd backend
+npx tsc src/index.ts --noEmit --module node16 --target es2023 --esModuleInterop --moduleResolution node16
 ```
 
 ## Notes de developpement
@@ -247,5 +390,7 @@ npm run lint
 - Les questions sont jouees dans l'ordre defini par leur scenario.
 - Phaser ne connait pas les scenarios : il ne recoit qu'une question a la fois.
 - Le resize du canvas Phaser ne doit pas recreer toute la scene pour ne pas perdre les marqueurs ou le timer.
-- Les scores sont actuellement geres cote client avec `localStorage`.
-- Le README et `agent.md` doivent etre mis a jour quand le flux de jeu change.
+- Le backend doit rester separe du frontend : React appelle une API, le backend decide et stocke.
+- Le repository backend doit devenir la seule couche responsable de la lecture/ecriture JSON.
+- Les types TypeScript documentent la structure attendue, mais ne valident pas les JSON au runtime.
+- Le README et `agent.md` doivent etre mis a jour quand le flux de jeu ou le backend change.
