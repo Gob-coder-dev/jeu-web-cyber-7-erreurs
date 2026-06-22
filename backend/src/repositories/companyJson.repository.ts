@@ -52,6 +52,10 @@ export async function getUserInDatabase(userId: string) {
   return findUser(userId);
 }
 
+export async function getAllUsersInDatabase() {
+  return [...companyData.users];
+}
+
 export async function createUserInDatabase(userId: string) {
   const existingUser = findUser(userId);
 
