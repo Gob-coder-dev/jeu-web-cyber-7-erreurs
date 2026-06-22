@@ -3,21 +3,21 @@ import { getUserFromDatabase, createUserFromDatabase, getOrCreateUserFromDatabas
 
 export async function getUserById(req: express.Request, res: express.Response) {
   
-  if (!req.body.id) {
+  if (!req.params.id) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
-  if (typeof req.body.id !== "string") {
+  if (typeof req.params.id !== "string") {
     return res.status(400).json({ message: "Error with User ID" });
   }
 
-  req.body.id = req.body.id.trim();
+  req.params.id = req.params.id.trim();
 
-  if (req.body.id.length > 15) {
+  if (req.params.id.length > 15) {
     return res.status(400).json({ message: "User ID must be at most 15 characters long" });
   }
 
-  const result = await getOrCreateUserFromDatabase(req.body.id);
+  const result = await getOrCreateUserFromDatabase(req.params.id);
 
   if (!result) {
     return res.status(404).json({ message: "User not found" });
