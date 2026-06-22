@@ -1,4 +1,26 @@
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import type { CompanyData, ScenarioScore, User } from "../types/CompanyData";
+
+const companyFilePath = path.join(
+  process.cwd(),
+  "data",
+  "companies",
+  "demo.json",
+);
+
+async function readCompanyData(): Promise<CompanyData> {
+  const fileContent = await readFile(companyFilePath, "utf-8");
+  return JSON.parse(fileContent) as CompanyData;
+}
+
+async function writeCompanyData(companyData: CompanyData): Promise<void> {
+  await writeFile(
+    companyFilePath,
+    JSON.stringify(companyData, null, 2),
+    "utf-8",
+  );
+}
 
 const getCurrentDate = () => new Date().toISOString();
 
@@ -21,18 +43,11 @@ const createUserObject = (userId: string): User => {
   };
 };
 
-// Temporary in-memory storage. Later, this object will come from demo.json.
-const companyData: CompanyData = {
-  companyId: "demo",
-  companyName: "Entreprise Demo",
-  users: [createUserObject("Alice"), createUserObject("Bob")],
-};
-
-function findUserIndex(userId: string) {
+function findUserIndex(companyData: CompanyData, userId: string) {
   return companyData.users.findIndex((user) => user.id === userId);
 }
 
-function findUser(userId: string) {
+function findUser(companyData: CompanyData, userId: string) {
   return companyData.users.find((user) => user.id === userId);
 }
 
@@ -45,19 +60,26 @@ function calculateGlobalScore(user: User) {
 
 // User functions
 export async function isUserInDatabase(userId: string) {
-  return findUserIndex(userId) !== -1;
+  const companyData = await readCompanyData();
+
+  return findUserIndex(companyData, userId) !== -1;
 }
 
 export async function getUserInDatabase(userId: string) {
-  return findUser(userId);
+  const companyData = await readCompanyData();
+
+  return findUser(companyData, userId);
 }
 
 export async function getAllUsersInDatabase() {
+  const companyData = await readCompanyData();
+
   return [...companyData.users];
 }
 
 export async function createUserInDatabase(userId: string) {
-  const existingUser = findUser(userId);
+  const companyData = await readCompanyData();
+  const existingUser = findUser(companyData, userId);
 
   if (existingUser) {
     return existingUser;
@@ -66,12 +88,15 @@ export async function createUserInDatabase(userId: string) {
   const newUser = createUserObject(userId);
   companyData.users.push(newUser);
 
+  await writeCompanyData(companyData);
+
   return newUser;
 }
 
 // Score functions
 export async function isScoreInDatabase(userId: string, scenarioId: string) {
-  const user = findUser(userId);
+  const companyData = await readCompanyData();
+  const user = findUser(companyData, userId);
 
   if (!user) {
     return false;
@@ -81,7 +106,8 @@ export async function isScoreInDatabase(userId: string, scenarioId: string) {
 }
 
 export async function getScoreInDatabase(userId: string, scenarioId: string) {
-  const user = findUser(userId);
+  const companyData = await readCompanyData();
+  const user = findUser(companyData, userId);
 
   if (!user) {
     return undefined;
@@ -91,7 +117,8 @@ export async function getScoreInDatabase(userId: string, scenarioId: string) {
 }
 
 export async function getTotalScoreInDatabase(userId: string) {
-  const user = findUser(userId);
+  const companyData = await readCompanyData();
+  const user = findUser(companyData, userId);
 
   if (!user) {
     return null;
@@ -105,7 +132,8 @@ export async function createScoreInDatabase(
   scenarioId: string,
   score: number,
 ) {
-  const user = findUser(userId);
+  const companyData = await readCompanyData();
+  const user = findUser(companyData, userId);
 
   if (!user) {
     return null;
@@ -124,6 +152,8 @@ export async function createScoreInDatabase(
 
   user.globalScore = calculateGlobalScore(user);
   user.updatedAt = getCurrentDate();
+
+  await writeCompanyData(companyData);
 
   return scenarioScore;
 }
