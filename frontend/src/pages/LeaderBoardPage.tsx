@@ -1,10 +1,9 @@
-import type { Score } from "../types/Score";
+import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
 import "./LeaderBoardPage.css";
-import { UserService } from "../services/userServices";
 
 type LeaderBoardPageProps = {
-    scores: Score[];
-    currentPseudo: string;
+    topScores: LeaderboardEntry[];
+    currentLeaderboardUser: LeaderboardUserResult | null;
     onBackHome: () => void;
 };
 
@@ -18,20 +17,36 @@ function getRankClassName(rank: number) {
     return ["leaderboard-rank", ...rankModifiers].join(" ");
 }
 
-function LeaderBoardPage({scores,currentPseudo,onBackHome}: LeaderBoardPageProps) {
-    const sortedScores = [...scores].sort((a, b) => b.score - a.score);
-    const topScores = sortedScores.slice(0, 12);
-    const currentPlayerIndex = sortedScores.findIndex(
-        (score) => score.pseudo === currentPseudo
-    );
-    const currentPlayerScore =
-        currentPlayerIndex === -1 ? null : sortedScores[currentPlayerIndex];
-    const currentPlayerRank = currentPlayerIndex + 1;
-    const shouldShowCurrentPlayerAside =
-        currentPlayerScore !== null && currentPlayerRank > 12;
+function getCurrentPlayerAsideScore(
+    currentLeaderboardUser: LeaderboardUserResult | null,
+): LeaderboardEntry | null {
+    if (
+        currentLeaderboardUser?.hasPlayed !== true ||
+        currentLeaderboardUser.rank === null ||
+        currentLeaderboardUser.rank <= 12 ||
+        currentLeaderboardUser.user === null
+    ) {
+        return null;
+    }
 
-    function renderScoreRow(score: Score, rank: number) {
-        const isCurrentPlayer = score.id === currentPlayerScore?.id;
+    return {
+        id: currentLeaderboardUser.user.id,
+        pseudo: currentLeaderboardUser.user.pseudo,
+        globalScore: currentLeaderboardUser.user.globalScore,
+        rank: currentLeaderboardUser.rank,
+    };
+}
+
+function LeaderBoardPage({
+    topScores,
+    currentLeaderboardUser,
+    onBackHome,
+}: LeaderBoardPageProps) {
+    const currentPlayerAsideScore =
+        getCurrentPlayerAsideScore(currentLeaderboardUser);
+
+    function renderScoreRow(score: LeaderboardEntry) {
+        const isCurrentPlayer = score.id === currentLeaderboardUser?.user?.id;
 
         return (
             <li
@@ -40,49 +55,39 @@ function LeaderBoardPage({scores,currentPseudo,onBackHome}: LeaderBoardPageProps
                 }`}
                 key={score.id}
             >
-            <span className={getRankClassName(rank)}>
-                {rank}
-            </span>
+                <span className={getRankClassName(score.rank)}>
+                    {score.rank}
+                </span>
 
-            <span className="leaderboard-player">{score.pseudo}</span>
+                <span className="leaderboard-player">{score.pseudo}</span>
 
-            <span className="leaderboard-score">{score.score} pts</span>
-
-            <span className="leaderboard-date">
-                {new Date(score.date).toLocaleDateString()}
-            </span>
+                <span className="leaderboard-score">
+                    {score.globalScore} pts
+                </span>
             </li>
         );
     }
 
     return (
         <main className="page__leaderboard-page">
-        <h1>Classement</h1>
-        <ol className="leaderboard-list">
-        {topScores.map((score, index) => {
-            const rank = index + 1;
+            <h1>Classement</h1>
 
-            return renderScoreRow(score, rank);
-        })}
-        </ol>
+            <ol className="leaderboard-list">
+                {topScores.map((score) => renderScoreRow(score))}
+            </ol>
 
-        {shouldShowCurrentPlayerAside && (
-            <section className="leaderboard-current-player">
-                <h2>Votre position</h2>
-                <ol className="leaderboard-list leaderboard-list--current">
-                    {renderScoreRow(currentPlayerScore, currentPlayerRank)}
-                </ol>
-            </section>
-        )}
+            {currentPlayerAsideScore !== null && (
+                <section className="leaderboard-current-player">
+                    <h2>Votre position</h2>
+                    <ol className="leaderboard-list leaderboard-list--current">
+                        {renderScoreRow(currentPlayerAsideScore)}
+                    </ol>
+                </section>
+            )}
 
-        <button className="button button--primary" onClick={() => new UserService().clearUsers()}>
-            Effacer le classement
-        </button>
-        
-        <button className="button button--secondary" onClick={() => onBackHome()}>
-            Retour à l'accueil
-        </button>
-
+            <button className="button button--secondary" onClick={onBackHome}>
+                Retour a l'accueil
+            </button>
         </main>
     );
 }

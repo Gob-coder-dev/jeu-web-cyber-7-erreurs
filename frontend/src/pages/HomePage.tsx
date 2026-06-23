@@ -62,7 +62,7 @@ function HomePage({
 
       <section className="home-page__scenarios" aria-label="Scénarios">
         {scenarios.map((scenario, index) => {
-          const scenarioScore = user.scenarioScores[scenario.id];
+          const scenarioScore = user.scenarioScores[scenario.id]?.score;
           const hasScore = scenarioScore !== undefined;
 
           return (

@@ -6,13 +6,17 @@ import ResultPage from "./ResultPage";
 import ScenarioIntroPage from "./ScenarioIntroPage";
 import type { User } from "../types/User";
 import type { Scenario } from "../types/Scenario";
-import { UserService } from "../services/userServices";
+import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
 import LeaderBoardPage from "./LeaderBoardPage";
 import { scenarios } from "../data/scenarios";
+import {
+  getLeaderboard,
+  getLeaderboardUser,
+  getOrCreateUser,
+  saveScenarioScore,
+} from "../services/apiClient";
 
 type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
-
-const userService = new UserService();
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -20,38 +24,25 @@ function App() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
   const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
-  const [globalScore, setGlobalScore] = useState(0);
-  const [scenarioScoresCompleted, setScenarioScoresCompleted] = useState<Record<string, number>>({});
-  const [completedScenarioIds, setCompletedScenarioIds] = useState<string[]>([]);
+  const [leaderboardScores, setLeaderboardScores] = useState<LeaderboardEntry[]>([]);
+  const [currentLeaderboardUser, setCurrentLeaderboardUser] =
+    useState<LeaderboardUserResult | null>(null);
 
+  async function refreshCurrentUser(userId: string) {
+    const refreshedUser = await getOrCreateUser(userId);
 
-  function handleLogin(pseudo: string) {
-    const existingUser = userService.getUserByPseudo(pseudo);
-    
-    if (existingUser) {
-      // Charger l'utilisateur existant avec sa progression
-      setUser(existingUser);
-      setCompletedScenarioIds(existingUser.completedScenarioIds);
-      setScenarioScoresCompleted(existingUser.scenarioScores);
-      setGlobalScore(existingUser.score);
-    } else {
-      // Créer un nouveau compte
-      const newUser: User = {
-        id: crypto.randomUUID(),
-        pseudo,
-        completedScenarioIds: [],
-        score: -1,
-        scenarioScores: {},
-        date: new Date().toISOString(),
-      };
-      userService.addUser(newUser);
-      setUser(newUser);
-      setCompletedScenarioIds([]);
-      setScenarioScoresCompleted({});
-      setGlobalScore(0);
+    setUser(refreshedUser);
+
+    return refreshedUser;
+  }
+
+  async function handleLogin(pseudo: string) {
+    try {
+      await refreshCurrentUser(pseudo);
+      setPage("home");
+    } catch (error) {
+      console.error("Impossible de connecter l'utilisateur", error);
     }
-    
-    setPage("home");
   }
 
   function handleLogout() {
@@ -60,8 +51,8 @@ function App() {
     setSelectedScenario(null);
     setScenarioScore(0);
     setScenarioRoundScores([]);
-    setGlobalScore(0);
-    setScenarioScoresCompleted({});
+    setLeaderboardScores([]);
+    setCurrentLeaderboardUser(null);
   }
 
   function handleStartScenario(scenario: Scenario) {
@@ -78,58 +69,51 @@ function App() {
     setPage("home");
   }
 
-  function handleGoResults(score: number, roundScores: number[]) {
-    if (selectedScenario === null) {
+  async function handleGoResults(score: number, roundScores: number[]) {
+    if (selectedScenario === null || user === null) {
       return;
     }
 
     const normalizedScore = Math.max(0, score);
-
-    const scenarioAlreadyCompleted = completedScenarioIds.includes(selectedScenario.id);
-    const nextCompletedScenarioIds = scenarioAlreadyCompleted
-      ? completedScenarioIds
-      : [
-          ...completedScenarioIds,
-          selectedScenario.id
-        ];
-    const nextGlobalScore = scenarioAlreadyCompleted
-      ? globalScore
-      : globalScore + normalizedScore;
+    const scenarioAlreadyCompleted = user.completedScenarioIds.includes(
+      selectedScenario.id,
+    );
 
     setScenarioScore(normalizedScore);
     setScenarioRoundScores(roundScores);
-    setGlobalScore(nextGlobalScore);
-    setCompletedScenarioIds(nextCompletedScenarioIds);
-    
-    const testScenarioAlreadyCompleted = scenarioScoresCompleted[selectedScenario.id] !== undefined;
-    const nextScenarioScoresCompleted = testScenarioAlreadyCompleted
-      ? scenarioScoresCompleted
-      : {
-          ...scenarioScoresCompleted,
-          [selectedScenario.id]: normalizedScore
-        };
-    setScenarioScoresCompleted(nextScenarioScoresCompleted);
 
-
-    if (user === null) {
-      return;
+    if (!scenarioAlreadyCompleted) {
+      try {
+        await saveScenarioScore(user.id, selectedScenario.id, normalizedScore);
+        await refreshCurrentUser(user.id);
+      } catch (error) {
+        console.error("Impossible de sauvegarder le score du scenario", error);
+      }
     }
-
-    const updatedUser: User = {
-        ...user,
-        completedScenarioIds: nextCompletedScenarioIds,
-        score: nextGlobalScore,
-        scenarioScores: nextScenarioScoresCompleted,
-        date: new Date().toISOString(),
-      };
-      setUser(updatedUser);
-      userService.updateUser(updatedUser);
 
     setPage("result");
   }
 
-  function handleGoLeaderBoard() {
-    setPage("leaderboard");
+  async function handleGoLeaderBoard() {
+    if (user === null) {
+      return;
+    }
+
+    try {
+      const [leaderboard, leaderboardUser] = await Promise.all([
+        getLeaderboard(),
+        getLeaderboardUser(user.id),
+      ]);
+
+      setLeaderboardScores(leaderboard);
+      setCurrentLeaderboardUser(leaderboardUser);
+      setPage("leaderboard");
+    } catch (error) {
+      console.error("Impossible de charger le classement", error);
+      setLeaderboardScores([]);
+      setCurrentLeaderboardUser(null);
+      setPage("leaderboard");
+    }
   }
 
   if (user === null) {
@@ -163,11 +147,11 @@ function App() {
         scenarioTitle={
           selectedScenario !== null
             ? `Dossier - ${selectedScenario.title}`
-            : "Scénario"
+            : "Scenario"
         }
         scenarioScore={scenarioScore}
         scenarioRoundScores={scenarioRoundScores}
-        globalScore={globalScore}
+        globalScore={user.globalScore}
         onBackHome={handleBackHome}
         onGoLeaderBoard={handleGoLeaderBoard}
       />
@@ -177,8 +161,8 @@ function App() {
   if (page === "leaderboard") {
     return (
       <LeaderBoardPage
-        scores={userService.getScores().filter(score => score.score >= 0)}
-        currentPseudo={user.pseudo}
+        topScores={leaderboardScores}
+        currentLeaderboardUser={currentLeaderboardUser}
         onBackHome={handleBackHome}
       />
     );
@@ -188,7 +172,7 @@ function App() {
     <HomePage
       user={user}
       scenarios={scenarios}
-      globalScore={globalScore}
+      globalScore={user.globalScore}
       onLogout={handleLogout}
       onGoLeaderBoard={handleGoLeaderBoard}
       onStartScenario={handleStartScenario}

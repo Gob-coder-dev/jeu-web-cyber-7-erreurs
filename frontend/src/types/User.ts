@@ -1,8 +1,17 @@
+export type ScenarioScore = {
+  score: number;
+  completedAt: string;
+};
+
 export type User = {
   id: string;
   pseudo: string;
+  pseudoKey: string;
+  hashedPassword: string | null;
+  emailAddress: string | null;
+  globalScore: number;
   completedScenarioIds: string[];
-  score: number;
-  scenarioScores: { [scenarioId: string]: number };
-  date: string;
+  scenarioScores: Record<string, ScenarioScore>;
+  createdAt: string;
+  updatedAt: string;
 };

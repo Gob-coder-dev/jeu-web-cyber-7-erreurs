@@ -33,6 +33,9 @@ server/data/companies/*.json
 .vite/
 **/.vite/
 
+#data
+backend/data/companies/*.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
