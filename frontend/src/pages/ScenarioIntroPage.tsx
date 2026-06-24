@@ -1,8 +1,8 @@
-import type { Scenario } from "../types/Scenario";
+import type { ScenarioIntro } from "../types/Scenario";
 import "./ScenarioIntroPage.css";
 
 type ScenarioIntroPageProps = {
-  scenario: Scenario;
+  scenario: ScenarioIntro;
   onStartGame: () => void;
   onBackHome: () => void;
 };
@@ -25,7 +25,7 @@ function ScenarioIntroPage({
 
         <aside className="scenario-intro-page__side">
           <div className="scenario-intro-page__case-summary">
-            <span>{scenario.questions.length}</span>
+            <span>{scenario.numberOfQuestions}</span>
             <p>pièces à examiner</p>
           </div>
 

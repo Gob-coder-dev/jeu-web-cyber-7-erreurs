@@ -32,7 +32,7 @@ export type PublicQuestion = {
   id: string;
   title: string;
   instruction: string;
-  imageUrl: string;
+  image: string;
   imageWidth: number;
   imageHeight: number;
   hotspotCount: number;

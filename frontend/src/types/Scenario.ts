@@ -7,3 +7,10 @@ export type Scenario = {
   questions: Question[];
   globalAttackScenario?: string;
 };
+
+export type ScenarioIntro = {
+    id: string;
+    title: string;
+    description: string;
+    numberOfQuestions: number;
+}

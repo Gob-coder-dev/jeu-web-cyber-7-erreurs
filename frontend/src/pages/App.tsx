@@ -1,19 +1,17 @@
 import { useState } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
-import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
 import ScenarioIntroPage from "./ScenarioIntroPage";
 import type { User } from "../types/User";
-import type { Scenario } from "../types/Scenario";
+import type { ScenarioIntro } from "../types/Scenario";
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
 import LeaderBoardPage from "./LeaderBoardPage";
-import { scenarios } from "../data/scenarios";
 import {
   getLeaderboard,
   getLeaderboardUser,
   getOrCreateUser,
-  saveScenarioScore,
+  getScenariosCard,
 } from "../services/apiClient";
 
 type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
@@ -21,24 +19,22 @@ type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<Page>("home");
-  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
   const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
   const [leaderboardScores, setLeaderboardScores] = useState<LeaderboardEntry[]>([]);
-  const [currentLeaderboardUser, setCurrentLeaderboardUser] =
-    useState<LeaderboardUserResult | null>(null);
-
-  async function refreshCurrentUser(userId: string) {
-    const refreshedUser = await getOrCreateUser(userId);
-
-    setUser(refreshedUser);
-
-    return refreshedUser;
-  }
+  const [currentLeaderboardUser, setCurrentLeaderboardUser] = useState<LeaderboardUserResult | null>(null);
+  const [scenarioIntros, setScenarioIntros] = useState<ScenarioIntro[]>([]);
 
   async function handleLogin(pseudo: string) {
     try {
-      await refreshCurrentUser(pseudo);
+      const [connectedUser, cards] = await Promise.all([
+        getOrCreateUser(pseudo),
+        getScenariosCard(),
+      ]);
+
+      setUser(connectedUser);
+      setScenarioIntros(cards);
       setPage("home");
     } catch (error) {
       console.error("Impossible de connecter l'utilisateur", error);
@@ -48,15 +44,16 @@ function App() {
   function handleLogout() {
     setUser(null);
     setPage("home");
-    setSelectedScenario(null);
+    setSelectedScenarioId(null);
     setScenarioScore(0);
     setScenarioRoundScores([]);
     setLeaderboardScores([]);
     setCurrentLeaderboardUser(null);
+    setScenarioIntros([]);
   }
 
-  function handleStartScenario(scenario: Scenario) {
-    setSelectedScenario(scenario);
+  function handleStartScenario(scenarioId: string) {
+    setSelectedScenarioId(scenarioId);
     setPage("scenarioIntro");
   }
 
@@ -65,33 +62,8 @@ function App() {
   }
 
   function handleBackHome() {
-    setSelectedScenario(null);
+    setSelectedScenarioId(null);
     setPage("home");
-  }
-
-  async function handleGoResults(score: number, roundScores: number[]) {
-    if (selectedScenario === null || user === null) {
-      return;
-    }
-
-    const normalizedScore = Math.max(0, score);
-    const scenarioAlreadyCompleted = user.completedScenarioIds.includes(
-      selectedScenario.id,
-    );
-
-    setScenarioScore(normalizedScore);
-    setScenarioRoundScores(roundScores);
-
-    if (!scenarioAlreadyCompleted) {
-      try {
-        await saveScenarioScore(user.id, selectedScenario.id, normalizedScore);
-        await refreshCurrentUser(user.id);
-      } catch (error) {
-        console.error("Impossible de sauvegarder le score du scenario", error);
-      }
-    }
-
-    setPage("result");
   }
 
   async function handleGoLeaderBoard() {
@@ -116,37 +88,56 @@ function App() {
     }
   }
 
+  const selectedScenarioIntro =
+    selectedScenarioId === null
+      ? null
+      : (scenarioIntros.find(
+          (scenario) => scenario.id === selectedScenarioId,
+        ) ?? null);
+
   if (user === null) {
     return <LoginPage onLogin={handleLogin} />;
   }
 
-  if (page === "scenarioIntro" && selectedScenario !== null) {
+  if (page === "scenarioIntro" && selectedScenarioId !== null) {
+    if (selectedScenarioIntro === null) {
+      return (
+        <main className="page">
+          <h1>Scénario introuvable</h1>
+          <button className="button" onClick={handleBackHome}>
+            Retour aux scénarios
+          </button>
+        </main>
+      );
+    }
+
     return (
       <ScenarioIntroPage
-        scenario={selectedScenario}
+        scenario={selectedScenarioIntro}
         onStartGame={handleStartGame}
         onBackHome={handleBackHome}
       />
     );
   }
 
-  if (page === "game" && selectedScenario !== null) {
+  if (page === "game" && selectedScenarioId !== null) {
     return (
-      <GamePage
-        scenario={selectedScenario}
-        onBackHome={handleBackHome}
-        onGoResults={handleGoResults}
-      />
+      <main className="page">
+        <h1>Chargement du jeu</h1>
+        <p>La première question sera chargée par le backend à l’étape 2.</p>
+        <button className="button button--secondary" onClick={handleBackHome}>
+          Retour aux scénarios
+        </button>
+      </main>
     );
   }
 
   if (page === "result") {
     return (
       <ResultPage
-        scenario={selectedScenario || undefined}
         scenarioTitle={
-          selectedScenario !== null
-            ? `Dossier - ${selectedScenario.title}`
+          selectedScenarioIntro !== null
+            ? `Dossier - ${selectedScenarioIntro.title}`
             : "Scenario"
         }
         scenarioScore={scenarioScore}
@@ -171,7 +162,7 @@ function App() {
   return (
     <HomePage
       user={user}
-      scenarios={scenarios}
+      scenarioIntros={scenarioIntros}
       globalScore={user.globalScore}
       onLogout={handleLogout}
       onGoLeaderBoard={handleGoLeaderBoard}

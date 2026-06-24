@@ -21,8 +21,8 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 app.use('/api/users', usersRoutes);
 app.use('/api/scores', scoresRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
-app.use('/images', express.static(path.resolve(process.cwd(), 'public/images')));
 app.use('/api/game', gameRoutes);
+app.use('/images', express.static(path.resolve(process.cwd(), 'public/images')));
 
 app.use((req: express.Request, res: express.Response) => {
   res.status(404).json({ message: 'Route not found' });

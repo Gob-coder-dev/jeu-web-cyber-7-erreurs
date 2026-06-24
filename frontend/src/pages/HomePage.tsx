@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Scenario } from "../types/Scenario";
+import type { ScenarioIntro } from "../types/Scenario";
 import type { User } from "../types/User";
 import { ConfirmReplayModal } from "../components/ConfirmReplayModal";
 import { formatScenarioTitle } from "../utils/formatGameLabels";
@@ -7,32 +7,32 @@ import "./HomePage.css";
 
 type HomePageProps = {
   user: User;
-  scenarios: Scenario[];
+  scenarioIntros: ScenarioIntro[];
   globalScore: number;
   onLogout: () => void;
   onGoLeaderBoard: () => void;
-  onStartScenario: (scenario: Scenario) => void;
+  onStartScenario: (scenarioId: string) => void;
 };
 
 function HomePage({
   user,
-  scenarios,
+  scenarioIntros,
   globalScore,
   onLogout,
   onGoLeaderBoard,
   onStartScenario,
 }: HomePageProps) {
-  const [scenarioToReplay, setScenarioToReplay] = useState<Scenario | null>(null);
+  const [scenarioToReplay, setScenarioToReplay] = useState<string | null>(null);
 
-  function handleStartScenario(scenario: Scenario) {
-    const hasPlayed = user.scenarioScores[scenario.id] !== undefined;
+  function handleStartScenario(scenarioId: string) {
+    const hasPlayed = user.completedScenarioIds.find((scenario) => scenario === scenarioId) !== undefined;
 
     if (!hasPlayed) {
-      onStartScenario(scenario);
+      onStartScenario(scenarioId);
       return;
     }
 
-    setScenarioToReplay(scenario);
+    setScenarioToReplay(scenarioId);
   }
 
   return (
@@ -61,14 +61,14 @@ function HomePage({
       </header>
 
       <section className="home-page__scenarios" aria-label="Scénarios">
-        {scenarios.map((scenario, index) => {
+        {scenarioIntros.map((scenario, index) => {
           const scenarioScore = user.scenarioScores[scenario.id]?.score;
           const hasScore = scenarioScore !== undefined;
 
           return (
             <article className="home-page__scenario" key={scenario.id}>
               <div className="home-page__scenario-meta">
-                <span>{scenario.questions.length} questions</span>
+                <span>{scenario.numberOfQuestions} questions</span>
                 <span className="home-page__status-slot">
                   {hasScore && "Terminé"}
                 </span>
@@ -85,7 +85,7 @@ function HomePage({
                 <h2>{formatScenarioTitle(scenario.title, index)}</h2>
                 <button
                   className="button home-page__button--play"
-                  onClick={() => handleStartScenario(scenario)}
+                  onClick={() => handleStartScenario(scenario.id)}
                 >
                   Jouer
                 </button>
