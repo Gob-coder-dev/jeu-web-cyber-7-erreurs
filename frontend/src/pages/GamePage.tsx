@@ -32,6 +32,7 @@ function GamePage({
     0
   );
   const buttonReady = timerDisabled || countdown === 0;
+  const [magnifierActive, setMagnifierActive] = useState(false);
 
   // Raccourcis clavier: Shift + D pour debug, Shift + T pour désactiver le timer
   useEffect(() => {
@@ -62,6 +63,12 @@ function GamePage({
 
     return () => window.clearInterval(countdownInterval);
   }, [countdown, showImage, timerDisabled]);
+
+  useEffect(() => {
+    if (showImage) {
+        gameRef.current?.toggleMagnifier(magnifierActive);
+      }
+  }, [magnifierActive, showImage, questionIndex]);
 
   function handleValidate() {
     const game = gameRef.current;
@@ -136,19 +143,31 @@ function GamePage({
                 )}
               </div>
 
-              {!hasValidatedCurrentQuestion ? (
-                <button className="button" onClick={handleValidate}>
-                  Valider
-                </button>
-              ) : questionIndex < scenario.questions.length - 1 ? (
-                <button className="button" onClick={handleNextQuestion}>
-                  Pièce suivante
-                </button>
-              ) : (
-                <button className="button" onClick={() => onGoResults(totalScore, roundScores)}>
-                  Voir les résultats
-                </button>
-              )}
+              <div style={{ display: "flex", gap: "12px" }}>
+                {showImage && !hasValidatedCurrentQuestion && (
+                  <button 
+                    type="button"
+                    className={`button ${magnifierActive ? 'button--active' : 'button--secondary'}`} 
+                    onClick={() => setMagnifierActive(!magnifierActive)}
+                  >
+                    {magnifierActive ? "Désactiver la loupe" : "Activer la loupe"}
+                  </button>
+                )}
+
+                {!hasValidatedCurrentQuestion ? (
+                  <button className="button" onClick={handleValidate}>
+                    Valider
+                  </button>
+                ) : questionIndex < scenario.questions.length - 1 ? (
+                  <button className="button" onClick={handleNextQuestion}>
+                    Pièce suivante
+                  </button>
+                ) : (
+                  <button className="button" onClick={() => onGoResults(totalScore, roundScores)}>
+                    Voir les résultats
+                  </button>
+                )}
+              </div>
             </div>
           </>
         )}

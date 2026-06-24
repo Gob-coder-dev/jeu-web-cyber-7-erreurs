@@ -18,6 +18,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private currentTooltipHotspotId: string | null = null;
   private debugHotspots: Phaser.GameObjects.Rectangle[] = [];
   private showDebugHotspots: boolean = false;
+  private magnifierCamera!: Phaser.Cameras.Scene2D.Camera;
+  private loupeSize = 160;
+  private zoomFactor = 2.5;
+  private isMagnifierEnabled: boolean = false;
 
   constructor(question: Question) {
     super("CyberDifferenceScene");
@@ -31,7 +35,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
   create() {
     const image = this.add.image(0, 0, "question-image").setOrigin(0, 0);
     this.questionImage = image;
-
+    this.magnifierCamera = this.cameras.add(0, 0, this.loupeSize, this.loupeSize);
+    this.magnifierCamera.setZoom(this.zoomFactor);
+    this.magnifierCamera.setVisible(false);
+    // Tooltip d'explication des hotspots
     this.hotspotTooltip = this.add
       .text(0, 0, "", {
         fontSize: "14px",
@@ -71,20 +78,12 @@ export class CyberDifferenceScene extends Phaser.Scene {
         return;
       }
 
-      if (this.hotspotTooltip === undefined) {
-        return;
-      }
+      if (this.hotspotTooltip === undefined) return;
+      if (this.currentTooltipHotspotId === hoveredHotspot.id && this.hotspotTooltip.visible) return;
 
-      // Si on affiche déjà la bulle d'explication, la laisser comme ça.
-      if (this.currentTooltipHotspotId === hoveredHotspot.id && this.hotspotTooltip.visible) {
-        return;
-      }
-
-      // Donner l'id de l'hotspot actuel pour que les mouvements de la souris ne repositionne pas l'explication.
       this.currentTooltipHotspotId = hoveredHotspot.id;
       this.hotspotTooltip.setText(hoveredHotspot.explanation);
 
-      // Positionne l'explication près de la zone du hotspot (à droite si possible).
       const tooltipWidth = this.hotspotTooltip.width;
       const tooltipHeight = this.hotspotTooltip.height;
 
@@ -95,78 +94,67 @@ export class CyberDifferenceScene extends Phaser.Scene {
       let tooltipX = hotspotX + hotspotW + 12;
       let tooltipY = hotspotY;
 
-      // S'il n'y a pas la place à droite, place à gauche de l'hotspot.
       if (tooltipX + tooltipWidth > this.scale.width) {
         tooltipX = hotspotX - tooltipWidth - 12;
       }
-      if (tooltipX < 0) {
-        tooltipX = 12;
-      }
+      if (tooltipX < 0) tooltipX = 12;
 
       if (tooltipY + tooltipHeight > this.scale.height) {
         tooltipY = this.scale.height - tooltipHeight - 12;
       }
-      if (tooltipY < 0) {
-        tooltipY = 12;
-      }
+      if (tooltipY < 0) tooltipY = 12;
 
       this.hotspotTooltip.setPosition(tooltipX, tooltipY);
       this.hotspotTooltip.setVisible(true);
     };
 
-    image.on("pointermove", updateHotspotTooltip);
+    this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+      updateHotspotTooltip(pointer);
+      if (!this.isMagnifierEnabled || this.hasValidated) {
+        this.magnifierCamera.setVisible(false);
+        return;
+      }
+      this.magnifierCamera.setVisible(true);
+      const camX = pointer.x - this.loupeSize / 2;
+      const camY = pointer.y - this.loupeSize / 2;
+      this.magnifierCamera.setPosition(camX, camY);
+      this.magnifierCamera.centerOn(pointer.x, pointer.y);
+    });
 
-    image.on("pointerout", () => {
+    this.input.on("gameout", () => {
       this.hotspotTooltip?.setVisible(false);
+      this.magnifierCamera.setVisible(false);
     });
 
     image.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (this.hasValidated) {
-        return;
-      }
-
-      if (this.selectedMarkers.length >= this.question.hotspots.length) {
-        return;
-      }
-
-      //marker des zones selectionnées par le joueur
+      if (this.hasValidated) return;
+      if (this.selectedMarkers.length >= this.question.hotspots.length) return;
       const marker = this.add
         .circle(pointer.x, pointer.y, 20, 0x00aaff, 0.25)
         .setStrokeStyle(3, 0x00aaff)
-        .setInteractive();
-
+        .setInteractive()
+        .setDepth(4);
       this.selectedMarkers.push({
         marker,
         imageX: pointer.x / this.imageScale,
         imageY: pointer.y / this.imageScale,
       });
 
-      const updateMarkerTooltip = (markerPointer: Phaser.Input.Pointer) => {
-        updateHotspotTooltip(markerPointer);
-      };
-
-      marker.on("pointermove", updateMarkerTooltip);
       marker.on("pointerout", () => {
         this.hotspotTooltip?.setVisible(false);
       });
 
-      //supprimer le marker au click pour permettre au joueur de corriger ses erreurs
-      //suppression visuelle du marker
-      marker.on("pointerdown", () => {
-        if (this.hasValidated) {
-          return;
-        }
-
+      marker.on("pointerdown", (pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) => {
+        if (this.hasValidated) return;
+        event.stopPropagation();
         marker.destroy();
-
-        //suppression du marker de la liste des markers selectionnés
         this.selectedMarkers = this.selectedMarkers.filter(
           (selectedMarker) => selectedMarker.marker !== marker
         );
       });
     });
 
-    // zone debug pour afficher les zones de bonne réponse
+    // Génération des zones de debug si activées
     this.question.hotspots.forEach((hotspot) => {
       const debugHotspot = this.add
         .rectangle(
@@ -184,13 +172,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
     });
 
     this.gameTimer = this.time.now;
-    
   }
 
   public resizeScene = (width: number, height: number) => {
-    if (this.questionImage === undefined) {
-      return;
-    }
+    if (this.questionImage === undefined) return;
 
     this.imageScale = Math.min(
       width / this.questionImage.width,
@@ -205,12 +190,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
     this.debugHotspots.forEach((debugHotspot, index) => {
       const hotspot = this.question.hotspots[index];
-
       debugHotspot.setPosition(
         hotspot.x * this.imageScale,
         hotspot.y * this.imageScale
       );
-
       debugHotspot.setSize(
         hotspot.width * this.imageScale,
         hotspot.height * this.imageScale
@@ -219,19 +202,16 @@ export class CyberDifferenceScene extends Phaser.Scene {
   };
 
   public validateSelections = () => {
-    if (this.hasValidated) {
-      return 0;
-    }
+    if (this.hasValidated) return 0;
 
     this.hasValidated = true;
+    this.toggleMagnifier(false);
 
     this.selectedMarkers.forEach((marker) => {
       const matchingHotspot = this.question.hotspots.find((hotspot) => {
         const hotspotAlreadyValidated = this.validatedHotspotIds.has(hotspot.id);
 
-        if (hotspotAlreadyValidated) {
-          return false;
-        }
+        if (hotspotAlreadyValidated) return false;
 
         return (
           marker.imageX >= hotspot.x &&
@@ -244,27 +224,20 @@ export class CyberDifferenceScene extends Phaser.Scene {
       if (matchingHotspot) {
         this.numberGoodAnswers += 1;
         this.validatedHotspotIds.add(matchingHotspot.id);
-
         marker.marker.setFillStyle(0x00ff00, 0.35);
         marker.marker.setStrokeStyle(3, 0x00ff00);
-
       } else {
         marker.marker.setFillStyle(0xff0000, 0.35);
         marker.marker.setStrokeStyle(3, 0xff0000);
       }
     });
-    
-    // calcul du score total
-    const timeTaken = (this.time.now - this.gameTimer) / 1000;
 
+    const timeTaken = (this.time.now - this.gameTimer) / 1000;
     const roundScore = Math.round(
-                        this.numberGoodAnswers * 20
-                        + Math.max(0, 20
-                          * this.numberGoodAnswers
-                          - timeTaken * 2
-                        )
-                        - (this.question.hotspots.length - this.numberGoodAnswers) * 5
-                      );
+      this.numberGoodAnswers * 20 +
+      Math.max(0, 20 * this.numberGoodAnswers - timeTaken * 2) -
+      (this.question.hotspots.length - this.numberGoodAnswers) * 5
+    );
 
     return roundScore;
   };
@@ -275,4 +248,11 @@ export class CyberDifferenceScene extends Phaser.Scene {
       hotspot.setVisible(this.showDebugHotspots);
     });
   };
+
+  public toggleMagnifier(isActive: boolean) {
+    this.isMagnifierEnabled = isActive;
+    if (!isActive) {
+      if (this.magnifierCamera) this.magnifierCamera.setVisible(false);
+    }
+  }
 }

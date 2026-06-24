@@ -10,6 +10,7 @@ type PhaserGameProps = {
 export type PhaserGameHandle = {
   validateSelections: () => number;
   toggleDebugHotspots: () => void;
+  toggleMagnifier: (isActive: boolean) => void;
 };
 
 type GameSize = {
@@ -44,6 +45,9 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
         },
         toggleDebugHotspots: () => {
           sceneRef.current?.toggleDebugHotspots();
+        },
+        toggleMagnifier: (isActive: boolean) => {
+          sceneRef.current?.toggleMagnifier(isActive);
         },
       }));
 
