@@ -18,3 +18,18 @@ export type Question = {
   imageHeight: number;
   hotspots: Hotspot[];
 };
+
+export type PublicQuestion = {
+  id: string;
+  title: string;
+  instruction: string;
+  image: string;
+  imageWidth: number;
+  imageHeight: number;
+  hotspotCount: number;
+};
+
+export type SelectionPoint = {
+  x: number;
+  y: number;
+};

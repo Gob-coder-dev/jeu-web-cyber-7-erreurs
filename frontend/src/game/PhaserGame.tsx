@@ -1,15 +1,23 @@
-import { useImperativeHandle, forwardRef, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import Phaser from "phaser";
-import type { Question } from "../types/Question";
+import type {
+  PublicQuestion,
+  SelectionPoint,
+} from "../types/Question";
 import { CyberDifferenceScene } from "./scenes/CyberDifferenceScene";
 
 type PhaserGameProps = {
-  question: Question;
+  question: PublicQuestion;
 };
 
 export type PhaserGameHandle = {
-  validateSelections: () => number;
-  toggleDebugHotspots: () => void;
+  getSelections: () => SelectionPoint[];
 };
 
 type GameSize = {
@@ -17,12 +25,9 @@ type GameSize = {
   height: number;
 };
 
-function calculateGameSize(question: Question, availableWidth: number): GameSize {
+function calculateGameSize(question: PublicQuestion, availableWidth: number): GameSize {
   const maxWidth = Math.min(availableWidth, question.imageWidth);
-  const scale = Math.min(
-    maxWidth / question.imageWidth,
-    1.4
-  );
+  const scale = Math.min(maxWidth / question.imageWidth, 1.4);
 
   return {
     width: Math.round(question.imageWidth * scale),
@@ -35,17 +40,12 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
     const containerRef = useRef<HTMLDivElement | null>(null);
     const phaserGameRef = useRef<Phaser.Game | null>(null);
     const sceneRef = useRef<CyberDifferenceScene | null>(null);
-    const currentQuestionRef = useRef<Question | null>(null);
+    const currentQuestionRef = useRef<PublicQuestion | null>(null);
     const [gameSize, setGameSize] = useState<GameSize | null>(null);
 
     useImperativeHandle(ref, () => ({
-        validateSelections: () => {
-          return sceneRef.current?.validateSelections() ?? 0;
-        },
-        toggleDebugHotspots: () => {
-          sceneRef.current?.toggleDebugHotspots();
-        },
-      }));
+      getSelections: () => sceneRef.current?.getSelections() ?? [],
+    }));
 
     useEffect(() => {
       const container = containerRef.current;
@@ -94,7 +94,10 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
         return;
       }
 
-      if (phaserGameRef.current !== null && currentQuestionRef.current === question) {
+      if (
+        phaserGameRef.current !== null &&
+        currentQuestionRef.current === question
+      ) {
         phaserGameRef.current.scale.resize(gameSize.width, gameSize.height);
         sceneRef.current?.resizeScene(gameSize.width, gameSize.height);
         return;
@@ -125,6 +128,7 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
           },
         },
       });
+
       phaserGameRef.current = game;
       currentQuestionRef.current = question;
     }, [question, gameSize]);
@@ -139,7 +143,7 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
     }, []);
 
     return <div className="phaser-game" ref={containerRef} />;
-  }
+  },
 );
 
 export default PhaserGame;

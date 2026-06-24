@@ -92,12 +92,9 @@ Phaser gere uniquement le gameplay dans l'image :
 - affichage de l'image ;
 - clics ;
 - marqueurs ;
-- validation ;
-- score d'une question ;
-- tooltips d'explication apres validation ;
-- hotspots de debug.
+- collecte des selections en coordonnees originales.
 
-Ne pas mettre la logique de scenario dans `CyberDifferenceScene`. La scene doit rester centree sur une seule `Question`.
+La validation, le chronometre de score et le calcul des points doivent progressivement passer dans le backend. Ne pas mettre la logique de scenario dans `CyberDifferenceScene`.
 
 ### Pont React / Phaser
 
@@ -106,29 +103,16 @@ Ne pas mettre la logique de scenario dans `CyberDifferenceScene`. La scene doit 
 Methodes exposees actuellement :
 
 ```ts
-validateSelections(): number
-toggleDebugHotspots(): void
+getSelections(): SelectionPoint[]
 ```
 
 Ne pas recreer le jeu Phaser a chaque resize. Utiliser `phaserGameRef.current.scale.resize(...)` et `sceneRef.current?.resizeScene(...)`.
 
-## Donnees frontend
+## Donnees de jeu
 
-Les scenarios sont dans :
+Les scenarios prives sont dans `backend/data/game/scenarios/`. Le frontend ne recoit que les cartes publiques, puis une question publique lors de la creation d'une tentative.
 
-```txt
-frontend/src/data/scenarios/
-```
-
-Chaque scenario doit etre dans son propre fichier.
-
-Ajouter un nouveau scenario implique :
-
-1. creer un fichier dans `frontend/src/data/scenarios/` ;
-2. exporter un objet `Scenario` ;
-3. l'ajouter dans `frontend/src/data/scenarios/index.ts`.
-
-Ne pas recreer un gros fichier `questions.ts` global.
+Les hotspots et les textes de correction ne doivent pas etre envoyes avant la validation.
 
 Types frontend principaux :
 
@@ -193,6 +177,7 @@ Les routers sont branches dans `backend/src/app.ts`.
 ```txt
 app.use('/api/users', usersRoutes)
 app.use('/api/scores', scoresRoutes)
+app.use('/api/game', gameRoutes)
 ```
 
 Routes utilisateurs :
@@ -209,6 +194,15 @@ GET   /api/scores/users/:userId/scenarios/:scenarioId
 GET   /api/scores/users/:userId
 PATCH /api/scores/users/:userId/scenarios/:scenarioId
 ```
+
+Routes de jeu :
+
+```txt
+GET  /api/game/scenarios
+POST /api/game/attempts
+```
+
+`POST /api/game/attempts` cree une tentative en memoire et renvoie la premiere `PublicQuestion`.
 
 `PATCH` est utilise pour enregistrer le score d'un scenario car on modifie une partie d'un utilisateur existant.
 
@@ -227,9 +221,8 @@ Un fichier JSON par entreprise.
 Etat actuel :
 
 - `backend/data/companies/demo.json` existe comme fichier d'exemple.
-- `backend/src/repositories/companyJson.repository.ts` utilise encore un stockage temporaire en memoire.
-- Le repository est deja aligne sur le type `CompanyData`.
-- La lecture/ecriture reelle du fichier JSON reste a implementer.
+- `backend/src/repositories/companyJson.repository.ts` lit et ecrit ce fichier JSON.
+- Les tentatives de jeu sont provisoirement conservees en memoire dans `gameAttempt.repository.ts`.
 
 Les vrais fichiers clients/scores ne doivent pas etre commits. Garder seulement des donnees d'exemple non sensibles.
 
@@ -307,16 +300,15 @@ Le branchement complet du frontend sur le backend n'est pas encore termine.
 
 ## Raccourcis de debug
 
-- `Shift + D` : affiche ou cache les zones de bonnes reponses.
 - `Shift + T` : active ou desactive le timer avant affichage de l'image.
 
 ## Points d'attention actuels
 
 Le projet a evolue vers une structure frontend/backend, mais certains points techniques peuvent encore etre ameliores :
 
-- Le frontend utilise encore principalement `localStorage`.
-- Le backend n'est pas encore branche au frontend.
-- Le repository backend est encore en memoire et n'ecrit pas encore dans `backend/data/companies/demo.json`.
+- Le frontend charge les utilisateurs, le leaderboard, les cartes de scenario et le debut des tentatives depuis le backend.
+- La validation des selections et la sauvegarde serveur du score calcule restent a implementer.
+- Les tentatives sont perdues au redemarrage du backend tant qu'elles restent en memoire.
 - `UserService.getScores()` peut encore retourner des donnees issues des utilisateurs et les caster en `Score[]`.
 - Au login d'un utilisateur existant, verifier que tous les etats React necessaires sont bien recharges depuis `User`, notamment les scores par scenario.
 - `ScoreService` frontend peut devenir inutile si tout le leaderboard passe par le backend.

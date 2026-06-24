@@ -74,14 +74,6 @@ Questions :
 ```txt
 frontend/
   src/
-    data/
-      scenarios/
-        index.ts
-        scenario1.ts
-        scenario2.ts
-        scenario3.ts
-        scenario4.ts
-
     game/
       PhaserGame.tsx
       scenes/
@@ -100,6 +92,7 @@ frontend/
       userServices.ts
 
     types/
+      GameSession.ts
       Question.ts
       Scenario.ts
       Score.ts
@@ -109,6 +102,11 @@ backend/
   data/
     companies/
       demo.json
+    game/
+      scenarios/
+
+  public/
+    images/
 
   src/
     app.ts
@@ -117,17 +115,23 @@ backend/
       users.controller.ts
       scores.controller.ts
       leaderboard.controller.ts
+      game.controller.ts
     repositories/
       companyJson.repository.ts
+      gameAttempt.repository.ts
+      gameScenario.repository.ts
     routes/
       users.routes.ts
       scores.routes.ts
       leaderboard.routes.ts
+      game.routes.ts
     services/
       users.service.ts
       scores.service.ts
+      game.service.ts
     types/
       CompanyData.ts
+      GameData.ts
 ```
 
 ## Frontend
@@ -151,10 +155,7 @@ Phaser gere uniquement la zone interactive de l'image :
 - affichage de l'image ;
 - clics du joueur ;
 - creation et suppression des marqueurs ;
-- validation des hotspots ;
-- calcul du score de la question ;
-- affichage des explications apres validation ;
-- affichage optionnel des zones de debug.
+- collecte des selections dans les coordonnees originales de l'image.
 
 La scene Phaser principale est `CyberDifferenceScene`.
 
@@ -168,21 +169,13 @@ React affiche :
 <PhaserGame question={question} />
 ```
 
-Puis appelle la methode exposee par `ref` quand le joueur clique sur Valider :
+Le pont expose les selections placees par le joueur :
 
 ```ts
-validateSelections()
+getSelections()
 ```
 
-Cette methode appelle ensuite la scene Phaser pour calculer le score de la question.
-
-Le pont expose aussi :
-
-```ts
-toggleDebugHotspots()
-```
-
-pour afficher ou cacher les zones de bonnes reponses pendant le debug.
+La validation et le calcul du score seront effectues par le backend.
 
 ## Backend
 
@@ -190,7 +183,7 @@ Le backend est une API Express en TypeScript situee dans `backend/`.
 
 Il est en cours de construction. L'objectif est de remplacer progressivement le stockage `localStorage` du frontend par un stockage serveur base sur des fichiers JSON, avec a terme un fichier JSON par entreprise.
 
-Pour simplifier le developpement actuel, le backend travaille sur une entreprise de demonstration et un stockage temporaire en memoire dans `companyJson.repository.ts`.
+Pour simplifier le developpement actuel, le backend travaille sur une entreprise de demonstration stockee dans `backend/data/companies/demo.json`.
 
 ### Routes actuelles
 
@@ -199,6 +192,8 @@ Les routes sont branchees dans `backend/src/app.ts`.
 ```txt
 /api/users
 /api/scores
+/api/leaderboard
+/api/game
 ```
 
 Routes utilisateurs :
@@ -218,6 +213,15 @@ PATCH /api/scores/users/:userId/scenarios/:scenarioId
 
 `PATCH` sert a enregistrer le score d'un scenario pour un utilisateur.
 
+Routes de jeu :
+
+```txt
+GET  /api/game/scenarios
+POST /api/game/attempts
+```
+
+La creation d'une tentative renvoie uniquement la premiere question publique, sans hotspots ni correction.
+
 ### Couches backend
 
 Le backend suit cette separation :
@@ -236,7 +240,7 @@ repositories
   -> lisent/ecrivent le stockage
 ```
 
-`companyJson.repository.ts` simule actuellement le stockage avec un objet `CompanyData` en memoire. Plus tard, cette couche devra lire et ecrire les fichiers JSON dans `backend/data/companies/`.
+`companyJson.repository.ts` lit et ecrit le fichier de l'entreprise de demonstration. Les tentatives de jeu sont provisoirement conservees en memoire.
 
 ### Structure de donnees backend
 
@@ -301,10 +305,10 @@ Chaque fichier de scenario contient directement ses questions. Cela permet de ga
 - les explications ;
 - le scenario d'attaque complet affiche en fin de scenario.
 
-La liste des scenarios disponibles est exportee depuis :
+La liste des scenarios prives est exportee depuis :
 
 ```txt
-frontend/src/data/scenarios/index.ts
+backend/data/game/scenarios/
 ```
 
 ## Progression et leaderboard
@@ -321,14 +325,13 @@ Le fichier `demo.json` sert d'exemple. Les vrais fichiers clients et scores ne d
 
 Etat actuel :
 
-- le frontend n'est pas encore completement branche au backend ;
-- le backend expose deja des routes utilisateurs et scores ;
-- le repository backend utilise encore un stockage en memoire ;
-- la lecture/ecriture reelle des fichiers JSON reste a implementer.
+- le frontend charge les utilisateurs, le leaderboard et les cartes depuis le backend ;
+- `POST /api/game/attempts` cree une tentative et renvoie la premiere question publique ;
+- les hotspots restent uniquement dans le backend ;
+- la validation serveur et le passage a la question suivante restent a implementer.
 
 ## Raccourcis de debug
 
-- `Shift + D` : affiche ou cache les zones de bonnes reponses.
 - `Shift + T` : active ou desactive le timer avant affichage de l'image.
 
 ## Installation

@@ -5,12 +5,16 @@ type ScenarioIntroPageProps = {
   scenario: ScenarioIntro;
   onStartGame: () => void;
   onBackHome: () => void;
+  isStarting: boolean;
+  startError: string | null;
 };
 
 function ScenarioIntroPage({
   scenario,
   onStartGame,
   onBackHome,
+  isStarting,
+  startError,
 }: ScenarioIntroPageProps) {
   return (
     <main className="page scenario-intro-page">
@@ -30,13 +34,25 @@ function ScenarioIntroPage({
           </div>
 
           <div className="scenario-intro-page__actions">
-            <button className="button" onClick={onStartGame}>
-              Commencer l'enquête
+            <button
+              className="button"
+              disabled={isStarting}
+              onClick={onStartGame}
+            >
+              {isStarting ? "Chargement..." : "Commencer l'enquête"}
             </button>
-            <button className="button button--secondary" onClick={onBackHome}>
+            <button
+              className="button button--secondary"
+              disabled={isStarting}
+              onClick={onBackHome}
+            >
               Retour aux scénarios
             </button>
           </div>
+
+          {startError !== null && (
+            <p role="alert">{startError}</p>
+          )}
         </aside>
       </section>
     </main>

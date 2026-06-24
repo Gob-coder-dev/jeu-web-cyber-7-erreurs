@@ -1,9 +1,11 @@
 import { useState } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
+import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
 import ScenarioIntroPage from "./ScenarioIntroPage";
 import type { User } from "../types/User";
+import type { StartScenarioResult } from "../types/GameSession";
 import type { ScenarioIntro } from "../types/Scenario";
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
 import LeaderBoardPage from "./LeaderBoardPage";
@@ -12,6 +14,7 @@ import {
   getLeaderboardUser,
   getOrCreateUser,
   getScenariosCard,
+  startScenario,
 } from "../services/apiClient";
 
 type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
@@ -25,6 +28,10 @@ function App() {
   const [leaderboardScores, setLeaderboardScores] = useState<LeaderboardEntry[]>([]);
   const [currentLeaderboardUser, setCurrentLeaderboardUser] = useState<LeaderboardUserResult | null>(null);
   const [scenarioIntros, setScenarioIntros] = useState<ScenarioIntro[]>([]);
+  const [gameSession, setGameSession] =
+    useState<StartScenarioResult | null>(null);
+  const [isStartingGame, setIsStartingGame] = useState(false);
+  const [startGameError, setStartGameError] = useState<string | null>(null);
 
   async function handleLogin(pseudo: string) {
     try {
@@ -50,19 +57,48 @@ function App() {
     setLeaderboardScores([]);
     setCurrentLeaderboardUser(null);
     setScenarioIntros([]);
+    setGameSession(null);
+    setIsStartingGame(false);
+    setStartGameError(null);
   }
 
   function handleStartScenario(scenarioId: string) {
     setSelectedScenarioId(scenarioId);
+    setGameSession(null);
+    setStartGameError(null);
     setPage("scenarioIntro");
   }
 
-  function handleStartGame() {
-    setPage("game");
+  async function handleStartGame() {
+    if (
+      user === null ||
+      selectedScenarioId === null ||
+      isStartingGame
+    ) {
+      return;
+    }
+
+    setIsStartingGame(true);
+    setStartGameError(null);
+
+    try {
+      const startedGame = await startScenario(user.id, selectedScenarioId);
+      setGameSession(startedGame);
+      setPage("game");
+    } catch (error) {
+      console.error("Impossible de démarrer le scénario", error);
+      setStartGameError(
+        "Le scénario ne peut pas être démarré pour le moment.",
+      );
+    } finally {
+      setIsStartingGame(false);
+    }
   }
 
   function handleBackHome() {
     setSelectedScenarioId(null);
+    setGameSession(null);
+    setStartGameError(null);
     setPage("home");
   }
 
@@ -116,19 +152,29 @@ function App() {
         scenario={selectedScenarioIntro}
         onStartGame={handleStartGame}
         onBackHome={handleBackHome}
+        isStarting={isStartingGame}
+        startError={startGameError}
       />
     );
   }
 
   if (page === "game" && selectedScenarioId !== null) {
+    if (gameSession === null) {
+      return (
+        <main className="page">
+          <h1>Partie introuvable</h1>
+          <button className="button" onClick={handleBackHome}>
+            Retour aux scénarios
+          </button>
+        </main>
+      );
+    }
+
     return (
-      <main className="page">
-        <h1>Chargement du jeu</h1>
-        <p>La première question sera chargée par le backend à l’étape 2.</p>
-        <button className="button button--secondary" onClick={handleBackHome}>
-          Retour aux scénarios
-        </button>
-      </main>
+      <GamePage
+        gameSession={gameSession}
+        onBackHome={handleBackHome}
+      />
     );
   }
 

@@ -1,4 +1,5 @@
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
+import type { StartScenarioResult } from "../types/GameSession";
 import type { ScenarioIntro } from "../types/Scenario";
 import type { ScenarioScore, User } from "../types/User";
 
@@ -70,6 +71,25 @@ export async function getLeaderboardUser(
 export async function getScenariosCard(): Promise<ScenarioIntro[]> {
     const response = await fetch(`${API_URL}/game/scenarios`, {
         method: "GET",
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
+
+export async function startScenario(
+    userId: string,
+    scenarioId: string,
+): Promise<StartScenarioResult> {
+    const response = await fetch(`${API_URL}/game/attempts`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, scenarioId }),
     });
 
     if (!response.ok) {

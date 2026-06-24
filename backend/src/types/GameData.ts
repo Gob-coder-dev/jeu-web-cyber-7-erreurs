@@ -1,4 +1,4 @@
-type Hotspot = {
+export type Hotspot = {
   id: string;
   x: number;
   y: number;
@@ -38,8 +38,39 @@ export type PublicQuestion = {
   hotspotCount: number;
 };
 
+export type GameAttemptStatus = "in_progress" | "completed";
+
+export type GameAttempt = {
+  id: string;
+  userId: string;
+  scenarioId: string;
+  currentQuestionIndex: number;
+  roundScores: number[];
+  status: GameAttemptStatus;
+  isReplay: boolean;
+  questionStartedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateGameAttemptInput = {
+  userId: string;
+  scenarioId: string;
+  isReplay: boolean;
+};
+
+export type StartScenarioResult = {
+  attemptId: string;
+  scenarioId: string;
+  scenarioTitle: string;
+  questionIndex: number;
+  questionCount: number;
+  question: PublicQuestion;
+  isReplay: boolean;
+};
+
 export type PublicCorrection = {
-    hotspots: Hotspot[];
+  hotspots: Hotspot[];
   attackScenario: string;
 };
 
