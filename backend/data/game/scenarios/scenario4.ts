@@ -1,9 +1,9 @@
-import type { Scenario } from "../../types/Scenario";
+import type { Scenario } from '../../../src/types/GameData';
 
-import socialPostImage from "../../image/scenario4/tweet.png";
-import trainWorkTempImage from "../../image/scenario4/temp.jpg";
-import wifiListImage from "../../image/scenario4/wifi.png";
-import wifiPhishingPortalImage from "../../image/scenario4/wifi phishing.png";
+const socialPostImage = "/images/scenario4/tweet.png";
+const trainWorkTempImage = "/images/scenario4/temp.jpg";
+const wifiListImage = "/images/scenario4/wifi.png";
+const wifiPhishingPortalImage = "/images/scenario4/wifi-phishing.png";
 
 export const scenario4: Scenario = {
   id: "commute-security",

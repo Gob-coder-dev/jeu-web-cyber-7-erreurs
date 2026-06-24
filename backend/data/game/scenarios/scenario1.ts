@@ -1,7 +1,7 @@
-import type { Scenario } from "../../types/Scenario";
+import type { Scenario } from '../../../src/types/GameData';
 
-import linkedinPostImage from "../../image/scenario1/linkedin_post.png";
-import desktopImage from "../../image/scenario1/desktop.jpg";
+const linkedinPostImage = "/images/scenario1/linkedin_post.png";
+const desktopImage = "/images/scenario1/desktop.jpg";
 
 export const scenario1: Scenario = {
   id: "physical-intrusion",

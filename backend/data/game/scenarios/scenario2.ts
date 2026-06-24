@@ -1,9 +1,9 @@
-import type { Scenario } from "../../types/Scenario";
+import type { Scenario } from '../../../src/types/GameData';
 
-import emailPhishingDecathlonImage from "../../image/scenario2/email_phishing.png";
-import emailPhishingUpsImage from "../../image/scenario2/email_phishing_2.png";
-import emailPhishingAmazonImage from "../../image/scenario2/email_phishing_3.png";
-import emailPhishingSephoraImage from "../../image/scenario2/email_phishing_4.png";
+const emailPhishingDecathlonImage = "/images/scenario2/email_phishing.png";
+const emailPhishingUpsImage = "/images/scenario2/email_phishing_2.png";
+const emailPhishingAmazonImage = "/images/scenario2/email_phishing_3.png";
+const emailPhishingSephoraImage = "/images/scenario2/email_phishing_4.png";
 
 export const scenario2: Scenario = {
   id: "phishing-inbox-melanie",

@@ -1,9 +1,9 @@
-import type { Scenario } from "../../types/Scenario";
+import type { Scenario } from '../../../src/types/GameData';
 
-import directorLinkedinPostImage from "../../image/scenario3/linkedin_post.png";
-import callTranscriptImage from "../../image/scenario3/discussion.png";
-import urgentInvoiceEmailImage from "../../image/scenario3/email_phishing.png";
-import confirmationEmailImage from "../../image/scenario3/mail_phishing_2.png";
+const directorLinkedinPostImage = "/images/scenario3/linkedin_post.png";
+const callTranscriptImage = "/images/scenario3/discussion.png";
+const urgentInvoiceEmailImage = "/images/scenario3/email_phishing.png";
+const confirmationEmailImage = "/images/scenario3/mail_phishing_2.png";
 
 export const scenario3: Scenario = {
   id: "director-voice-fraud",
