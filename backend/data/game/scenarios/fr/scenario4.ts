@@ -1,4 +1,4 @@
-import type { Scenario } from '../../../src/types/GameData';
+import type { Scenario } from '../../../../src/types/GameData';
 
 const socialPostImage = "/images/scenario4/tweet.png";
 const trainWorkTempImage = "/images/scenario4/temp.jpg";

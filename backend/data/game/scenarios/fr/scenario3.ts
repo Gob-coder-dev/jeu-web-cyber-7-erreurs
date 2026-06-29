@@ -1,4 +1,4 @@
-import type { Scenario } from '../../../src/types/GameData';
+import type { Scenario } from '../../../../src/types/GameData';
 
 const directorLinkedinPostImage = "/images/scenario3/linkedin_post.png";
 const callTranscriptImage = "/images/scenario3/discussion.png";

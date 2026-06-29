@@ -1,4 +1,4 @@
-import type { Scenario } from '../../../src/types/GameData';
+import type { Scenario } from '../../../../src/types/GameData';
 
 const linkedinPostImage = "/images/scenario1/linkedin_post.png";
 const desktopImage = "/images/scenario1/desktop.jpg";
