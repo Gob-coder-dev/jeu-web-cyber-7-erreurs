@@ -144,7 +144,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
         this.hotspotTooltip?.setVisible(false);
       });
 
-      marker.on("pointerdown", (pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) => {
+      marker.on("pointerdown", (_pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: Phaser.Types.Input.EventData) => {
         if (this.hasValidated) return;
         event.stopPropagation();
         marker.destroy();

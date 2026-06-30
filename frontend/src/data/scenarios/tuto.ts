@@ -9,9 +9,9 @@ export const tuto: Scenario = {
     globalAttackScenario: "Attaque grâce aux informations des post-it",
     questions: [
         {
-            id: "post-it-mdp",
-            title: "Première affaire : les post-it bavards",
-            instruction: "Voici une image supposée compromettante avec 2 post-it fictivement problématiques. Cliquez sur ces derniers pour les signaler comme dangereux.",
+            id: "règles-du-jeu",
+            title: "Comment enquêter ?",
+            instruction: "1. Observez attentivement l’image. \n2. Cliquez sur les éléments qui vous semblent dangereux ou anormaux. \n3. Chaque bonne réponse devient un indice validé. \n4. Les mauvaises réponses peuvent réduire votre score. \n5. Plus vous trouvez les indices rapidement, plus votre score augmente. \nÀ la fin de l’enquête, un rapport vous expliquera comment les erreurs trouvées auraient pu être exploitées dans une attaque réelle. \n\nPremière affaire : les post-it bavards \n\nVoici une image supposée compromettante avec 2 post-it fictivement problématiques. Cliquez sur ces derniers pour les signaler comme dangereux.",
             attackScenario: "Faire attention aux post-it",
             image: postit,
             imageWidth: 1020,
