@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
-import PhaserGame from "../game/PhaserGame";
+import { useEffect, useState, useRef } from "react";
+import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
 import type { StartScenarioResult } from "../types/GameSession";
+import type { SubmitAnswersResult, PublicQuestion } from "../types/Question";
+import { submitAnswers } from "../services/apiClient";
 import {
   formatOrderNumber,
   formatPieceTitle,
@@ -10,12 +12,24 @@ import "./GamePage.css";
 type GamePageProps = {
   gameSession: StartScenarioResult;
   onBackHome: () => void;
+  onScenarioCompleted: (result: SubmitAnswersResult) => void;
+  onNextQuestion: (nextQuestion: PublicQuestion) => void;
 };
 
-function GamePage({ gameSession, onBackHome }: GamePageProps) {
+function GamePage({
+  gameSession,
+  onBackHome,
+  onScenarioCompleted,
+  onNextQuestion,
+}: GamePageProps) {
+  const phaserRef = useRef<PhaserGameHandle | null>(null);
   const [showImage, setShowImage] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [timerDisabled, setTimerDisabled] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [correction, setCorrection] = useState<SubmitAnswersResult | null>(null);
+
   const question = gameSession.question;
   const buttonReady = timerDisabled || countdown === 0;
 
@@ -49,6 +63,47 @@ function GamePage({ gameSession, onBackHome }: GamePageProps) {
       window.clearInterval(countdownInterval);
     };
   }, [countdown, showImage, timerDisabled]);
+
+  async function handleValidate() {
+    if (isSubmitting || phaserRef.current === null || startTime === null) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    const selections = phaserRef.current.getSelections();
+    const timeTaken = Math.round((Date.now() - startTime) / 1000);
+
+    try {
+      const result = await submitAnswers(
+        gameSession.attemptId,
+        selections,
+        timeTaken
+      );
+      setCorrection(result);
+      phaserRef.current.showCorrection(result.hotspots);
+    } catch (err) {
+      console.error("Erreur lors de la validation", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  function handleContinue() {
+    if (correction === null) {
+      return;
+    }
+
+    if (correction.scenarioCompleted) {
+      onScenarioCompleted(correction);
+    } else if (correction.nextQuestion !== null) {
+      onNextQuestion(correction.nextQuestion);
+      // Reset state for the next question
+      setCorrection(null);
+      setShowImage(false);
+      setCountdown(3);
+      setStartTime(null);
+    }
+  }
 
   return (
     <main
@@ -86,7 +141,10 @@ function GamePage({ gameSession, onBackHome }: GamePageProps) {
             <button
               className="button"
               disabled={!buttonReady}
-              onClick={() => setShowImage(true)}
+              onClick={() => {
+                setShowImage(true);
+                setStartTime(Date.now());
+              }}
             >
               {buttonReady
                 ? "Afficher l'image"
@@ -99,14 +157,73 @@ function GamePage({ gameSession, onBackHome }: GamePageProps) {
               {question.hotspotCount} anomalies à trouver.
             </p>
 
-            <PhaserGame question={question} />
+            <PhaserGame ref={phaserRef} question={question} />
 
             <div className="game-page__bottom-bar">
-              <div className="game-page__score-area" />
-              <button className="button" disabled>
-                Valider
-              </button>
+              <div className="game-page__score-area">
+                {correction !== null && (
+                  <div className="game-page__score-badge">
+                    Score : {correction.roundScore >= 0 ? "+" : ""}
+                    {correction.roundScore} pts
+                  </div>
+                )}
+              </div>
+
+              {correction === null ? (
+                <button
+                  className="button"
+                  onClick={handleValidate}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Validation..." : "Valider"}
+                </button>
+              ) : (
+                <button className="button" onClick={handleContinue}>
+                  {correction.scenarioCompleted
+                    ? "Terminer le scénario"
+                    : "Question suivante"}
+                </button>
+              )}
             </div>
+
+            {correction !== null && (
+              <div className="game-page__feedback-area">
+                <section className="game-page__feedback-list">
+                  <h2>Détail des anomalies</h2>
+                  <ul>
+                    {correction.hotspots.map((hotspot) => (
+                      <li
+                        key={hotspot.id}
+                        className={`game-page__feedback-item game-page__feedback-item--${
+                          hotspot.found ? "found" : "missed"
+                        }`}
+                      >
+                        <div className="feedback-item__status">
+                          <span
+                            className={`feedback-status-badge feedback-status-badge--${
+                              hotspot.found ? "found" : "missed"
+                            }`}
+                          >
+                            {hotspot.found ? "Trouvée" : "Manquée"}
+                          </span>
+                          <strong>{hotspot.label}</strong>
+                        </div>
+                        <p className="feedback-item__explanation">
+                          {hotspot.explanation}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                {correction.attackScenario && (
+                  <section className="game-page__attack-explanation">
+                    <h2>Scénario d'attaque</h2>
+                    <p>{correction.attackScenario}</p>
+                  </section>
+                )}
+              </div>
+            )}
           </>
         )}
       </section>

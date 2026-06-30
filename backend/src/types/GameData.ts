@@ -1,3 +1,5 @@
+import type { User } from "./CompanyData";
+
 export type Hotspot = {
   id: string;
   x: number;
@@ -79,3 +81,21 @@ export type AwnsersReceived = {
   awnsers: [x: number, y: number][];
   timeTaken: number;
 };
+
+export type SubmitAnswersInput = {
+  selections: { x: number; y: number }[];
+  timeTaken: number;
+};
+
+export type SubmitAnswersResult = {
+  roundScore: number;
+  hotspots: (Hotspot & { found: boolean })[];
+  attackScenario: string;
+  nextQuestion: PublicQuestion | null;
+  scenarioCompleted: boolean;
+  scenarioScore?: number;
+  scenarioRoundScores?: number[];
+  scenarioDetails?: Scenario;
+  updatedUser?: User;
+};
+

@@ -8,6 +8,8 @@ import type { User } from "../types/User";
 import type { StartScenarioResult } from "../types/GameSession";
 import type { ScenarioIntro } from "../types/Scenario";
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
+import type { PublicQuestion } from "../types/Question";
+import type { SubmitAnswersResult } from "../types/Question";
 import LeaderBoardPage from "./LeaderBoardPage";
 import {
   getLeaderboard,
@@ -128,8 +130,8 @@ function App() {
     selectedScenarioId === null
       ? null
       : (scenarioIntros.find(
-          (scenario) => scenario.id === selectedScenarioId,
-        ) ?? null);
+        (scenario) => scenario.id === selectedScenarioId,
+      ) ?? null);
 
   if (user === null) {
     return <LoginPage onLogin={handleLogin} />;
@@ -170,10 +172,30 @@ function App() {
       );
     }
 
+    const handleScenarioCompleted = (result: SubmitAnswersResult) => {
+
+      setPage("result");
+    };
+
+    function handleNextQuestion(nextQuestion: PublicQuestion) {
+      if (gameSession === null) {
+        return;
+      }
+      setGameSession({
+        ...gameSession,
+        question: nextQuestion,
+        questionIndex: gameSession.questionIndex + 1,
+      });
+    }
+
+
+
     return (
       <GamePage
         gameSession={gameSession}
         onBackHome={handleBackHome}
+        onScenarioCompleted={handleScenarioCompleted}
+        onNextQuestion={handleNextQuestion}
       />
     );
   }

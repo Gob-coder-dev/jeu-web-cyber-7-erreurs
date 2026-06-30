@@ -2,8 +2,10 @@ import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboa
 import type { StartScenarioResult } from "../types/GameSession";
 import type { ScenarioIntro } from "../types/Scenario";
 import type { ScenarioScore, User } from "../types/User";
+import type { SelectionPoint, SubmitAnswersResult } from "../types/Question";
 
 const API_URL = "http://localhost:3000/api";
+
 
 export async function getOrCreateUser(pseudo: string): Promise<User> {
     const response = await fetch(`${API_URL}/users/${pseudo}`, {
@@ -98,3 +100,24 @@ export async function startScenario(
 
     return response.json();
 }
+
+export async function submitAnswers(
+    attemptId: string,
+    selections: SelectionPoint[],
+    timeTaken: number,
+): Promise<SubmitAnswersResult> {
+    const response = await fetch(`${API_URL}/game/attempts/${attemptId}/answers`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ selections, timeTaken }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
+

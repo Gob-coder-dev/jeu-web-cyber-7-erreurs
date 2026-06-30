@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import type {
+  Hotspot,
   PublicQuestion,
   SelectionPoint,
 } from "../../types/Question";
@@ -10,11 +11,22 @@ type SelectedMarker = {
   imageY: number;
 };
 
+type CorrectionRect = {
+  rect: Phaser.GameObjects.Rectangle;
+  originalX: number;
+  originalY: number;
+  originalWidth: number;
+  originalHeight: number;
+  color: number;
+};
+
 export class CyberDifferenceScene extends Phaser.Scene {
   private readonly question: PublicQuestion;
   private selectedMarkers: SelectedMarker[] = [];
+  private correctionRects: CorrectionRect[] = [];
   private imageScale = 1;
   private questionImage?: Phaser.GameObjects.Image;
+  private isReadOnly = false;
 
   constructor(question: PublicQuestion) {
     super("CyberDifferenceScene");
@@ -33,6 +45,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
     image.setInteractive();
 
     image.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (this.isReadOnly) {
+        return;
+      }
+
       if (this.selectedMarkers.length >= this.question.hotspotCount) {
         return;
       }
@@ -49,6 +65,10 @@ export class CyberDifferenceScene extends Phaser.Scene {
       });
 
       marker.on("pointerdown", () => {
+        if (this.isReadOnly) {
+          return;
+        }
+
         marker.destroy();
         this.selectedMarkers = this.selectedMarkers.filter(
           (selectedMarker) => selectedMarker.marker !== marker,
@@ -62,6 +82,36 @@ export class CyberDifferenceScene extends Phaser.Scene {
       x: imageX,
       y: imageY,
     }));
+  }
+
+  public showCorrection(hotspots: (Hotspot & { found: boolean })[]) {
+    this.isReadOnly = true;
+    this.questionImage?.disableInteractive();
+
+
+    hotspots.forEach((hotspot) => {
+      const color = hotspot.found ? 0x22c55e : 0xdcb233;
+      const rect = this.add
+        .rectangle(
+          hotspot.x * this.imageScale,
+          hotspot.y * this.imageScale,
+          hotspot.width * this.imageScale,
+          hotspot.height * this.imageScale,
+          color,
+          0.25
+        )
+        .setOrigin(0, 0)
+        .setStrokeStyle(3, color);
+
+      this.correctionRects.push({
+        rect,
+        originalX: hotspot.x,
+        originalY: hotspot.y,
+        originalWidth: hotspot.width,
+        originalHeight: hotspot.height,
+        color,
+      });
+    });
   }
 
   public resizeScene = (width: number, height: number) => {
@@ -82,5 +132,11 @@ export class CyberDifferenceScene extends Phaser.Scene {
         imageY * this.imageScale,
       );
     });
+
+    this.correctionRects.forEach(({ rect, originalX, originalY, originalWidth, originalHeight }) => {
+      rect.setPosition(originalX * this.imageScale, originalY * this.imageScale);
+      rect.setSize(originalWidth * this.imageScale, originalHeight * this.imageScale);
+    });
   };
 }
+

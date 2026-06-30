@@ -1,5 +1,5 @@
-import { getUserInDatabase } from "../repositories/companyJson.repository";
-import { createGameAttempt } from "../repositories/gameAttempt.repository";
+import { getUserInDatabase, createScoreInDatabase } from "../repositories/companyJson.repository";
+import { createGameAttempt, getGameAttemptById } from "../repositories/gameAttempt.repository";
 import {
   getScenarioById,
   getScenariosCard,
@@ -8,7 +8,9 @@ import type {
   PublicQuestion,
   Question,
   StartScenarioResult,
+  SubmitAnswersResult,
 } from "../types/GameData";
+import type { User } from "../types/CompanyData";
 
 export function getScenariosCardService(): ReturnType<typeof getScenariosCard> {
   return getScenariosCard();
@@ -76,3 +78,95 @@ export async function startScenarioService(userId: string, scenarioId: string): 
     },
   };
 }
+
+export async function submitAnswersService(
+  attemptId: string,
+  selections: { x: number; y: number }[],
+  timeTaken: number
+): Promise<{ success: boolean; reason?: string; data?: SubmitAnswersResult }> {
+  const attempt = getGameAttemptById(attemptId);
+  if (!attempt) {
+    return { success: false, reason: "ATTEMPT_NOT_FOUND" };
+  }
+
+  const scenario = getScenarioById(attempt.scenarioId);
+  if (!scenario) {
+    return { success: false, reason: "SCENARIO_NOT_FOUND" };
+  }
+
+  const question = scenario.questions[attempt.currentQuestionIndex];
+  if (!question) {
+    return { success: false, reason: "QUESTION_NOT_FOUND" };
+  }
+
+  // 1. Evaluate selections against hotspots
+  const hotspotsWithCorrection = question.hotspots.map((hotspot) => {
+    // Check if at least one selection falls inside this hotspot's bounding box
+    const found = selections.some((sel) => {
+      return (
+        sel.x >= hotspot.x &&
+        sel.x <= hotspot.x + hotspot.width &&
+        sel.y >= hotspot.y &&
+        sel.y <= hotspot.y + hotspot.height
+      );
+    });
+
+    return {
+      ...hotspot,
+      found,
+    };
+  });
+
+  // 2. Calculate score for this question/round
+  const foundCount = hotspotsWithCorrection.filter((h) => h.found).length;
+  const missedCount = hotspotsWithCorrection.length - foundCount;
+
+  // Formula: 100 points per found hotspot, -50 points per missed hotspot, -1 point per second taken
+  const roundScore = foundCount * 100 - missedCount * 50 - timeTaken;
+
+  // Store round score
+  attempt.roundScores.push(roundScore);
+
+  // 3. Move to next question index
+  attempt.currentQuestionIndex += 1;
+
+  const scenarioCompleted = attempt.currentQuestionIndex >= scenario.questions.length;
+  let nextQuestion: PublicQuestion | null = null;
+  let updatedUser: User | undefined;
+  let scenarioScore: number | undefined;
+
+  if (scenarioCompleted) {
+    attempt.status = "completed";
+    scenarioScore = attempt.roundScores.reduce((sum, score) => sum + score, 0);
+
+    // Save score to database
+    await createScoreInDatabase(attempt.userId, attempt.scenarioId, scenarioScore);
+    
+    // Retrieve updated user to send back
+    const user = await getUserInDatabase(attempt.userId);
+    if (user) {
+      updatedUser = user;
+    }
+  } else {
+    const nextQ = scenario.questions[attempt.currentQuestionIndex];
+    if (nextQ) {
+      nextQuestion = toPublicQuestion(nextQ);
+    }
+  }
+
+  return {
+    success: true,
+    data: {
+      roundScore,
+      hotspots: hotspotsWithCorrection,
+      attackScenario: question.attackScenario,
+      nextQuestion,
+      scenarioCompleted,
+      scenarioScore,
+      scenarioRoundScores: attempt.roundScores,
+      scenarioDetails: scenarioCompleted ? scenario : undefined,
+      updatedUser,
+    },
+  };
+}
+

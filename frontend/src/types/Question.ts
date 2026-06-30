@@ -1,3 +1,6 @@
+import type { User } from "./User";
+import type { Scenario } from "./Scenario";
+
 export type Hotspot = {
   id: string;
   x: number;
@@ -33,3 +36,16 @@ export type SelectionPoint = {
   x: number;
   y: number;
 };
+
+export type SubmitAnswersResult = {
+  roundScore: number;
+  hotspots: (Hotspot & { found: boolean })[];
+  attackScenario: string;
+  nextQuestion: PublicQuestion | null;
+  scenarioCompleted: boolean;
+  scenarioScore?: number;
+  scenarioRoundScores?: number[];
+  scenarioDetails?: Scenario;
+  updatedUser?: User;
+};
+

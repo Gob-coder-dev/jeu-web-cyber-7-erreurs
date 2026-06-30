@@ -2,6 +2,7 @@ import express from "express";
 import {
   getScenariosCardService,
   startScenarioService,
+  submitAnswersService,
 } from "../services/game.service";
 
 
@@ -59,3 +60,41 @@ export async function startScenario(req: express.Request, res: express.Response)
     return res.status(500).json({ message: "Unable to start scenario" });
   }
 }
+
+export async function submitAnswers(req: express.Request, res: express.Response) {
+  const { attemptId } = req.params;
+  const { selections, timeTaken } = req.body;
+
+  if (typeof attemptId !== "string") {
+    return res.status(400).json({ message: "Attempt ID is required" });
+  }
+
+  if (!Array.isArray(selections) || typeof timeTaken !== "number" || !Number.isFinite(timeTaken)) {
+    return res.status(400).json({
+      message: "Selections (array) and Time taken (number) are required",
+    });
+  }
+
+  try {
+    const result = await submitAnswersService(attemptId, selections, timeTaken);
+
+    if (!result.success) {
+      if (result.reason === "ATTEMPT_NOT_FOUND") {
+        return res.status(404).json({ message: "Attempt not found" });
+      }
+      if (result.reason === "SCENARIO_NOT_FOUND") {
+        return res.status(404).json({ message: "Scenario not found" });
+      }
+      if (result.reason === "QUESTION_NOT_FOUND") {
+        return res.status(404).json({ message: "Question not found" });
+      }
+      return res.status(400).json({ message: result.reason });
+    }
+
+    return res.status(200).json(result.data);
+  } catch (error) {
+    console.error("Unable to submit answers", error);
+    return res.status(500).json({ message: "Unable to submit answers" });
+  }
+}
+

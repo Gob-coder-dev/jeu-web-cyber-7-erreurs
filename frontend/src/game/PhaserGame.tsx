@@ -7,6 +7,7 @@ import {
 } from "react";
 import Phaser from "phaser";
 import type {
+  Hotspot,
   PublicQuestion,
   SelectionPoint,
 } from "../types/Question";
@@ -18,7 +19,9 @@ type PhaserGameProps = {
 
 export type PhaserGameHandle = {
   getSelections: () => SelectionPoint[];
+  showCorrection: (hotspots: (Hotspot & { found: boolean })[]) => void;
 };
+
 
 type GameSize = {
   width: number;
@@ -45,6 +48,7 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
 
     useImperativeHandle(ref, () => ({
       getSelections: () => sceneRef.current?.getSelections() ?? [],
+      showCorrection: (hotspots) => sceneRef.current?.showCorrection(hotspots),
     }));
 
     useEffect(() => {

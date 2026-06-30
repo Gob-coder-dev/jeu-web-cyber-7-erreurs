@@ -2,6 +2,7 @@ import express from "express";
 import {
   getScenariosCard,
   startScenario,
+  submitAnswers,
 } from "../controllers/game.controller";
 
 const router = express.Router();
@@ -9,5 +10,7 @@ const router = express.Router();
 
 router.get("/scenarios", getScenariosCard);
 router.post("/attempts", startScenario);
+router.post("/attempts/:attemptId/answers", submitAnswers);
 
 export default router;
+
