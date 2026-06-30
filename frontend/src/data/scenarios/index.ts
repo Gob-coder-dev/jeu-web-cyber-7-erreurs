@@ -1,9 +1,11 @@
+import { tuto } from "./tuto";
 import { scenario1 } from "./scenario1";
 import { scenario2 } from "./scenario2";
 import { scenario3 } from "./scenario3";
 import { scenario4 } from "./scenario4";
 
 export const scenarios = [
+  tuto,
   scenario1,
   scenario2,
   scenario3,
