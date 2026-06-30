@@ -186,44 +186,7 @@ function GamePage({
               )}
             </div>
 
-            {correction !== null && (
-              <div className="game-page__feedback-area">
-                <section className="game-page__feedback-list">
-                  <h2>Détail des anomalies</h2>
-                  <ul>
-                    {correction.hotspots.map((hotspot) => (
-                      <li
-                        key={hotspot.id}
-                        className={`game-page__feedback-item game-page__feedback-item--${
-                          hotspot.found ? "found" : "missed"
-                        }`}
-                      >
-                        <div className="feedback-item__status">
-                          <span
-                            className={`feedback-status-badge feedback-status-badge--${
-                              hotspot.found ? "found" : "missed"
-                            }`}
-                          >
-                            {hotspot.found ? "Trouvée" : "Manquée"}
-                          </span>
-                          <strong>{hotspot.label}</strong>
-                        </div>
-                        <p className="feedback-item__explanation">
-                          {hotspot.explanation}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                {correction.attackScenario && (
-                  <section className="game-page__attack-explanation">
-                    <h2>Scénario d'attaque</h2>
-                    <p>{correction.attackScenario}</p>
-                  </section>
-                )}
-              </div>
-            )}
+            
           </>
         )}
       </section>
