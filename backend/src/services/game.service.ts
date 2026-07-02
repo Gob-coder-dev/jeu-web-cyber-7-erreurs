@@ -148,8 +148,13 @@ export async function submitAnswersService(
     scenarioScore = attempt.roundScores.reduce((sum, score) => sum + score, 0);
 
     // Save score to database
-    await createScoreInDatabase(attempt.userId, attempt.scenarioId, scenarioScore);
-    
+    if (!attempt.isReplay &&
+        attempt.userId &&
+        attempt.scenarioId &&
+        scenarioScore !== undefined) {
+      await createScoreInDatabase(attempt.userId, attempt.scenarioId, scenarioScore);
+    }
+
     // Retrieve updated user to send back
     const user = await getUserInDatabase(attempt.userId);
     if (user) {

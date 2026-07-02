@@ -173,6 +173,12 @@ function App() {
     }
 
     const handleScenarioCompleted = (result: SubmitAnswersResult) => {
+      setScenarioScore(result.scenarioScore ?? 0);
+      setScenarioRoundScores(result.scenarioRoundScores ?? []);
+
+      if (result.updatedUser !== undefined) {
+        setUser(result.updatedUser);
+      }
 
       setPage("result");
     };
