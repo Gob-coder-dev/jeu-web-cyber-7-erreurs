@@ -1,7 +1,7 @@
 import type { Scenario } from '../../../../src/types/GameData';
 
 const socialPostImage = "/images/scenario4/tweet.png";
-const trainWorkTempImage = "/images/scenario4/temp.jpg";
+const trainWorkTempImage = "/images/scenario4/metro.jpg";
 const wifiListImage = "/images/scenario4/wifi.png";
 const wifiPhishingPortalImage = "/images/scenario4/wifi-phishing.png";
 
