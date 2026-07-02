@@ -121,8 +121,16 @@ export async function submitAnswersService(
   const foundCount = hotspotsWithCorrection.filter((h) => h.found).length;
   const missedCount = hotspotsWithCorrection.length - foundCount;
 
-  // Formula: 100 points per found hotspot, -50 points per missed hotspot, -1 point per second taken
-  const roundScore = foundCount * 100 - missedCount * 50 - timeTaken;
+  // Formula: 20 points per found hotspot, -5 points per missed hotspot, -2 point per second taken
+  
+  const roundScore = Math.max(0,Math.round(
+                      foundCount * 20
+                      + Math.max(0, 20
+                        * foundCount
+                        - timeTaken * 2
+                      )
+                      - missedCount * 5
+                    ));
 
   // Store round score
   attempt.roundScores.push(roundScore);
