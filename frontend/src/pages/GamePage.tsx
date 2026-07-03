@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
 import type { StartScenarioResult } from "../types/GameSession";
 import type { SubmitAnswersResult, PublicQuestion } from "../types/Question";
-import { submitAnswers } from "../services/apiClient";
+import { startTimer, submitAnswers } from "../services/apiClient";
 import {
   formatOrderNumber,
   formatPieceTitle,
@@ -26,7 +26,6 @@ function GamePage({
   const [showImage, setShowImage] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [timerDisabled, setTimerDisabled] = useState(false);
-  const [startTime, setStartTime] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [correction, setCorrection] = useState<SubmitAnswersResult | null>(null);
 
@@ -65,19 +64,18 @@ function GamePage({
   }, [countdown, showImage, timerDisabled]);
 
   async function handleValidate() {
-    if (isSubmitting || phaserRef.current === null || startTime === null) {
+    if (isSubmitting || phaserRef.current === null) {
       return;
     }
 
     setIsSubmitting(true);
     const selections = phaserRef.current.getSelections();
-    const timeTaken = Math.round((Date.now() - startTime) / 1000);
 
     try {
       const result = await submitAnswers(
         gameSession.attemptId,
-        selections,
-        timeTaken
+        question.id,
+        selections
       );
       setCorrection(result);
       phaserRef.current.showCorrection(result.hotspots);
@@ -101,7 +99,6 @@ function GamePage({
       setCorrection(null);
       setShowImage(false);
       setCountdown(3);
-      setStartTime(null);
     }
   }
 
@@ -141,9 +138,9 @@ function GamePage({
             <button
               className="button"
               disabled={!buttonReady}
-              onClick={() => {
+              onClick={async () => {
+                await startTimer(gameSession.attemptId, question.id);
                 setShowImage(true);
-                setStartTime(Date.now());
               }}
             >
               {buttonReady

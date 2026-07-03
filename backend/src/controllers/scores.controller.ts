@@ -1,5 +1,5 @@
 import express from "express";
-import { getScoreFromDatabase, getTotalScoreFromDatabase, createScoreFromDatabase } from "../services/scores.service";
+import { getScoreFromDatabase, getTotalScoreFromDatabase } from "../services/scores.service";
 
 export async function getScore(req: express.Request, res: express.Response) {
   const { userId, scenarioId } = req.params;
@@ -44,33 +44,4 @@ export async function getTotalScore(req: express.Request, res: express.Response)
   }
 
   res.status(200).json({ totalScore });
-}
-
-export async function saveScenarioScore(req: express.Request, res: express.Response) {
-  const { userId, scenarioId } = req.params;
-  const { score } = req.body;
-
-  if (
-    typeof userId !== "string" ||
-    typeof scenarioId !== "string" ||
-    typeof score !== "number" ||
-    !Number.isFinite(score)
-  ) {
-    return res.status(400).json({ message: "User ID, Scenario ID, and score are required" });
-  }
-
-  const cleanUserId = userId.trim();
-  const cleanScenarioId = scenarioId.trim();
-
-  if (!cleanUserId || !cleanScenarioId) {
-    return res.status(400).json({ message: "User ID, Scenario ID, and score are required" });
-  }
-
-  const result = await createScoreFromDatabase(cleanUserId, cleanScenarioId, score);
-
-  if (!result) {
-    return res.status(409).json({ message: "Score could not be created" });
-  }
-
-  res.status(201).json(result);
 }

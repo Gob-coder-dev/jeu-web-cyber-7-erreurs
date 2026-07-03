@@ -81,9 +81,11 @@ export async function startScenarioService(userId: string, scenarioId: string): 
 
 export async function submitAnswersService(
   attemptId: string,
+  questionId: string,
   selections: { x: number; y: number }[],
-  timeTaken: number
 ): Promise<{ success: boolean; reason?: string; data?: SubmitAnswersResult }> {
+  const now = Date.now();
+  
   const attempt = getGameAttemptById(attemptId);
   if (!attempt) {
     return { success: false, reason: "ATTEMPT_NOT_FOUND" };
@@ -98,6 +100,22 @@ export async function submitAnswersService(
   if (!question) {
     return { success: false, reason: "QUESTION_NOT_FOUND" };
   }
+
+  if (question.id !== questionId) {
+    return { success: false, reason: "QUESTION_MISMATCH" };
+  }
+
+  if (selections.length > question.hotspots.length) {
+    return { success: false, reason: "TOO_MANY_SELECTIONS" };
+  }
+
+  if (attempt.questionStartedAt === null) {
+    return { success: false, reason: "QUESTION_NOT_STARTED" };
+  }
+
+  const startedAt = new Date(attempt.questionStartedAt).getTime();
+  const timeTaken = Math.round((now - startedAt) / 1000);
+  attempt.questionStartedAt = null;
 
   // 1. Evaluate selections against hotspots
   const hotspotsWithCorrection = question.hotspots.map((hotspot) => {
@@ -183,3 +201,30 @@ export async function submitAnswersService(
   };
 }
 
+export async function startTimerService(
+  attemptId: string,
+  questionId: string,
+): Promise<{ success: boolean; reason?: string }> {
+  const attempt = getGameAttemptById(attemptId);
+  if (!attempt) {
+    return { success: false, reason: "ATTEMPT_NOT_FOUND" };
+  }
+
+  const scenario = getScenarioById(attempt.scenarioId);
+  if (!scenario) {
+    return { success: false, reason: "SCENARIO_NOT_FOUND" };
+  }
+
+  const question = scenario.questions[attempt.currentQuestionIndex];
+  if (!question) {
+    return { success: false, reason: "QUESTION_NOT_FOUND" };
+  }
+
+  if (question.id !== questionId) {
+    return { success: false, reason: "QUESTION_MISMATCH" };
+  }
+
+  const now = Date.now();
+  attempt.questionStartedAt = new Date(now).toISOString();
+  return { success: true };
+}

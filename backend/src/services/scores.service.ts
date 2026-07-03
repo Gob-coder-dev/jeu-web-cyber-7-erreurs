@@ -1,4 +1,4 @@
-import { isScoreInDatabase, getScoreInDatabase, getTotalScoreInDatabase, createScoreInDatabase } from "../repositories/companyJson.repository";
+import { isScoreInDatabase, getScoreInDatabase, getTotalScoreInDatabase } from "../repositories/companyJson.repository";
 
 export async function isScoreFromDatabase(userId: string, scenarioId: string) {
     return await isScoreInDatabase(userId, scenarioId);
@@ -21,10 +21,3 @@ export async function getTotalScoreFromDatabase(userId: string) {
     return totalScore;
 }
 
-export async function createScoreFromDatabase(userId: string, scenarioId: string, score: number) {
-    if (await isScoreInDatabase(userId, scenarioId)) {
-        return false;
-    }
-    const newScore = await createScoreInDatabase(userId, scenarioId, score);
-    return newScore;
-};
