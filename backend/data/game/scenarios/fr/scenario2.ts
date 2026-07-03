@@ -1,4 +1,4 @@
-import type { Scenario } from '../../../src/types/GameData';
+import type { Scenario } from '../../../../src/types/GameData';
 
 const emailPhishingDecathlonImage = "/images/scenario2/email_phishing.png";
 const emailPhishingUpsImage = "/images/scenario2/email_phishing_2.png";
