@@ -20,6 +20,8 @@ type PhaserGameProps = {
 export type PhaserGameHandle = {
   getSelections: () => SelectionPoint[];
   showCorrection: (hotspots: (Hotspot & { found: boolean })[]) => void;
+  toggleDebugHotspots: () => void;
+  toggleMagnifier: (isActive: boolean) => void;
 };
 
 
@@ -49,6 +51,12 @@ const PhaserGame = forwardRef<PhaserGameHandle, PhaserGameProps>(
     useImperativeHandle(ref, () => ({
       getSelections: () => sceneRef.current?.getSelections() ?? [],
       showCorrection: (hotspots) => sceneRef.current?.showCorrection(hotspots),
+      toggleDebugHotspots: () => {
+          sceneRef.current?.toggleDebugHotspots();
+        },
+        toggleMagnifier: (isActive: boolean) => {
+          sceneRef.current?.toggleMagnifier(isActive);
+        },
     }));
 
     useEffect(() => {

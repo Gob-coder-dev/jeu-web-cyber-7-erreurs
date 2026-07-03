@@ -31,6 +31,7 @@ function GamePage({
 
   const question = gameSession.question;
   const buttonReady = timerDisabled || countdown === 0;
+  const [magnifierActive, setMagnifierActive] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -63,11 +64,17 @@ function GamePage({
     };
   }, [countdown, showImage, timerDisabled]);
 
+  useEffect(() => {
+      if (showImage) {
+          phaserRef.current?.toggleMagnifier(magnifierActive);
+        }
+    }, [magnifierActive, showImage, gameSession.questionIndex]);
+
   async function handleValidate() {
     if (isSubmitting || phaserRef.current === null) {
       return;
     }
-
+    
     setIsSubmitting(true);
     const selections = phaserRef.current.getSelections();
 
@@ -163,6 +170,18 @@ function GamePage({
                     Score : {correction.roundScore >= 0 ? "+" : ""}
                     {correction.roundScore} pts
                   </div>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "12px" }}>
+                {showImage && !isSubmitting && (
+                  <button 
+                    type="button"
+                    className={`button ${magnifierActive ? 'button--active' : 'button--secondary'}`} 
+                    onClick={() => setMagnifierActive(!magnifierActive)}
+                  >
+                    {magnifierActive ? "Désactiver la loupe" : "Activer la loupe"}
+                  </button>
                 )}
               </div>
 
