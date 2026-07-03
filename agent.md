@@ -4,11 +4,11 @@ Ce fichier sert de guide pour les prochaines interventions sur le projet.
 
 ## Contexte du projet
 
-Le projet est un jeu web de sensibilisation a la cybersecurite base sur React, TypeScript, Vite et Phaser, avec un backend Node.js, Express et TypeScript en cours de construction.
+Le projet est un jeu web de sensibilisation a la cybersecurite base sur React, TypeScript, Vite et Phaser, avec un backend Node.js, Express et TypeScript.
 
 Le joueur se connecte avec un pseudo, choisit un scenario, observe des images et place des marqueurs sur les anomalies de securite. Chaque scenario contient plusieurs questions liees par une histoire.
 
-Le frontend historique sauvegarde encore la progression dans `localStorage`. Le backend doit progressivement remplacer ce stockage par une API Express et des fichiers JSON cote serveur.
+Le frontend appelle maintenant le backend pour les utilisateurs, les cartes de scenarios, le demarrage d'une tentative, la validation des reponses, le score et le leaderboard.
 
 ## Structure actuelle
 
@@ -16,12 +16,24 @@ Le frontend historique sauvegarde encore la progression dans `localStorage`. Le 
 frontend/
   package.json
   src/
+    components/
+    game/
+    pages/
+    services/
+    types/
+    utils/
 
 backend/
   package.json
+  tsconfig.json
+  tsconfig.build.json
   data/
     companies/
       demo.json
+    game/
+      scenarios/
+  public/
+    images/
   src/
     app.ts
     index.ts
@@ -56,18 +68,15 @@ Backend :
 ```bash
 cd backend
 npm run dev
-```
-
-Le backend n'a pas encore de `tsconfig.json` ni de script `build`. Pour une verification TypeScript ponctuelle :
-
-```bash
-cd backend
-npx tsc src/index.ts --noEmit --module node16 --target es2023 --esModuleInterop --moduleResolution node16
+npm run typecheck
+npm test
+npm run check
+npm run build
 ```
 
 Apres une modification frontend, lancer au minimum `npm run build` et `npm run lint` dans `frontend/` quand c'est pertinent.
 
-Apres une modification backend, lancer au minimum la verification TypeScript ponctuelle tant que le backend n'a pas de `tsconfig.json`.
+Apres une modification backend, lancer au minimum `npm run check` dans `backend/`. Lancer aussi `npm run build` si la modification touche la configuration TypeScript, les imports ou le packaging.
 
 ## Architecture frontend a respecter
 
@@ -78,12 +87,28 @@ React gere :
 - les pages ;
 - le login ;
 - le choix du scenario ;
-- la progression par pseudo ;
-- les scores par scenario ;
-- le score global ;
-- le leaderboard.
+- le replay ;
+- les appels API ;
+- l'affichage des scores ;
+- le leaderboard ;
+- la page de resultat et le debrief.
 
 `frontend/src/pages/App.tsx` est le centre de la navigation et de l'etat applicatif.
+
+Etats importants dans `App.tsx` :
+
+- `user` ;
+- `page` ;
+- `selectedScenarioId` ;
+- `scenarioIntros` ;
+- `gameSession` ;
+- `scenarioScore` ;
+- `scenarioRoundScores` ;
+- `completedScenarioDetails` ;
+- `leaderboardScores` ;
+- `currentLeaderboardUser`.
+
+`frontend/src/services/apiClient.ts` est le point central des appels HTTP.
 
 ### Phaser
 
@@ -92,9 +117,10 @@ Phaser gere uniquement le gameplay dans l'image :
 - affichage de l'image ;
 - clics ;
 - marqueurs ;
-- collecte des selections en coordonnees originales.
+- collecte des selections en coordonnees originales ;
+- affichage de la correction apres validation.
 
-La validation, le chronometre de score et le calcul des points doivent progressivement passer dans le backend. Ne pas mettre la logique de scenario dans `CyberDifferenceScene`.
+Ne pas mettre la logique de scenario, de score ou de navigation dans `CyberDifferenceScene`.
 
 ### Pont React / Phaser
 
@@ -104,13 +130,39 @@ Methodes exposees actuellement :
 
 ```ts
 getSelections(): SelectionPoint[]
+showCorrection(hotspots): void
 ```
 
 Ne pas recreer le jeu Phaser a chaque resize. Utiliser `phaserGameRef.current.scale.resize(...)` et `sceneRef.current?.resizeScene(...)`.
 
+## Flux de jeu actuel
+
+1. `HomePage` affiche les cartes recues via `GET /api/game/scenarios`.
+2. Le joueur clique sur un scenario.
+3. `ScenarioIntroPage` affiche la description publique.
+4. `App.tsx` appelle `POST /api/game/attempts`.
+5. Le backend cree une tentative en memoire et renvoie la premiere `PublicQuestion`.
+6. `GamePage` affiche le texte de la question.
+7. Quand l'image s'affiche, le frontend appelle `POST /api/game/attempts/:attemptId/questions/:questionId/start`.
+8. Phaser collecte les points cliques.
+9. Au clic sur `Valider`, le frontend appelle `POST /api/game/attempts/:attemptId/questions/:questionId/answers`.
+10. Le backend valide les selections, calcule le score, renvoie la correction et la question suivante ou les details de fin.
+11. A la fin du scenario, `ResultPage` affiche le score, le detail par piece et le debrief `globalAttackScenario` / `attackScenario`.
+
 ## Donnees de jeu
 
-Les scenarios prives sont dans `backend/data/game/scenarios/`. Le frontend ne recoit que les cartes publiques, puis une question publique lors de la creation d'une tentative.
+Les scenarios prives sont dans :
+
+```txt
+backend/data/game/scenarios/
+```
+
+Le frontend ne recoit que :
+
+- les cartes publiques pour l'accueil ;
+- une `PublicQuestion` pendant le jeu ;
+- les hotspots seulement apres validation, dans la correction ;
+- `scenarioDetails` a la fin du scenario pour afficher le debrief.
 
 Les hotspots et les textes de correction ne doivent pas etre envoyes avant la validation.
 
@@ -119,7 +171,8 @@ Types frontend principaux :
 ```txt
 frontend/src/types/Question.ts
 frontend/src/types/Scenario.ts
-frontend/src/types/Score.ts
+frontend/src/types/GameSession.ts
+frontend/src/types/Leaderboard.ts
 frontend/src/types/User.ts
 ```
 
@@ -134,7 +187,8 @@ Stack actuelle :
 - Node.js ;
 - Express ;
 - TypeScript ;
-- `tsx watch src/index.ts` pour le developpement.
+- `tsx watch src/index.ts` pour le developpement ;
+- `node:test` via `tsx --test` pour les tests.
 
 Fichiers principaux :
 
@@ -177,7 +231,9 @@ Les routers sont branches dans `backend/src/app.ts`.
 ```txt
 app.use('/api/users', usersRoutes)
 app.use('/api/scores', scoresRoutes)
+app.use('/api/leaderboard', leaderboardRoutes)
 app.use('/api/game', gameRoutes)
+app.use('/images', express.static(...))
 ```
 
 Routes utilisateurs :
@@ -190,9 +246,17 @@ POST /api/users
 Routes scores :
 
 ```txt
-GET   /api/scores/users/:userId/scenarios/:scenarioId
-GET   /api/scores/users/:userId
-PATCH /api/scores/users/:userId/scenarios/:scenarioId
+GET /api/scores/users/:userId/scenarios/:scenarioId
+GET /api/scores/users/:userId
+```
+
+Il n'y a plus de route frontend directe pour ecrire un score. Le score est sauvegarde par `game.service.ts` quand une tentative non replay se termine.
+
+Routes leaderboard :
+
+```txt
+GET /api/leaderboard
+GET /api/leaderboard/users/:userId
 ```
 
 Routes de jeu :
@@ -200,13 +264,17 @@ Routes de jeu :
 ```txt
 GET  /api/game/scenarios
 POST /api/game/attempts
+POST /api/game/attempts/:attemptId/questions/:questionId/start
+POST /api/game/attempts/:attemptId/questions/:questionId/answers
 ```
 
 `POST /api/game/attempts` cree une tentative en memoire et renvoie la premiere `PublicQuestion`.
 
-`PATCH` est utilise pour enregistrer le score d'un scenario car on modifie une partie d'un utilisateur existant.
+`POST /api/game/attempts/:attemptId/questions/:questionId/start` demarre le timer serveur sans pouvoir le remettre a zero.
 
-Le CORS dans `app.ts` doit autoriser `PATCH`.
+`POST /api/game/attempts/:attemptId/questions/:questionId/answers` valide les selections et renvoie la correction.
+
+Le CORS dans `app.ts` autorise actuellement `GET, POST, PUT, DELETE, OPTIONS`.
 
 ## Stockage backend
 
@@ -223,6 +291,7 @@ Etat actuel :
 - `backend/data/companies/demo.json` existe comme fichier d'exemple.
 - `backend/src/repositories/companyJson.repository.ts` lit et ecrit ce fichier JSON.
 - Les tentatives de jeu sont provisoirement conservees en memoire dans `gameAttempt.repository.ts`.
+- Le repository refuse d'ecraser un score de scenario deja existant.
 
 Les vrais fichiers clients/scores ne doivent pas etre commits. Garder seulement des donnees d'exemple non sensibles.
 
@@ -272,17 +341,31 @@ Les types TypeScript ne valident pas les JSON au runtime. Une validation runtime
 
 ## Services frontend historiques
 
-`frontend/src/services/userServices.ts` est encore le service principal pour la progression et le leaderboard actuels.
+`frontend/src/services/userServices.ts` et `frontend/src/services/scoreServices.ts` existent encore comme services historiques.
 
-Il sauvegarde les utilisateurs dans `localStorage` avec la cle :
+Le flux principal actuel utilise `frontend/src/services/apiClient.ts`.
+
+Ne pas supprimer les anciens services sans verifier qu'aucune page ne les importe encore.
+
+## Tests backend
+
+Tests actuels :
 
 ```txt
-cyber-game-user
+backend/src/services/gameScoring.service.test.ts
+backend/src/services/game.service.test.ts
 ```
 
-`ScoreService` existe encore, mais le flux actuel du leaderboard frontend passe historiquement par `UserService`.
+Ils couvrent :
 
-Le branchement complet du frontend sur le backend n'est pas encore termine.
+- detection d'un point dans une hotspot ;
+- evaluation des hotspots trouvees ;
+- formule de score ;
+- demarrage du timer ;
+- impossibilite de reset le timer ;
+- refus d'une mauvaise `questionId`.
+
+Ajouter de preference les nouveaux tests pres du service concerne.
 
 ## Regles importantes
 
@@ -297,6 +380,9 @@ Le branchement complet du frontend sur le backend n'est pas encore termine.
 - Les textes affiches peuvent utiliser des accents si l'encodage du fichier est sain.
 - Pour le backend, garder les controllers minces et placer les regles dans les services.
 - Pour le stockage backend, passer par le repository.
+- Le frontend ne doit jamais envoyer un score final a enregistrer.
+- Le backend doit calculer les scores et refuser l'ecrasement du premier score d'un scenario.
+- Les hotspots ne doivent pas etre exposes avant validation.
 
 ## Raccourcis de debug
 
@@ -304,15 +390,14 @@ Le branchement complet du frontend sur le backend n'est pas encore termine.
 
 ## Points d'attention actuels
 
-Le projet a evolue vers une structure frontend/backend, mais certains points techniques peuvent encore etre ameliores :
+Le projet est maintenant bien branche sur le backend, mais certains points techniques peuvent encore etre ameliores :
 
-- Le frontend charge les utilisateurs, le leaderboard, les cartes de scenario et le debut des tentatives depuis le backend.
-- La validation des selections et la sauvegarde serveur du score calcule restent a implementer.
 - Les tentatives sont perdues au redemarrage du backend tant qu'elles restent en memoire.
-- `UserService.getScores()` peut encore retourner des donnees issues des utilisateurs et les caster en `Score[]`.
-- Au login d'un utilisateur existant, verifier que tous les etats React necessaires sont bien recharges depuis `User`, notamment les scores par scenario.
-- `ScoreService` frontend peut devenir inutile si tout le leaderboard passe par le backend.
-- Le backend n'a pas encore de `tsconfig.json` dedie.
+- Le stockage JSON peut perdre une ecriture si plusieurs requetes ecrivent en meme temps.
+- `apiClient.ts` affiche encore des erreurs HTTP generiques au lieu de lire le message JSON du backend.
+- `API_URL` est encore code en dur dans `apiClient.ts`.
+- `UserService` et `ScoreService` frontend peuvent devenir inutiles si tout le flux reste backend.
 - Les fichiers de texte peuvent contenir des caracteres accentues mal encodes si l'editeur n'est pas en UTF-8.
+- Le bundle frontend peut etre lourd a cause de Phaser ; le build Vite peut afficher un avertissement de chunk superieur a 500 kB.
 
 Ne pas corriger ces points sans demande explicite de l'utilisateur.
