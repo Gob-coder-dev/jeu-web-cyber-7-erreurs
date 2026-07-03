@@ -4,6 +4,10 @@ import {
   getScenarioById,
   getScenariosCard,
 } from "../repositories/gameScenario.repository";
+import {
+  calculateRoundScore,
+  evaluateHotspots,
+} from "./gameScoring.service";
 import type {
   PublicQuestion,
   Question,
@@ -117,38 +121,18 @@ export async function submitAnswersService(
   const timeTaken = Math.round((now - startedAt) / 1000);
   attempt.questionStartedAt = null;
 
-  // 1. Evaluate selections against hotspots
-  const hotspotsWithCorrection = question.hotspots.map((hotspot) => {
-    // Check if at least one selection falls inside this hotspot's bounding box
-    const found = selections.some((sel) => {
-      return (
-        sel.x >= hotspot.x &&
-        sel.x <= hotspot.x + hotspot.width &&
-        sel.y >= hotspot.y &&
-        sel.y <= hotspot.y + hotspot.height
-      );
-    });
+  const hotspotsWithCorrection = evaluateHotspots(
+    question.hotspots,
+    selections,
+  );
 
-    return {
-      ...hotspot,
-      found,
-    };
-  });
-
-  // 2. Calculate score for this question/round
   const foundCount = hotspotsWithCorrection.filter((h) => h.found).length;
-  const missedCount = hotspotsWithCorrection.length - foundCount;
 
-  // Formula: 20 points per found hotspot, -5 points per missed hotspot, -2 point per second taken
-  
-  const roundScore = Math.max(0,Math.round(
-                      foundCount * 20
-                      + Math.max(0, 20
-                        * foundCount
-                        - timeTaken * 2
-                      )
-                      - missedCount * 5
-                    ));
+  const roundScore = calculateRoundScore({
+    foundCount,
+    hotspotCount: question.hotspots.length,
+    timeTakenSeconds: timeTaken,
+  });
 
   // Store round score
   attempt.roundScores.push(roundScore);
@@ -223,7 +207,9 @@ export async function startTimerService(
   if (question.id !== questionId) {
     return { success: false, reason: "QUESTION_MISMATCH" };
   }
-
+  if (attempt.questionStartedAt !== null) {
+    return { success: true };
+  }
   const now = Date.now();
   attempt.questionStartedAt = new Date(now).toISOString();
   return { success: true };

@@ -139,6 +139,10 @@ export async function createScoreInDatabase(
     return null;
   }
 
+  if (user.scenarioScores[scenarioId]) {
+    return null;
+  }
+
   const scenarioScore: ScenarioScore = {
     score,
     completedAt: getCurrentDate(),

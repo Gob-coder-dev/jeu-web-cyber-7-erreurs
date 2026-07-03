@@ -148,6 +148,9 @@ export async function startTimer(req: express.Request, res: express.Response) {
       if (result.reason === "ATTEMPT_NOT_FOUND") {
         return res.status(404).json({ message: "Attempt not found" });
       }
+      if (result.reason === "SCENARIO_NOT_FOUND") {
+        return res.status(404).json({ message: "Scenario not found" });
+      }
       if (result.reason === "QUESTION_NOT_FOUND") {
         return res.status(404).json({ message: "Question not found" });
       }

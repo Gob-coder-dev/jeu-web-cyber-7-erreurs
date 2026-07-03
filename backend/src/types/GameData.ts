@@ -71,22 +71,6 @@ export type StartScenarioResult = {
   isReplay: boolean;
 };
 
-export type PublicCorrection = {
-  hotspots: Hotspot[];
-  attackScenario: string;
-};
-
-export type AwnsersReceived = {
-  questionId: string;
-  awnsers: [x: number, y: number][];
-  timeTaken: number;
-};
-
-export type SubmitAnswersInput = {
-  selections: { x: number; y: number }[];
-  timeTaken: number;
-};
-
 export type SubmitAnswersResult = {
   roundScore: number;
   hotspots: (Hotspot & { found: boolean })[];
