@@ -6,7 +6,7 @@ import ResultPage from "./ResultPage";
 import ScenarioIntroPage from "./ScenarioIntroPage";
 import type { User } from "../types/User";
 import type { StartScenarioResult } from "../types/GameSession";
-import type { ScenarioIntro } from "../types/Scenario";
+import type { Scenario, ScenarioIntro } from "../types/Scenario";
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
 import type { PublicQuestion } from "../types/Question";
 import type { SubmitAnswersResult } from "../types/Question";
@@ -27,6 +27,8 @@ function App() {
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
   const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
+  const [completedScenarioDetails, setCompletedScenarioDetails] =
+    useState<Scenario | null>(null);
   const [leaderboardScores, setLeaderboardScores] = useState<LeaderboardEntry[]>([]);
   const [currentLeaderboardUser, setCurrentLeaderboardUser] = useState<LeaderboardUserResult | null>(null);
   const [scenarioIntros, setScenarioIntros] = useState<ScenarioIntro[]>([]);
@@ -56,6 +58,7 @@ function App() {
     setSelectedScenarioId(null);
     setScenarioScore(0);
     setScenarioRoundScores([]);
+    setCompletedScenarioDetails(null);
     setLeaderboardScores([]);
     setCurrentLeaderboardUser(null);
     setScenarioIntros([]);
@@ -67,6 +70,7 @@ function App() {
   function handleStartScenario(scenarioId: string) {
     setSelectedScenarioId(scenarioId);
     setGameSession(null);
+    setCompletedScenarioDetails(null);
     setStartGameError(null);
     setPage("scenarioIntro");
   }
@@ -100,6 +104,7 @@ function App() {
   function handleBackHome() {
     setSelectedScenarioId(null);
     setGameSession(null);
+    setCompletedScenarioDetails(null);
     setStartGameError(null);
     setPage("home");
   }
@@ -175,6 +180,7 @@ function App() {
     const handleScenarioCompleted = (result: SubmitAnswersResult) => {
       setScenarioScore(result.scenarioScore ?? 0);
       setScenarioRoundScores(result.scenarioRoundScores ?? []);
+      setCompletedScenarioDetails(result.scenarioDetails ?? null);
 
       if (result.updatedUser !== undefined) {
         setUser(result.updatedUser);
@@ -209,9 +215,12 @@ function App() {
   if (page === "result") {
     return (
       <ResultPage
+        scenario={completedScenarioDetails ?? undefined}
         scenarioTitle={
-          selectedScenarioIntro !== null
-            ? `Dossier - ${selectedScenarioIntro.title}`
+          completedScenarioDetails !== null
+            ? `Dossier - ${completedScenarioDetails.title}`
+            : selectedScenarioIntro !== null
+              ? `Dossier - ${selectedScenarioIntro.title}`
             : "Scenario"
         }
         scenarioScore={scenarioScore}
