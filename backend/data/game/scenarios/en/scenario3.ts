@@ -1,9 +1,9 @@
 import type { Scenario } from '../../../../src/types/GameData';
 
-const directorLinkedinPostImage = "/images/scenario3/linkedin_post.png";
-const callTranscriptImage = "/images/scenario3/discussion.png";
-const urgentInvoiceEmailImage = "/images/scenario3/email_phishing.png";
-const confirmationEmailImage = "/images/scenario3/mail_phishing_2.png";
+const directorLinkedinPostImage = "/images/en/scenario3/linkedin_post.png";
+const callTranscriptImage = "/images/en/scenario3/discussion.png";
+const urgentInvoiceEmailImage = "/images/en/scenario3/email_phishing.png";
+const confirmationEmailImage = "/images/en/scenario3/mail_phishing_2.png";
 
 export const scenario3: Scenario = {
   id: "director-voice-fraud",

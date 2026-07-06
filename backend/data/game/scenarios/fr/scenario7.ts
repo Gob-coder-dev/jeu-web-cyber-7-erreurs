@@ -1,9 +1,9 @@
 import type { Scenario } from '../../../../src/types/GameData';
 
-const teamsChannelImage = "/images/fr/scénario7/teams.png";
-const teamsMembersImage = "/images/fr/scénario7/teams_list.png";
-const sharepointDocumentImage = "/images/fr/scénario7/sharepoint.png";
-const phishingEmailImage = "/images/fr/scénario7/mail.png";
+const teamsChannelImage = "/images/fr/scenario7/teams.png";
+const teamsMembersImage = "/images/fr/scenario7/teams_list.png";
+const sharepointDocumentImage = "/images/fr/scenario7/sharepoint.png";
+const phishingEmailImage = "/images/fr/scenario7/mail.png";
 
 export const scenario7: Scenario = {
   id: "open-teams-channel",

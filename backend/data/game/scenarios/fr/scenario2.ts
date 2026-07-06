@@ -1,9 +1,9 @@
 import type { Scenario } from '../../../../src/types/GameData';
 
-const emailPhishingDecathlonImage = "/images/scenario2/email_phishing.png";
-const emailPhishingUpsImage = "/images/scenario2/email_phishing_2.png";
-const emailPhishingAmazonImage = "/images/scenario2/email_phishing_3.png";
-const emailPhishingSephoraImage = "/images/scenario2/email_phishing_4.png";
+const emailPhishingDecathlonImage = "/images/fr/scenario2/email_phishing.png";
+const emailPhishingUpsImage = "/images/fr/scenario2/email_phishing_2.png";
+const emailPhishingAmazonImage = "/images/fr/scenario2/email_phishing_3.png";
+const emailPhishingSephoraImage = "/images/fr/scenario2/email_phishing_4.png";
 
 export const scenario2: Scenario = {
   id: "phishing-inbox-melanie",

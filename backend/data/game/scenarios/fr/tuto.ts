@@ -1,6 +1,6 @@
 import type { Scenario } from '../../../../src/types/GameData';
 
-const postit = "images/fr/tutoriel/post-it.jpg";
+const postit = "/images/fr/tutoriel/post-it.jpg";
 
 export const tuto: Scenario = {
     id: "ceci-est-un-tutoriel",

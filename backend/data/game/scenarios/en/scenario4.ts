@@ -1,9 +1,9 @@
 import type { Scenario } from '../../../../src/types/GameData';
 
-const socialPostImage = "/images/scenario4/tweet.png";
-const trainWorkTempImage = "/images/scenario4/metro.jpg";
-const wifiListImage = "/images/scenario4/wifi.png";
-const wifiPhishingPortalImage = "/images/scenario4/wifi-phishing.png";
+const socialPostImage = "/images/en/scenario4/tweet.png";
+const trainWorkTempImage = "/images/en/scenario4/metro.jpg";
+const wifiListImage = "/images/en/scenario4/wifi.png";
+const wifiPhishingPortalImage = "/images/en/scenario4/wifi-phishing.png";
 
 export const scenario4: Scenario = {
   id: "commute-security",
