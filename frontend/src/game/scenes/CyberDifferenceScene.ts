@@ -11,6 +11,8 @@ type SelectedMarker = {
   imageY: number;
 };
 
+type CorrectedHotspot = Hotspot & { found: boolean };
+
 type CorrectionRect = {
   rect: Phaser.GameObjects.Rectangle;
   originalX: number;
@@ -18,7 +20,7 @@ type CorrectionRect = {
   originalWidth: number;
   originalHeight: number;
   color: number;
-  hotspot: Hotspot & { found: boolean };
+  hotspot: CorrectedHotspot;
 };
 
 export class CyberDifferenceScene extends Phaser.Scene {
@@ -30,6 +32,11 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private hotspotTooltip?: Phaser.GameObjects.Text;
   private currentTooltipHotspotId: string | null = null;
   private isReadOnly = false;
+  private showDebugHotspots = false;
+  private magnifierCamera?: Phaser.Cameras.Scene2D.Camera;
+  private readonly loupeSize = 160;
+  private readonly zoomFactor = 2.5;
+  private isMagnifierEnabled = false;
 
   constructor(question: PublicQuestion) {
     super("CyberDifferenceScene");
@@ -43,6 +50,15 @@ export class CyberDifferenceScene extends Phaser.Scene {
   create() {
     const image = this.add.image(0, 0, "question-image").setOrigin(0, 0);
     this.questionImage = image;
+
+    this.magnifierCamera = this.cameras.add(
+      0,
+      0,
+      this.loupeSize,
+      this.loupeSize,
+    );
+    this.magnifierCamera.setZoom(this.zoomFactor);
+    this.magnifierCamera.setVisible(false);
 
     this.hotspotTooltip = this.add
       .text(0, 0, "", {
@@ -59,8 +75,18 @@ export class CyberDifferenceScene extends Phaser.Scene {
     this.resizeScene(Number(this.scale.width), Number(this.scale.height));
     image.setInteractive();
 
+    this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+      this.updateMagnifier(pointer);
+    });
+
+    this.input.on("gameout", () => {
+      this.hideHotspotTooltip();
+      this.hideMagnifier();
+    });
+
     image.on("pointerout", () => {
       this.hideHotspotTooltip();
+      this.hideMagnifier();
     });
 
     image.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -75,7 +101,8 @@ export class CyberDifferenceScene extends Phaser.Scene {
       const marker = this.add
         .circle(pointer.x, pointer.y, 20, 0x00aaff, 0.25)
         .setStrokeStyle(3, 0x00aaff)
-        .setInteractive();
+        .setInteractive()
+        .setDepth(4);
 
       this.selectedMarkers.push({
         marker,
@@ -83,16 +110,29 @@ export class CyberDifferenceScene extends Phaser.Scene {
         imageY: pointer.y / this.imageScale,
       });
 
-      marker.on("pointerdown", () => {
-        if (this.isReadOnly) {
-          return;
-        }
-
-        marker.destroy();
-        this.selectedMarkers = this.selectedMarkers.filter(
-          (selectedMarker) => selectedMarker.marker !== marker,
-        );
+      marker.on("pointerout", () => {
+        this.hideHotspotTooltip();
       });
+
+      marker.on(
+        "pointerdown",
+        (
+          _pointer: Phaser.Input.Pointer,
+          _localX: number,
+          _localY: number,
+          event: Phaser.Types.Input.EventData,
+        ) => {
+          if (this.isReadOnly) {
+            return;
+          }
+
+          event.stopPropagation();
+          marker.destroy();
+          this.selectedMarkers = this.selectedMarkers.filter(
+            (selectedMarker) => selectedMarker.marker !== marker,
+          );
+        },
+      );
     });
   }
 
@@ -103,8 +143,14 @@ export class CyberDifferenceScene extends Phaser.Scene {
     }));
   }
 
-  public showCorrection(hotspots: (Hotspot & { found: boolean })[]) {
+  public showCorrection(hotspots: CorrectedHotspot[]) {
     this.isReadOnly = true;
+    this.hideMagnifier();
+
+    this.correctionRects.forEach(({ rect }) => {
+      rect.destroy();
+    });
+    this.correctionRects = [];
 
     hotspots.forEach((hotspot) => {
       const color = hotspot.found ? 0x22c55e : 0xdcb233;
@@ -115,11 +161,13 @@ export class CyberDifferenceScene extends Phaser.Scene {
           hotspot.width * this.imageScale,
           hotspot.height * this.imageScale,
           color,
-          0.25
+          0.25,
         )
         .setOrigin(0, 0)
         .setStrokeStyle(3, color)
-        .setInteractive();
+        .setInteractive()
+        .setDepth(6)
+        .setVisible(this.showDebugHotspots || this.isReadOnly);
 
       rect.on("pointerover", () => {
         this.showHotspotTooltip(hotspot);
@@ -141,7 +189,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
     });
   }
 
-  private showHotspotTooltip(hotspot: Hotspot & { found: boolean }) {
+  private showHotspotTooltip(hotspot: CorrectedHotspot) {
     if (this.hotspotTooltip === undefined) {
       return;
     }
@@ -191,6 +239,28 @@ export class CyberDifferenceScene extends Phaser.Scene {
     this.hotspotTooltip?.setVisible(false);
   }
 
+  private updateMagnifier(pointer: Phaser.Input.Pointer) {
+    if (
+      this.magnifierCamera === undefined ||
+      !this.isMagnifierEnabled ||
+      this.isReadOnly
+    ) {
+      this.hideMagnifier();
+      return;
+    }
+
+    this.magnifierCamera.setVisible(true);
+    this.magnifierCamera.setPosition(
+      pointer.x - this.loupeSize / 2,
+      pointer.y - this.loupeSize / 2,
+    );
+    this.magnifierCamera.centerOn(pointer.x, pointer.y);
+  }
+
+  private hideMagnifier() {
+    this.magnifierCamera?.setVisible(false);
+  }
+
   public resizeScene = (width: number, height: number) => {
     if (this.questionImage === undefined) {
       return;
@@ -204,18 +274,38 @@ export class CyberDifferenceScene extends Phaser.Scene {
     this.questionImage.setScale(this.imageScale);
 
     this.selectedMarkers.forEach(({ marker, imageX, imageY }) => {
-      marker.setPosition(
-        imageX * this.imageScale,
-        imageY * this.imageScale,
-      );
+      marker.setPosition(imageX * this.imageScale, imageY * this.imageScale);
     });
 
-    this.correctionRects.forEach(({ rect, originalX, originalY, originalWidth, originalHeight }) => {
-      rect.setPosition(originalX * this.imageScale, originalY * this.imageScale);
-      rect.setSize(originalWidth * this.imageScale, originalHeight * this.imageScale);
-    });
+    this.correctionRects.forEach(
+      ({ rect, originalX, originalY, originalWidth, originalHeight }) => {
+        rect.setPosition(
+          originalX * this.imageScale,
+          originalY * this.imageScale,
+        );
+        rect.setSize(
+          originalWidth * this.imageScale,
+          originalHeight * this.imageScale,
+        );
+      },
+    );
 
     this.hideHotspotTooltip();
+    this.hideMagnifier();
   };
-}
 
+  public toggleDebugHotspots = () => {
+    this.showDebugHotspots = !this.showDebugHotspots;
+    this.correctionRects.forEach(({ rect }) => {
+      rect.setVisible(this.showDebugHotspots || this.isReadOnly);
+    });
+  };
+
+  public toggleMagnifier(isActive: boolean) {
+    this.isMagnifierEnabled = isActive;
+
+    if (!isActive) {
+      this.hideMagnifier();
+    }
+  }
+}
