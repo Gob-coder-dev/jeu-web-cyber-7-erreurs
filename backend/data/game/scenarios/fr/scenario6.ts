@@ -1,0 +1,225 @@
+import type { Scenario } from '../../../../src/types/GameData';
+
+const securityAlertImage = "/images/fr/scenario6/mail_connexion.png";
+const fakeSupportChatImage = "/images/fr/scenario6/teams_chat.png";
+const mailboxRulesImage = "/images/fr/scenario6/regles_mail.png";
+
+export const scenario6: Scenario = {
+  id: "fake-it-support",
+  title: "Le faux support informatique",
+  description:
+    "L'entreprise Esquie a détecté plusieurs connexions inhabituelles sur des comptes internes. Le plus étrange, c'est que les comptes concernés étaient protégés par double authentification.\n\nLes victimes affirment ne jamais avoir donné leur mot de passe. Elles disent même qu'un service informatique les a aidés à mieux sécuriser leur compte pour contrer une faille de sécurité.\n\nElles disent seulement avoir reçu une alerte de sécurité, puis avoir été contactées par une personne se présentant comme le support informatique.\n\nLe service informatique officiel n'a pourtant ouvert aucun ticket ce jour-là. Aucun technicien n'était chargé d'appeler les employés. Et pourtant, quelqu'un a réussi à entrer.\n\nVotre mission, détective : comprendre comment un système de sécurité censé protéger les comptes a pu être contourné sans être techniquement piraté.\n\nVous serez épaulé d'une des victimes de l'attaque : Jérôme.",
+  globalAttackScenario:
+    "Mode opératoire probable : l'attaquant a commencé par envoyer une fausse alerte de sécurité pour créer l'inquiétude. Ensuite, il a contacté les victimes en se faisant passer pour le support informatique, exactement au moment où elles s'attendaient à recevoir de l'aide.\n\nIl a ensuite demandé ou provoqué des validations MFA. La protection n'a pas été cassée : elle a été validée par l'utilisateur sous pression. Une fois connecté, l'attaquant a modifié les règles de messagerie pour recevoir certains emails et masquer ses traces.\n\nConclusion de l'enquête : le mot de passe n'a pas été deviné. Le code n'a pas été forcé. Le système n'a pas explosé. Quelqu'un a simplement demandé la clé avec assez d'assurance pour qu'on la lui donne.\n\nBon réflexe à retenir\n\nNe jamais communiquer un code de double authentification et ne jamais valider une demande de connexion que l'on n'a pas initiée. En cas de doute, contacter le support par un canal officiel connu, jamais depuis un lien ou un message reçu.",
+  questions: [
+    {
+      id: "security-alert-setup",
+      title: "L'alerte qui préparait le terrain",
+      instruction:
+        "Jérôme vous montre le message reçu le matin de l'incident. Il prétend signaler une activité inhabituelle sur son compte. Une alerte, oui. Mais peut-être pas celle qu'il croyait.",
+      attackScenario:
+        "Le mail ne vole pas encore le compte. Il installe une inquiétude.\n\nLa victime pense qu'un problème de sécurité est déjà en cours. À partir de là, tout message venant d'un prétendu support paraît plus crédible. L'attaquant ne force pas la porte dès le début : il fait croire qu'elle est déjà ouverte.",
+      image: securityAlertImage,
+      imageWidth: 1535,
+      imageHeight: 1024,
+      hotspots: [
+        {
+          id: "suspicious-sender-address",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Adresse d'expéditeur suspecte",
+          explanation:
+            "Le nom affiché peut imiter un service officiel, mais l'adresse réelle ne correspond pas forcément au domaine de l'entreprise.",
+        },
+        {
+          id: "account-lock-threat",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Menace de blocage du compte",
+          explanation:
+            "La peur de perdre son accès pousse l'utilisateur à agir vite. C'est une pression psychologique classique.",
+        },
+        {
+          id: "doubtful-verification-link",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Lien de vérification douteux",
+          explanation:
+            "Un lien reçu par email ne doit pas être utilisé pour vérifier un compte sensible. Il faut passer par le site officiel ou le portail interne.",
+        },
+        {
+          id: "immediate-validation-request",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Demande de validation immédiate",
+          explanation:
+            "L'urgence réduit le temps de réflexion et augmente le risque d'erreur.",
+        },
+        {
+          id: "approximate-layout",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Logo ou mise en page approximatif",
+          explanation:
+            "Un faux message peut reprendre l'apparence d'un service officiel, mais certains détails visuels peuvent trahir la copie.",
+        },
+      ],
+    },
+    {
+      id: "helpful-fake-technician",
+      title: "Le technicien trop serviable",
+      instruction:
+        "Quelques minutes après l'alerte, les employés auraient reçu des messages privés de la part des SI. Vous regardez donc cette discussion.",
+      attackScenario:
+        "Le faux support ne casse pas la sécurité. Il demande à la victime de l'aider à la contourner.\n\nLe costume est simple : un logo, un vocabulaire technique, un ton assuré. Mais derrière ce costume, l'objectif est clair : obtenir une validation que seul l'utilisateur peut donner.",
+      image: fakeSupportChatImage,
+      imageWidth: 1672,
+      imageHeight: 941,
+      hotspots: [
+        {
+          id: "external-or-unverified-account",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Compte externe ou non vérifié",
+          explanation:
+            "Un support interne doit être clairement identifiable. Un compte externe, récent ou mal nommé doit être vérifié.",
+        },
+        {
+          id: "no-official-ticket",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Absence de ticket officiel",
+          explanation:
+            "Une intervention support sérieuse doit être tracée. Sans numéro de ticket, la demande doit être considérée comme suspecte.",
+        },
+        {
+          id: "mfa-code-request",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Demande de code MFA",
+          explanation:
+            "Un code de double authentification est personnel. Il ne doit jamais être communiqué, même au support informatique.",
+        },
+        {
+          id: "reassuring-directive-tone",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Ton rassurant mais directif",
+          explanation:
+            "L'attaquant utilise un ton professionnel pour pousser la victime à obéir sans poser de questions.",
+        },
+        {
+          id: "time-pressure",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Pression temporelle",
+          explanation:
+            "Le faux technicien insiste sur la rapidité pour éviter que l'utilisateur contacte le vrai support.",
+        },
+        {
+          id: "stay-in-chat-request",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Demande de rester dans la conversation",
+          explanation:
+            "L'attaquant cherche à garder la victime occupée et à empêcher toute vérification externe.",
+        },
+      ],
+    },
+    {
+      id: "hidden-mailbox-rules",
+      title: "Les règles cachées de la boîte mail",
+      instruction:
+        "Jérôme aurait donné le code de connexion MFA à ce service IT fictif. Le pirate a donc eu accès à toute la boîte mail de l'employé. Pourtant, à vue d'œil, vous ne remarquez rien d'anormal. Vous vous baladez dans la boîte mail de Jérôme et allez dans les paramètres du compte.",
+      attackScenario:
+        "L'accès initial n'était qu'un début. Une fois entré, l'attaquant a préparé le silence.\n\nLire, transférer, supprimer, masquer : la boîte mail devient un poste d'écoute. L'absence de bruit ne veut pas dire absence d'intrus.",
+      image: mailboxRulesImage,
+      imageWidth: 1448,
+      imageHeight: 1086,
+      hotspots: [
+        {
+          id: "automatic-forwarding-rule",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Règle de transfert automatique",
+          explanation:
+            "Une règle de transfert peut envoyer une copie des emails vers une adresse contrôlée par l'attaquant.",
+        },
+        {
+          id: "unknown-external-address",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Adresse externe inconnue",
+          explanation:
+            "Une adresse inconnue dans les règles de messagerie est une trace forte de compromission.",
+        },
+        {
+          id: "automatic-message-deletion",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Suppression automatique de messages",
+          explanation:
+            "L'attaquant peut supprimer les alertes ou notifications pour masquer ses traces.",
+        },
+        {
+          id: "discreet-rule-name",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Nom de règle discret",
+          explanation:
+            "Une règle appelée \"archive\", \"sync\" ou \"backup\" peut sembler normale mais cacher un détournement.",
+        },
+        {
+          id: "settings-not-checked",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Absence de vérification des paramètres",
+          explanation:
+            "Les utilisateurs consultent rarement leurs règles de messagerie. Cela permet à l'attaquant de rester discret.",
+        },
+        {
+          id: "silent-read-messages",
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          label: "Messages lus sans action visible",
+          explanation:
+            "Un compte compromis peut être espionné sans que l'utilisateur remarque immédiatement une modification.",
+        },
+      ],
+    },
+  ],
+};

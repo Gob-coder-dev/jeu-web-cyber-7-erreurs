@@ -1,0 +1,16 @@
+import type { Question } from "./Question";
+
+export type Scenario = {
+  id: string;
+  title: string;
+  description: string;
+  questions: Question[];
+  globalAttackScenario?: string;
+};
+
+export type ScenarioIntro = {
+    id: string;
+    title: string;
+    description: string;
+    numberOfQuestions: number;
+}
