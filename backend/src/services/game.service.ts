@@ -16,8 +16,8 @@ import type {
 } from "../types/GameData";
 import type { User } from "../types/CompanyData";
 
-export function getScenariosCardService(): ReturnType<typeof getScenariosCard> {
-  return getScenariosCard();
+export function getScenariosCardService(userId?: string): ReturnType<typeof getScenariosCard> {
+  return getScenariosCard(userId);
 }
 
 type StartScenarioFailure =

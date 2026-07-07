@@ -8,7 +8,9 @@ import {
 
 
 export async function getScenariosCard(req: express.Request, res: express.Response) {
-  const scenariosCard = getScenariosCardService();
+  const { userId } = req.query;
+  const userIdString = typeof userId === 'string' ? userId : undefined;
+  const scenariosCard = await getScenariosCardService(userIdString);
 
   if (scenariosCard.length === 0) {
     return res.status(404).json({ message: "No scenarios found" });

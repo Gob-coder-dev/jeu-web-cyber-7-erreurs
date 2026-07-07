@@ -47,8 +47,13 @@ export async function getLeaderboardUser(
 
 
 
-export async function getScenariosCard(): Promise<ScenarioIntro[]> {
-    const response = await fetch(`${API_URL}/game/scenarios`, {
+export async function getScenariosCard(userId?: string): Promise<ScenarioIntro[]> {
+    const url = new URL(`${API_URL}/game/scenarios`);
+    if (userId) {
+        url.searchParams.append('userId', userId);
+    }
+    
+    const response = await fetch(url.toString(), {
         method: "GET",
     });
 

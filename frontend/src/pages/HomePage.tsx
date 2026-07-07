@@ -64,6 +64,7 @@ function HomePage({
         {scenarioIntros.map((scenario, index) => {
           const scenarioScore = user.scenarioScores[scenario.id]?.score;
           const hasScore = scenarioScore !== undefined;
+          const isLocked = scenario.isLocked ?? false;
 
           return (
             <article className="home-page__scenario" key={scenario.id}>
@@ -71,6 +72,7 @@ function HomePage({
                 <span>{scenario.numberOfQuestions} questions</span>
                 <span className="home-page__status-slot">
                   {hasScore && "Terminé"}
+                  {isLocked && "Verrouillé"}
                 </span>
                 <span className="home-page__score-slot">
                   {hasScore && (
@@ -83,12 +85,18 @@ function HomePage({
 
               <div className="home-page__scenario-main">
                 <h2>{formatScenarioTitle(scenario.title, index)}</h2>
-                <button
-                  className="button home-page__button--play"
-                  onClick={() => handleStartScenario(scenario.id)}
-                >
-                  <span>Jouer</span>
-                </button>
+                {isLocked ? (
+                  <div className="home-page__scenario-locked">
+                    <p>Complète d'abord le tutoriel pour accéder à ce scénario</p>
+                  </div>
+                ) : (
+                  <button
+                    className="button home-page__button--play"
+                    onClick={() => handleStartScenario(scenario.id)}
+                  >
+                    <span>Jouer</span>
+                  </button>
+                )}
               </div>
             </article>
           );
