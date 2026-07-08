@@ -54,36 +54,35 @@ export const scenario4: Scenario = {
       attackScenario:
         "Here, the attacker does not need malware. All he needs is a viewing angle, a discreet camera, or an inattentive person.\n\nMobile work is convenient, but it sometimes turns public transport into an open meeting room or an easy theft opportunity. A confidential document displayed on a train is no longer only in the contractor's hands; it is potentially in front of the entire carriage.",
       image: trainWorkTempImage,
-      imageWidth: 1200,
-      imageHeight: 758,
-      // Temporary hotspots: the final image for this room is not available yet.
+      imageWidth: 4080,
+      imageHeight: 3060,
       hotspots: [
         {
           id: "public-transport-visible-screen",
-          x: 490,
-          y: 250,
-          width: 310,
-          height: 210,
+          x: 1970,
+          y: 200,
+          width: 870,
+          height: 760,
           label: "Screen visible to passengers",
           explanation:
             "A computer used in a public place can expose information to everyone around. This is the principle of shoulder surfing.",
         },
         {
           id: "public-transport-unprotected-bag",
-          x: 30,
-          y: 450,
-          width: 260,
-          height: 240,
+          x: 2320,
+          y: 1780,
+          width: 900,
+          height: 880,
           label: "Bag placed on the floor without protection",
           explanation:
             "Cedric placed his bag containing company documents and hard drives on the floor without protection. A malicious person could steal them and recover all this information.",
         },
         {
           id: "public-transport-visible-badge",
-          x: 815,
-          y: 260,
-          width: 180,
-          height: 230,
+          x: 1750,
+          y: 1920,
+          width: 430,
+          height: 360,
           label: "Employee badge not put away",
           explanation:
             "Cedric's employee badge is completely visible on him. A stranger could steal his badge. A stranger could also photograph or discreetly scan the badge to make a fake card and break into the company.",

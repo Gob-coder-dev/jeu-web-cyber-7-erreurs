@@ -54,36 +54,35 @@ export const scenario4: Scenario = {
       attackScenario:
         "Ici, l'attaquant n'a pas besoin de malware. Il lui suffit d'un angle de vue, d'un appareil photo discret ou d'une personne inattentive.\n\nLe travail nomade est pratique, mais il transforme parfois les transports en salle de réunion ouverte ou en vol facile. Un document confidentiel affiché dans un train n'est plus seulement entre les mains du prestataire, il est potentiellement devant tout le wagon.",
       image: trainWorkTempImage,
-      imageWidth: 1200,
-      imageHeight: 758,
-      // Hotspots provisoires : l'image finale de cette pièce n'est pas encore disponible.
+      imageWidth: 4080,
+      imageHeight: 3060,
       hotspots: [
         {
           id: "public-transport-visible-screen",
-          x: 490,
-          y: 250,
-          width: 310,
-          height: 210,
+          x: 1970,
+          y: 200,
+          width: 870,
+          height: 760,
           label: "Écran visible par les passagers",
           explanation:
             "Un ordinateur utilisé dans un lieu public peut exposer des informations à toutes les personnes autour. C'est le principe du shoulder surfing.",
         },
         {
           id: "public-transport-unprotected-bag",
-          x: 30,
-          y: 450,
-          width: 260,
-          height: 240,
+          x: 2320,
+          y: 1780,
+          width: 900,
+          height: 880,
           label: "Sac posé par terre non protégé",
           explanation:
             "Cédric a posé son sac contenant des documents de l'entreprise et des disques durssur le sol sans protection. Une personne malveillante pourrait les voler et récupérer toutes ces informations",
         },
         {
           id: "public-transport-visible-badge",
-          x: 815,
-          y: 260,
-          width: 180,
-          height: 230,
+          x: 1750,
+          y: 1920,
+          width: 430,
+          height: 360,
           label: "Badge employé non rangé",
           explanation:
             "Le badge employé de Cédric est complètement visible sur lui. Un inconnu pourrait lui voler son badge. Un inconnu pourrait aussi prendre le badge en photo ou le scanner discrètement pour faire une fausse carte et s'introduire dans l'entreprise",

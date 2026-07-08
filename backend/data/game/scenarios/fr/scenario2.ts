@@ -35,6 +35,16 @@ export const scenario2: Scenario = {
             "Le nom affiché imite UPS, mais l'adresse réelle ne correspond pas à un domaine officiel fiable. En phishing, le nom visible peut mentir : il faut regarder l'adresse complète.",
         },
         {
+          id: "ups-approximate-logo",
+          x: 540,
+          y: 210,
+          width: 95,
+          height: 50,
+          label: "Logo approximatif",
+          explanation:
+            "Une identité visuelle légèrement différente peut révéler un message frauduleux. Les attaquants copient souvent les marques, mais les détails trahissent parfois la copie.",
+        },
+        {
           id: "ups-limited-time-subject",
           x: 65,
           y: 60,
@@ -189,6 +199,16 @@ export const scenario2: Scenario = {
           label: "Bouton incohérent avec l'offre",
           explanation:
             "Le bouton propose de réserver un vélo alors que le message affirme qu'il est déjà réservé. Cette incohérence montre que le scénario du mail n'est pas solide.",
+        },
+        {
+          id: "decathlon-approximate-logo",
+          x: 610,
+          y: 225,
+          width: 395,
+          height: 95,
+          label: "Logo approximatif",
+          explanation:
+            "Une identité visuelle légèrement différente peut révéler un message frauduleux. Les attaquants copient souvent les marques, mais les détails trahissent parfois la copie.",
         },
       ],
     },

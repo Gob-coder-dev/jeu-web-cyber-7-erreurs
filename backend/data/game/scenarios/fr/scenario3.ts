@@ -151,9 +151,9 @@ export const scenario3: Scenario = {
       hotspots: [
         {
           id: "invoice-suspicious-sender",
-          x: 380,
-          y: 215,
-          width: 490,
+          x: 370,
+          y: 205,
+          width: 380,
           height: 58,
           label: "Adresse d'expéditeur suspecte",
           explanation:
@@ -161,29 +161,19 @@ export const scenario3: Scenario = {
         },
         {
           id: "invoice-unprofessional-file-name",
-          x: 365,
-          y: 320,
-          width: 455,
+          x: 360,
+          y: 315,
+          width: 400,
           height: 58,
           label: "Facture avec nom non professionnel",
           explanation:
             "La facture en pièce jointe dans le mail n'a pas l'air professionnel. Le nom paraît bâclé.",
         },
         {
-          id: "invoice-doubtful-logo",
-          x: 330,
-          y: 400,
-          width: 500,
-          height: 165,
-          label: "Logos douteux",
-          explanation:
-            "Le logo de l'entreprise qui envoie la facture parait faux ou généré par IA. Ce qui montre les mails mal écrits et prégénéré.",
-        },
-        {
           id: "invoice-foreign-rib",
           x: 330,
           y: 752,
-          width: 640,
+          width: 450,
           height: 55,
           label: "RIB fournisseur étranger",
           explanation:
@@ -193,7 +183,7 @@ export const scenario3: Scenario = {
           id: "invoice-wrong-copyright",
           x: 330,
           y: 1005,
-          width: 700,
+          width: 420,
           height: 48,
           label: "Copyright mauvais",
           explanation:
@@ -214,19 +204,29 @@ export const scenario3: Scenario = {
       hotspots: [
         {
           id: "confirmation-vague-subject",
-          x: 312,
-          y: 145,
-          width: 300,
+          x: 302,
+          y: 135,
+          width: 250,
           height: 50,
           label: "Confirmation vague",
           explanation:
             "Un message qui remercie sans mentionner précisément le dossier peut être conçu pour rester crédible tout en limitant les détails vérifiables.",
         },
         {
+          id: "confirmation-suspicious-sender",
+          x: 370,
+          y: 205,
+          width: 450,
+          height: 58,
+          label: "Adresse d'expéditeur suspecte",
+          explanation:
+            "Le nom affiché peut imiter la directrice ou un fournisseur, mais l'adresse réelle doit être vérifiée attentivement.",
+        },
+        {
           id: "confirmation-no-more-action",
           x: 315,
           y: 475,
-          width: 770,
+          width: 470,
           height: 55,
           label: "Aucune procédure supplémentaire",
           explanation:
@@ -234,9 +234,9 @@ export const scenario3: Scenario = {
         },
         {
           id: "confirmation-informal-text",
-          x: 315,
-          y: 340,
-          width: 600,
+          x: 300,
+          y: 330,
+          width: 550,
           height: 300,
           label: "Texte informel",
           explanation:
@@ -256,7 +256,7 @@ export const scenario3: Scenario = {
           id: "confirmation-copyright",
           x: 500,
           y: 840,
-          width: 520,
+          width: 450,
           height: 45,
           label: "Copyright",
           explanation:

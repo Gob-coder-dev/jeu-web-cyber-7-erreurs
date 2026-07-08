@@ -151,9 +151,9 @@ export const scenario3: Scenario = {
       hotspots: [
         {
           id: "invoice-suspicious-sender",
-          x: 380,
-          y: 215,
-          width: 490,
+          x: 370,
+          y: 205,
+          width: 380,
           height: 58,
           label: "Suspicious sender address",
           explanation:
@@ -161,29 +161,19 @@ export const scenario3: Scenario = {
         },
         {
           id: "invoice-unprofessional-file-name",
-          x: 365,
-          y: 320,
-          width: 455,
+          x: 360,
+          y: 315,
+          width: 400,
           height: 58,
           label: "Invoice with an unprofessional name",
           explanation:
             "The invoice attached to the email does not look professional. The name seems sloppy.",
         },
         {
-          id: "invoice-doubtful-logo",
-          x: 330,
-          y: 400,
-          width: 500,
-          height: 165,
-          label: "Questionable logos",
-          explanation:
-            "The logo of the company sending the invoice looks fake or AI-generated. This shows poorly written and pre-generated emails.",
-        },
-        {
           id: "invoice-foreign-rib",
           x: 330,
           y: 752,
-          width: 640,
+          width: 450,
           height: 55,
           label: "Foreign supplier bank details",
           explanation:
@@ -193,7 +183,7 @@ export const scenario3: Scenario = {
           id: "invoice-wrong-copyright",
           x: 330,
           y: 1005,
-          width: 700,
+          width: 420,
           height: 48,
           label: "Bad copyright",
           explanation:
@@ -214,19 +204,29 @@ export const scenario3: Scenario = {
       hotspots: [
         {
           id: "confirmation-vague-subject",
-          x: 312,
-          y: 145,
-          width: 300,
+          x: 302,
+          y: 135,
+          width: 250,
           height: 50,
           label: "Vague confirmation",
           explanation:
             "A message that says thank you without precisely mentioning the file can be designed to remain credible while limiting verifiable details.",
         },
         {
+          id: "confirmation-suspicious-sender",
+          x: 370,
+          y: 205,
+          width: 450,
+          height: 58,
+          label: "Suspicious sender address",
+          explanation:
+            "The displayed name can imitate the director or a supplier, but the real address must be checked carefully.",
+        },
+        {
           id: "confirmation-no-more-action",
           x: 315,
           y: 475,
-          width: 770,
+          width: 470,
           height: 55,
           label: "No additional procedure",
           explanation:
@@ -234,9 +234,9 @@ export const scenario3: Scenario = {
         },
         {
           id: "confirmation-informal-text",
-          x: 315,
-          y: 340,
-          width: 600,
+          x: 300,
+          y: 330,
+          width: 550,
           height: 300,
           label: "Informal text",
           explanation:
@@ -256,7 +256,7 @@ export const scenario3: Scenario = {
           id: "confirmation-copyright",
           x: 500,
           y: 840,
-          width: 520,
+          width: 450,
           height: 45,
           label: "Copyright",
           explanation:

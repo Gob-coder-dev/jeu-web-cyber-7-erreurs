@@ -35,6 +35,16 @@ export const scenario2: Scenario = {
             "The displayed name imitates UPS, but the real address does not match a reliable official domain. In phishing, the visible name can lie: you must look at the full address.",
         },
         {
+          id: "ups-approximate-logo",
+          x: 540,
+          y: 210,
+          width: 95,
+          height: 50,
+          label: "Approximate logo",
+          explanation:
+            "A slightly different visual identity can reveal a fraudulent message. Attackers often copy brands, but the details sometimes betray the copy.",
+        },
+        {
           id: "ups-limited-time-subject",
           x: 65,
           y: 60,
@@ -189,6 +199,16 @@ export const scenario2: Scenario = {
           label: "Button inconsistent with the offer",
           explanation:
             "The button proposes reserving a bicycle even though the message claims it is already reserved. This inconsistency shows that the email scenario is not solid.",
+        },
+        {
+          id: "decathlon-approximate-logo",
+          x: 610,
+          y: 225,
+          width: 395,
+          height: 95,
+          label: "Approximate logo",
+          explanation:
+            "A slightly different visual identity can reveal a fraudulent message. Attackers often copy brands, but the details sometimes betray the copy.",
         },
       ],
     },
