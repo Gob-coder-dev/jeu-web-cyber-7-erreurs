@@ -87,7 +87,7 @@ function HomePage({
                 <h2>{formatScenarioTitle(scenario.title, index)}</h2>
                 {isLocked ? (
                   <div className="home-page__scenario-locked">
-                    <p>Complète d'abord le tutoriel pour accéder à ce scénario</p>
+                    <p>Complétez le tutoriel pour accéder à ce scénario</p>
                   </div>
                 ) : (
                   <button
