@@ -43,8 +43,8 @@ const createUserObject = (username: string, password: string): User => {
   };
 };
 
-function findUserIndex(companyData: CompanyData, userId: string) {
-  return companyData.users.findIndex((user) => user.id === userId);
+function findUserIndex(companyData: CompanyData, username: string) {
+  return companyData.users.findIndex((user) => user.id === username);
 }
 
 function findUserById(companyData: CompanyData, userId: string) {
@@ -52,7 +52,15 @@ function findUserById(companyData: CompanyData, userId: string) {
 }
 
 function findUser(companyData: CompanyData, username: string, password: string) {
-  return companyData.users.find((user) => user.pseudo === username && user.hashedPassword === password);
+  const normalizedUsername = normalizeUsername(username);
+  return companyData.users.find((user) =>
+    user.pseudoKey === normalizedUsername && user.hashedPassword === password,
+  );
+}
+
+function findUsername(companyData: CompanyData, username: string) {
+  const normalizedUsername = normalizeUsername(username);
+  return companyData.users.find((user) => user.pseudoKey === normalizedUsername);
 }
 
 function calculateGlobalScore(user: User) {
@@ -63,10 +71,16 @@ function calculateGlobalScore(user: User) {
 }
 
 // User functions
-export async function isUserInDatabase(userId: string) {
+export async function isUserInDatabase(userId: string, password: string) {
   const companyData = await readCompanyData();
 
-  return findUserIndex(companyData, userId) !== -1;
+  return findUser(companyData, userId, password) !== undefined;
+}
+
+export async function isUsernameInDatabase(username: string) {
+  const companyData = await readCompanyData();
+
+  return findUsername(companyData, username) !== undefined;
 }
 
 export async function getUserInDatabase(userId: string, password: string) {
@@ -89,10 +103,10 @@ export async function getAllUsersInDatabase() {
 
 export async function createUserInDatabase(username: string, password: string) {
   const companyData = await readCompanyData();
-  const existingUser = findUser(companyData, username, password);
+  const existingUser = findUsername(companyData, username);
 
   if (existingUser) {
-    return existingUser;
+    return null;
   }
 
   const newUser = createUserObject(username, password);

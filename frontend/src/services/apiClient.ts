@@ -23,6 +23,22 @@ export async function getOrCreateUser(username: string, password: string): Promi
     return response.json();
 }
 
+export async function postNewUser(username: string, password: string): Promise<User> {
+    const response = await fetch(`${API_URL}/users/create`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({username, password}),
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
+
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
     const response = await fetch(`${API_URL}/leaderboard`, {
         method: "GET",

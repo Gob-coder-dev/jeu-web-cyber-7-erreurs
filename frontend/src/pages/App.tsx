@@ -1,6 +1,7 @@
 import { useState } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
+import RegisterPage from "./RegisterPage";
 import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
 import ScenarioIntroPage from "./ScenarioIntroPage";
@@ -16,6 +17,7 @@ import {
   getLeaderboardUser,
   getOrCreateUser,
   getScenariosCard,
+  postNewUser,
   startScenario,
 } from "../services/apiClient";
 
@@ -36,6 +38,21 @@ function App() {
     useState<StartScenarioResult | null>(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
   const [startGameError, setStartGameError] = useState<string | null>(null);
+
+  async function handleRegister(username: string, password: string) {
+    try {
+      const [registeredUser, cards] = await Promise.all([
+        postNewUser(username, password),
+        getScenariosCard(),
+      ]);
+
+      setUser(registeredUser);
+      setScenarioIntros(cards);
+      setPage("home");
+    } catch (error) {
+      console.error("Impossible d'inscrire l'utilisateur", error);
+    }
+  }
 
   async function handleLogin(username: string, password: string) {
     try {
@@ -139,7 +156,7 @@ function App() {
       ) ?? null);
 
   if (user === null) {
-    return <LoginPage onLogin={handleLogin} />;
+    return <RegisterPage onRegister={handleRegister} />;
   }
 
   if (page === "scenarioIntro" && selectedScenarioId !== null) {

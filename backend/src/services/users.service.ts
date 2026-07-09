@@ -1,7 +1,7 @@
-import { getUserInDatabase, createUserInDatabase, isUserInDatabase } from "../repositories/companyJson.repository";
+import { getUserInDatabase, createUserInDatabase, isUsernameInDatabase, isUserInDatabase } from "../repositories/companyJson.repository";
 
-export async function isUserFromDatabase(userId: string) {
-    return await isUserInDatabase(userId);
+export async function isUserFromDatabase(userId: string, password: string) {
+    return await isUserInDatabase(userId, password);
 }
 
 export async function getUserFromDatabase(userId: string, password: string) {
@@ -15,11 +15,11 @@ export async function getUserFromDatabase(userId: string, password: string) {
     return user;
 };
 
-export async function createUserFromDatabase(userId: string, password: string) {
-    if (await isUserInDatabase(userId)) {
-        return false;
+export async function createUserFromDatabase(username: string, password: string) {
+    if (await isUsernameInDatabase(username)) {
+        return null;
     }
-    const newUser = await createUserInDatabase(userId, password);
+    const newUser = await createUserInDatabase(username, password);
     return newUser;
 };
 
