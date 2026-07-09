@@ -24,16 +24,16 @@ async function writeCompanyData(companyData: CompanyData): Promise<void> {
 
 const getCurrentDate = () => new Date().toISOString();
 
-const normalizePseudo = (pseudo: string) => pseudo.trim().toLowerCase();
+const normalizeUsername = (username: string) => username.trim().toLowerCase();
 
-const createUserObject = (userId: string): User => {
+const createUserObject = (username: string, password: string): User => {
   const now = getCurrentDate();
 
   return {
-    id: userId,
-    pseudo: userId,
-    pseudoKey: normalizePseudo(userId),
-    hashedPassword: null,
+    id: crypto.randomUUID(),
+    pseudo: username,
+    pseudoKey: normalizeUsername(username),
+    hashedPassword: password,
     emailAddress: null,
     globalScore: 0,
     completedScenarioIds: [],
@@ -47,8 +47,12 @@ function findUserIndex(companyData: CompanyData, userId: string) {
   return companyData.users.findIndex((user) => user.id === userId);
 }
 
-function findUser(companyData: CompanyData, userId: string) {
+function findUserById(companyData: CompanyData, userId: string) {
   return companyData.users.find((user) => user.id === userId);
+}
+
+function findUser(companyData: CompanyData, username: string, password: string) {
+  return companyData.users.find((user) => user.pseudo === username && user.hashedPassword === password);
 }
 
 function calculateGlobalScore(user: User) {
@@ -65,10 +69,16 @@ export async function isUserInDatabase(userId: string) {
   return findUserIndex(companyData, userId) !== -1;
 }
 
-export async function getUserInDatabase(userId: string) {
+export async function getUserInDatabase(userId: string, password: string) {
   const companyData = await readCompanyData();
 
-  return findUser(companyData, userId);
+  return findUser(companyData, userId, password);
+}
+
+export async function getUserInDatabaseById(userId: string) {
+  const companyData = await readCompanyData();
+
+  return findUserById(companyData, userId);
 }
 
 export async function getAllUsersInDatabase() {
@@ -77,15 +87,15 @@ export async function getAllUsersInDatabase() {
   return [...companyData.users];
 }
 
-export async function createUserInDatabase(userId: string) {
+export async function createUserInDatabase(username: string, password: string) {
   const companyData = await readCompanyData();
-  const existingUser = findUser(companyData, userId);
+  const existingUser = findUser(companyData, username, password);
 
   if (existingUser) {
     return existingUser;
   }
 
-  const newUser = createUserObject(userId);
+  const newUser = createUserObject(username, password);
   companyData.users.push(newUser);
 
   await writeCompanyData(companyData);
@@ -96,7 +106,7 @@ export async function createUserInDatabase(userId: string) {
 // Score functions
 export async function isScoreInDatabase(userId: string, scenarioId: string) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return false;
@@ -107,7 +117,7 @@ export async function isScoreInDatabase(userId: string, scenarioId: string) {
 
 export async function getScoreInDatabase(userId: string, scenarioId: string) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return undefined;
@@ -118,7 +128,7 @@ export async function getScoreInDatabase(userId: string, scenarioId: string) {
 
 export async function getTotalScoreInDatabase(userId: string) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return null;
@@ -133,7 +143,7 @@ export async function createScoreInDatabase(
   score: number,
 ) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return null;

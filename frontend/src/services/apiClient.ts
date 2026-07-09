@@ -7,9 +7,13 @@ import type { SelectionPoint, SubmitAnswersResult } from "../types/Question";
 const API_URL = "http://localhost:3000/api";
 
 
-export async function getOrCreateUser(pseudo: string): Promise<User> {
-    const response = await fetch(`${API_URL}/users/${pseudo}`, {
-        method: "GET",
+export async function getOrCreateUser(username: string, password: string): Promise<User> {
+    const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({username, password }),
     });
 
     if (!response.ok) {

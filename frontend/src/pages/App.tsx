@@ -37,10 +37,10 @@ function App() {
   const [isStartingGame, setIsStartingGame] = useState(false);
   const [startGameError, setStartGameError] = useState<string | null>(null);
 
-  async function handleLogin(pseudo: string) {
+  async function handleLogin(username: string, password: string) {
     try {
       const [connectedUser, cards] = await Promise.all([
-        getOrCreateUser(pseudo),
+        getOrCreateUser(username, password),
         getScenariosCard(),
       ]);
 

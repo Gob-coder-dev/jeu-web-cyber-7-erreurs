@@ -2,20 +2,22 @@ import { useState } from "react";
 import "./LoginPage.css";
 
 type LoginPageProps = {
-  onLogin: (pseudo: string) => void;
+  onLogin: (pseudo: string, password: string) => void;
 };
 
 function LoginPage({ onLogin }: LoginPageProps) {
     const [pseudo, setPseudo] = useState("");
+    const [password, setPassword] = useState("");
 
     function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (pseudo.trim() === "") {
-        return;
+        if (pseudo.trim() === "" || password.trim() === "" ) {
+            alert("Entre un pseudo et un mot de passe pour lancer la manche de sensibilisation.");
+            return;
         }
 
-        onLogin(pseudo.trim());
+        onLogin(pseudo.trim(), password.trim());
     }
 
     return (
@@ -23,17 +25,24 @@ function LoginPage({ onLogin }: LoginPageProps) {
         <p className="page__eyebrow">Cyber 7 erreurs</p>
         <h1>Connexion</h1>
         <p className="page__intro">
-            Entre un pseudo pour lancer la manche de sensibilisation.
+            Entre un pseudo et un mot de passe pour lancer la manche de sensibilisation.
         </p>
 
             <form className="login-page__form" onSubmit={handleLogin}>
-            <input
-                value={pseudo}
-                onChange={(event) => setPseudo(event.target.value)}
-                placeholder="Entre ton pseudo"
-            />
+                <input
+                    value={pseudo}
+                    onChange={(event) => setPseudo(event.target.value)}
+                    placeholder="Entre ton pseudo"
+                />
 
-            <button className="button" type="submit">Se connecter</button>
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Entre ton mot de passe"
+                />
+
+                <button className="button" type="submit">Se connecter</button>
             </form>
         </main>
     );
