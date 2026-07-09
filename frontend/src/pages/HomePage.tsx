@@ -3,6 +3,7 @@ import type { ScenarioIntro } from "../types/Scenario";
 import type { User } from "../types/User";
 import { ConfirmReplayModal } from "../components/ConfirmReplayModal";
 import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "../i18n/useTranslation";
 import { formatScenarioTitle } from "../utils/formatGameLabels";
 import "./HomePage.css";
 
@@ -23,6 +24,7 @@ function HomePage({
   onGoLeaderBoard,
   onStartScenario,
 }: HomePageProps) {
+  const t = useTranslation();
   const [scenarioToReplay, setScenarioToReplay] = useState<string | null>(null);
 
   function handleStartScenario(scenarioId: string) {
@@ -42,28 +44,28 @@ function HomePage({
     <main className="page home-page">
       <header className="home-page__hero">
         <div className="home-page__hero-main">
-          <p className="page__eyebrow">Simulation cybersécurité</p>
-          <h1>Bienvenue {user.pseudo}</h1>
+          <p className="page__eyebrow">{t.home.eyebrow}</p>
+          <h1>{t.home.welcome} {user.pseudo}</h1>
           <p className="page__intro">
-            Choisis un scénario, repère les anomalies et construis ton score global.
+            {t.home.intro}
           </p>
 
           <div className="home-page__score--global">
-            Score global : {globalScore} pts
+            {t.home.globalScore} : {globalScore} {t.common.points}
           </div>
         </div>
 
         <div className="home-page__hero-actions">
           <button className="button button--secondary" onClick={onLogout}>
-            Se déconnecter
+            {t.home.logout}
           </button>
           <button className="button" onClick={onGoLeaderBoard}>
-            Voir le classement
+            {t.common.leaderboard}
           </button>
         </div>
       </header>
 
-      <section className="home-page__scenarios" aria-label="Scénarios">
+      <section className="home-page__scenarios" aria-label={t.home.scenariosLabel}>
         {scenarioIntros.map((scenario, index) => {
           const scenarioScore = user.scenarioScores[scenario.id]?.score;
           const hasScore = scenarioScore !== undefined;
@@ -71,26 +73,26 @@ function HomePage({
           return (
             <article className="home-page__scenario" key={scenario.id}>
               <div className="home-page__scenario-meta">
-                <span>{scenario.numberOfQuestions} questions</span>
+                <span>{scenario.numberOfQuestions} {t.common.questions}</span>
                 <span className="home-page__status-slot">
-                  {hasScore && "Terminé"}
+                  {hasScore && t.home.completed}
                 </span>
                 <span className="home-page__score-slot">
                   {hasScore && (
                     <span className="home-page__score--scenario">
-                      {scenarioScore} pts
+                      {scenarioScore} {t.common.points}
                     </span>
                   )}
                 </span>
               </div>
 
               <div className="home-page__scenario-main">
-                <h2>{formatScenarioTitle(scenario.title, index)}</h2>
+                <h2>{formatScenarioTitle(scenario.title, index, t.common.caseLabel)}</h2>
                 <button
                   className="button home-page__button--play"
                   onClick={() => handleStartScenario(scenario.id)}
                 >
-                  <span>Jouer</span>
+                  <span>{t.home.play}</span>
                 </button>
               </div>
             </article>

@@ -1,3 +1,4 @@
+import { useTranslation } from "../i18n/useTranslation";
 import "./ConfirmReplayModal.css";
 
 type ConfirmReplayModalProps = {
@@ -9,14 +10,15 @@ export function ConfirmReplayModal({
   onCancel,
   onConfirm,
 }: ConfirmReplayModalProps) {
+  const t = useTranslation();
+
   return (
     <div className="replay-modal-overlay" onClick={onCancel}>
       <div className="replay-modal" onClick={(event) => event.stopPropagation()}>
-        <h2>Rejouer ce scénario ?</h2>
+        <h2>{t.replayModal.title}</h2>
 
         <p>
-          Tu as déjà terminé ce scénario. Cette nouvelle tentative ne
-          modifiera pas ton premier score ni ton score global.
+          {t.replayModal.body}
         </p>
 
         <div className="replay-modal__actions">
@@ -25,7 +27,7 @@ export function ConfirmReplayModal({
             type="button"
             onClick={onCancel}
           >
-            Annuler
+            {t.replayModal.cancel}
           </button>
 
           <button
@@ -33,7 +35,7 @@ export function ConfirmReplayModal({
             type="button"
             onClick={onConfirm}
           >
-            Jouer
+            {t.replayModal.play}
           </button>
         </div>
       </div>

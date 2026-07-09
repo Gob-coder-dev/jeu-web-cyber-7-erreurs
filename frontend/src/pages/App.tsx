@@ -19,11 +19,13 @@ import {
   startScenario,
 } from "../services/apiClient";
 import { useLanguage } from "../i18n/useLanguage";
+import { useTranslation } from "../i18n/useTranslation";
 
 type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
 
 function App() {
   const { language } = useLanguage();
+  const t = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<Page>("home");
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
@@ -127,7 +129,7 @@ function App() {
     } catch (error) {
       console.error("Impossible de démarrer le scénario", error);
       setStartGameError(
-        "Le scénario ne peut pas être démarré pour le moment.",
+        t.app.startScenarioError,
       );
     } finally {
       setIsStartingGame(false);
@@ -179,9 +181,9 @@ function App() {
     if (selectedScenarioIntro === null) {
       return (
         <main className="page">
-          <h1>Scénario introuvable</h1>
+          <h1>{t.app.scenarioNotFound}</h1>
           <button className="button" onClick={handleBackHome}>
-            Retour aux scénarios
+            {t.common.backToScenarios}
           </button>
         </main>
       );
@@ -202,9 +204,9 @@ function App() {
     if (gameSession === null) {
       return (
         <main className="page">
-          <h1>Partie introuvable</h1>
+          <h1>{t.app.gameNotFound}</h1>
           <button className="button" onClick={handleBackHome}>
-            Retour aux scénarios
+            {t.common.backToScenarios}
           </button>
         </main>
       );
@@ -251,10 +253,10 @@ function App() {
         scenario={completedScenarioDetails ?? undefined}
         scenarioTitle={
           completedScenarioDetails !== null
-            ? `Dossier - ${completedScenarioDetails.title}`
+            ? `${t.common.caseLabel} - ${completedScenarioDetails.title}`
             : selectedScenarioIntro !== null
-              ? `Dossier - ${selectedScenarioIntro.title}`
-            : "Scenario"
+              ? `${t.common.caseLabel} - ${selectedScenarioIntro.title}`
+            : t.app.fallbackScenarioTitle
         }
         scenarioScore={scenarioScore}
         scenarioRoundScores={scenarioRoundScores}

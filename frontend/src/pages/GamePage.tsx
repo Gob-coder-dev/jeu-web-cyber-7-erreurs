@@ -7,6 +7,7 @@ import {
   formatOrderNumber,
   formatPieceTitle,
 } from "../utils/formatGameLabels";
+import { useTranslation } from "../i18n/useTranslation";
 import "./GamePage.css";
 
 type GamePageProps = {
@@ -22,6 +23,7 @@ function GamePage({
   onScenarioCompleted,
   onNextQuestion,
 }: GamePageProps) {
+  const t = useTranslation();
   const phaserRef = useRef<PhaserGameHandle | null>(null);
   const [showImage, setShowImage] = useState(false);
   const [countdown, setCountdown] = useState(3);
@@ -120,19 +122,23 @@ function GamePage({
       <section className="game-page__content">
         <div className="game-page__topbar">
           <p className="page__eyebrow">
-            Dossier - {gameSession.scenarioTitle} - Pièce{" "}
+            {t.common.caseLabel} - {gameSession.scenarioTitle} - {t.common.pieceLabel}{" "}
             {formatOrderNumber(gameSession.questionIndex)} /{" "}
             {formatOrderNumber(gameSession.questionCount - 1)}
           </p>
 
           <button className="button button--secondary" onClick={onBackHome}>
-            Retour accueil
+            {t.game.backHome}
           </button>
         </div>
 
         <header className="game-page__header">
           <h1>
-            {formatPieceTitle(question.title, gameSession.questionIndex)}
+            {formatPieceTitle(
+              question.title,
+              gameSession.questionIndex,
+              t.common.pieceLabel,
+            )}
           </h1>
           <p className="page__intro">{question.instruction}</p>
         </header>
@@ -140,7 +146,7 @@ function GamePage({
         {!showImage ? (
           <div className="game-page__start-panel">
             <p className="game-page__instruction">
-              {question.hotspotCount} anomalies à trouver.
+              {question.hotspotCount} {t.game.anomaliesToFind}
             </p>
             <button
               className="button"
@@ -151,14 +157,14 @@ function GamePage({
               }}
             >
               {buttonReady
-                ? "Afficher l'image"
-                : `Afficher l'image dans ${countdown}s`}
+                ? t.game.showImage
+                : `${t.game.showImageIn} ${countdown}s`}
             </button>
           </div>
         ) : (
           <>
             <p className="game-page__instruction">
-              {question.hotspotCount} anomalies à trouver.
+              {question.hotspotCount} {t.game.anomaliesToFind}
             </p>
 
             <PhaserGame ref={phaserRef} question={question} />
@@ -167,8 +173,8 @@ function GamePage({
               <div className="game-page__score-area">
                 {correction !== null && (
                   <div className="game-page__score-badge">
-                    Score : {correction.roundScore >= 0 ? "+" : ""}
-                    {correction.roundScore} pts
+                    {t.game.score} : {correction.roundScore >= 0 ? "+" : ""}
+                    {correction.roundScore} {t.common.points}
                   </div>
                 )}
               </div>
@@ -180,7 +186,7 @@ function GamePage({
                     className={`button ${magnifierActive ? 'button--active' : 'button--secondary'}`} 
                     onClick={() => setMagnifierActive(!magnifierActive)}
                   >
-                    {magnifierActive ? "Désactiver la loupe" : "Activer la loupe"}
+                    {magnifierActive ? t.game.disableMagnifier : t.game.enableMagnifier}
                   </button>
                 )}
               </div>
@@ -191,13 +197,13 @@ function GamePage({
                   onClick={handleValidate}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Validation..." : "Valider"}
+                  {isSubmitting ? t.game.validating : t.game.validate}
                 </button>
               ) : (
                 <button className="button" onClick={handleContinue}>
                   {correction.scenarioCompleted
-                    ? "Terminer le scénario"
-                    : "Question suivante"}
+                    ? t.game.finishScenario
+                    : t.game.nextQuestion}
                 </button>
               )}
             </div>

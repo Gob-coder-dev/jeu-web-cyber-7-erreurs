@@ -15,7 +15,10 @@ const languages: Array<{
 
 function renderFlags(flagCodes: string[]) {
   return (
-    <span className="language-selector__flags" aria-hidden="true">
+    <span
+      className={`language-selector__flags language-selector__flags--${flagCodes.length}`}
+      aria-hidden="true"
+    >
       {flagCodes.map((flagCode) => (
         <span
           className={`language-selector__flag language-selector__flag--${flagCode}`}

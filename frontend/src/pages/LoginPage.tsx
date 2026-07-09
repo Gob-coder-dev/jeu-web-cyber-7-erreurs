@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "../i18n/useTranslation";
 import "./LoginPage.css";
 
 type LoginPageProps = {
@@ -7,6 +8,7 @@ type LoginPageProps = {
 };
 
 function LoginPage({ onLogin }: LoginPageProps) {
+    const t = useTranslation();
     const [pseudo, setPseudo] = useState("");
 
     function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -23,20 +25,20 @@ function LoginPage({ onLogin }: LoginPageProps) {
         <>
         <LanguageSelector />
         <main className="page login-page">
-        <p className="page__eyebrow">Cyber 7 erreurs</p>
-        <h1>Connexion</h1>
+        <p className="page__eyebrow">{t.login.eyebrow}</p>
+        <h1>{t.login.title}</h1>
         <p className="page__intro">
-            Entre un pseudo pour lancer la manche de sensibilisation.
+            {t.login.intro}
         </p>
 
             <form className="login-page__form" onSubmit={handleLogin}>
             <input
                 value={pseudo}
                 onChange={(event) => setPseudo(event.target.value)}
-                placeholder="Entre ton pseudo"
+                placeholder={t.login.placeholder}
             />
 
-            <button className="button" type="submit">Se connecter</button>
+            <button className="button" type="submit">{t.login.submit}</button>
             </form>
         </main>
         </>

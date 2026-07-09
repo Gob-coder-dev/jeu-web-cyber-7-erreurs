@@ -1,5 +1,6 @@
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
 import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "../i18n/useTranslation";
 import "./LeaderBoardPage.css";
 
 type LeaderBoardPageProps = {
@@ -43,6 +44,7 @@ function LeaderBoardPage({
     currentLeaderboardUser,
     onBackHome,
 }: LeaderBoardPageProps) {
+    const t = useTranslation();
     const currentPlayerAsideScore =
         getCurrentPlayerAsideScore(currentLeaderboardUser);
 
@@ -63,7 +65,7 @@ function LeaderBoardPage({
                 <span className="leaderboard-player">{score.pseudo}</span>
 
                 <span className="leaderboard-score">
-                    {score.globalScore} pts
+                    {score.globalScore} {t.common.points}
                 </span>
             </li>
         );
@@ -73,7 +75,7 @@ function LeaderBoardPage({
         <>
         <LanguageSelector />
         <main className="page__leaderboard-page">
-            <h1>Classement</h1>
+            <h1>{t.leaderboard.title}</h1>
 
             <ol className="leaderboard-list">
                 {topScores.map((score) => renderScoreRow(score))}
@@ -81,7 +83,7 @@ function LeaderBoardPage({
 
             {currentPlayerAsideScore !== null && (
                 <section className="leaderboard-current-player">
-                    <h2>Votre position</h2>
+                    <h2>{t.leaderboard.currentPosition}</h2>
                     <ol className="leaderboard-list leaderboard-list--current">
                         {renderScoreRow(currentPlayerAsideScore)}
                     </ol>
@@ -89,7 +91,7 @@ function LeaderBoardPage({
             )}
 
             <button className="button button--secondary" onClick={onBackHome}>
-                Retour a l'accueil
+                {t.leaderboard.backHome}
             </button>
         </main>
         </>
