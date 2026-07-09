@@ -1,4 +1,4 @@
-import { getUserInDatabase, createScoreInDatabase } from "../repositories/companyJson.repository";
+import { createScoreInDatabase, getUserInDatabaseById } from "../repositories/companyJson.repository";
 import { createGameAttempt, getGameAttemptById } from "../repositories/gameAttempt.repository";
 import {
   getScenarioById,
@@ -48,7 +48,7 @@ function toPublicQuestion(question: Question): PublicQuestion {
 }
 
 export async function startScenarioService(userId: string, scenarioId: string): Promise<StartScenarioServiceResult> {
-  const user = await getUserInDatabase(userId);
+  const user = await getUserInDatabaseById(userId);
 
   if (user === undefined) {
     return { success: false, reason: "USER_NOT_FOUND" };
@@ -100,14 +100,18 @@ export async function submitAnswersService(
     return { success: false, reason: "SCENARIO_NOT_FOUND" };
   }
 
-  const question = scenario.questions[attempt.currentQuestionIndex];
-  if (!question) {
+  // Ensure the submitted question exists in the scenario
+  const questionIndex = scenario.questions.findIndex((q) => q.id === questionId);
+  if (questionIndex === -1) {
     return { success: false, reason: "QUESTION_NOT_FOUND" };
   }
 
-  if (question.id !== questionId) {
+  // Enforce that the submitted question matches the current attempt index
+  if (questionIndex !== attempt.currentQuestionIndex) {
     return { success: false, reason: "QUESTION_MISMATCH" };
   }
+
+  const question = scenario.questions[questionIndex];
 
   if (selections.length > question.hotspots.length) {
     return { success: false, reason: "TOO_MANY_SELECTIONS" };
@@ -158,7 +162,7 @@ export async function submitAnswersService(
     }
 
     // Retrieve updated user to send back
-    const user = await getUserInDatabase(attempt.userId);
+    const user = await getUserInDatabaseById(attempt.userId);
     if (user) {
       updatedUser = user;
     }
@@ -199,12 +203,13 @@ export async function startTimerService(
     return { success: false, reason: "SCENARIO_NOT_FOUND" };
   }
 
-  const question = scenario.questions[attempt.currentQuestionIndex];
-  if (!question) {
+  // Find question and validate index consistency
+  const questionIndex = scenario.questions.findIndex((q) => q.id === questionId);
+  if (questionIndex === -1) {
     return { success: false, reason: "QUESTION_NOT_FOUND" };
   }
 
-  if (question.id !== questionId) {
+  if (questionIndex !== attempt.currentQuestionIndex) {
     return { success: false, reason: "QUESTION_MISMATCH" };
   }
   if (attempt.questionStartedAt !== null) {
