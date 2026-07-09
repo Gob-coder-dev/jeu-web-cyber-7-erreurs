@@ -1,4 +1,5 @@
 import type { User } from "./CompanyData";
+import type { GameLanguage } from "./GameLanguage";
 
 export type Hotspot = {
   id: string;
@@ -46,6 +47,7 @@ export type GameAttempt = {
   id: string;
   userId: string;
   scenarioId: string;
+  language: GameLanguage;
   currentQuestionIndex: number;
   roundScores: number[];
   status: GameAttemptStatus;
@@ -58,6 +60,7 @@ export type GameAttempt = {
 export type CreateGameAttemptInput = {
   userId: string;
   scenarioId: string;
+  language: GameLanguage;
   isReplay: boolean;
 };
 

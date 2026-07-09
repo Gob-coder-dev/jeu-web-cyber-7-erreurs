@@ -3,6 +3,7 @@ import type { StartScenarioResult } from "../types/GameSession";
 import type { ScenarioIntro } from "../types/Scenario";
 import type { User } from "../types/User";
 import type { SelectionPoint, SubmitAnswersResult } from "../types/Question";
+import type { Language } from "../i18n/language";
 
 const API_URL = "http://localhost:3000/api";
 
@@ -47,8 +48,8 @@ export async function getLeaderboardUser(
 
 
 
-export async function getScenariosCard(): Promise<ScenarioIntro[]> {
-    const response = await fetch(`${API_URL}/game/scenarios`, {
+export async function getScenariosCard(language: Language): Promise<ScenarioIntro[]> {
+    const response = await fetch(`${API_URL}/game/scenarios?lang=${language}`, {
         method: "GET",
     });
 
@@ -62,13 +63,14 @@ export async function getScenariosCard(): Promise<ScenarioIntro[]> {
 export async function startScenario(
     userId: string,
     scenarioId: string,
+    language: Language,
 ): Promise<StartScenarioResult> {
     const response = await fetch(`${API_URL}/game/attempts`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, scenarioId }),
+        body: JSON.stringify({ userId, scenarioId, language }),
     });
 
     if (!response.ok) {

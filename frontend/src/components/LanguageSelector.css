@@ -1,0 +1,120 @@
+.language-selector {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.language-selector__trigger,
+.language-selector__option {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary-dark);
+  background: var(--color-surface);
+  font-weight: 900;
+  box-shadow: var(--shadow-soft);
+}
+
+.language-selector__trigger {
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-selector__trigger:hover,
+.language-selector__option:hover,
+.language-selector__option--active {
+  border-color: var(--color-success);
+  background: var(--color-surface-soft);
+}
+
+.language-selector__menu {
+  min-width: 168px;
+  border: 1px solid var(--color-primary);
+  border-radius: 14px;
+  padding: 8px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.language-selector__option {
+  width: 100%;
+  min-height: 42px;
+  border-color: transparent;
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: none;
+  text-align: left;
+}
+
+.language-selector__flags {
+  width: 52px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.language-selector__flag {
+  width: 24px;
+  height: 16px;
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: 0 0 0 0.5px var(--color-surface) inset;
+  overflow: hidden;
+}
+
+.language-selector__flag--fr {
+  background: linear-gradient(
+    90deg,
+    #0055a4 0 33.333%,
+    #ffffff 33.333% 66.666%,
+    #ef4135 66.666%
+  );
+}
+
+.language-selector__flag--gb {
+  background:
+    linear-gradient(90deg, transparent 45%, #c8102e 45% 55%, transparent 55%),
+    linear-gradient(0deg, transparent 40%, #c8102e 40% 60%, transparent 60%),
+    linear-gradient(90deg, transparent 38%, #ffffff 38% 62%, transparent 62%),
+    linear-gradient(0deg, transparent 32%, #ffffff 32% 68%, transparent 68%),
+    linear-gradient(146deg, transparent 42%, #ffffff 42% 48%, #c8102e 48% 54%, #ffffff 54% 60%, transparent 60%),
+    linear-gradient(34deg, transparent 42%, #ffffff 42% 48%, #c8102e 48% 54%, #ffffff 54% 60%, transparent 60%),
+    #012169;
+}
+
+.language-selector__flag--us {
+  background:
+    linear-gradient(#3c3b6e 0 100%),
+    repeating-linear-gradient(
+      180deg,
+      #b22234 0 7.69%,
+      #ffffff 7.69% 15.38%
+    );
+  background-size: 46% 54%, 100% 100%;
+  background-repeat: no-repeat;
+  background-position: top left, center;
+}
+
+@media (max-width: 720px) {
+  .language-selector {
+    top: 10px;
+    right: 12px;
+  }
+
+  .language-selector__trigger {
+    min-height: 38px;
+    padding: 7px 12px;
+  }
+}

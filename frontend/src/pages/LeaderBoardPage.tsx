@@ -1,4 +1,5 @@
 import type { LeaderboardEntry, LeaderboardUserResult } from "../types/Leaderboard";
+import LanguageSelector from "../components/LanguageSelector";
 import "./LeaderBoardPage.css";
 
 type LeaderBoardPageProps = {
@@ -69,6 +70,8 @@ function LeaderBoardPage({
     }
 
     return (
+        <>
+        <LanguageSelector />
         <main className="page__leaderboard-page">
             <h1>Classement</h1>
 
@@ -89,6 +92,7 @@ function LeaderBoardPage({
                 Retour a l'accueil
             </button>
         </main>
+        </>
     );
 }
 

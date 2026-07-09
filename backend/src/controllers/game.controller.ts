@@ -5,10 +5,12 @@ import {
   submitAnswersService,
   startTimerService,
 } from "../services/game.service";
+import { normalizeGameLanguage } from "../types/GameLanguage";
 
 
 export async function getScenariosCard(req: express.Request, res: express.Response) {
-  const scenariosCard = getScenariosCardService();
+  const language = normalizeGameLanguage(req.query.lang);
+  const scenariosCard = getScenariosCardService(language);
 
   if (scenariosCard.length === 0) {
     return res.status(404).json({ message: "No scenarios found" });
@@ -18,7 +20,7 @@ export async function getScenariosCard(req: express.Request, res: express.Respon
 }
 
 export async function startScenario(req: express.Request, res: express.Response) {
-  const { userId, scenarioId } = req.body;
+  const { userId, scenarioId, language } = req.body;
 
   if (typeof userId !== "string" || typeof scenarioId !== "string") {
     return res.status(400).json({
@@ -39,6 +41,7 @@ export async function startScenario(req: express.Request, res: express.Response)
     const result = await startScenarioService(
       cleanUserId,
       cleanScenarioId,
+      normalizeGameLanguage(language),
     );
 
     if (!result.success) {

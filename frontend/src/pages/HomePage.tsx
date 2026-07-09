@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ScenarioIntro } from "../types/Scenario";
 import type { User } from "../types/User";
 import { ConfirmReplayModal } from "../components/ConfirmReplayModal";
+import LanguageSelector from "../components/LanguageSelector";
 import { formatScenarioTitle } from "../utils/formatGameLabels";
 import "./HomePage.css";
 
@@ -36,6 +37,8 @@ function HomePage({
   }
 
   return (
+    <>
+    <LanguageSelector />
     <main className="page home-page">
       <header className="home-page__hero">
         <div className="home-page__hero-main">
@@ -105,6 +108,7 @@ function HomePage({
         />
       )}
     </main>
+    </>
   );
 }
 

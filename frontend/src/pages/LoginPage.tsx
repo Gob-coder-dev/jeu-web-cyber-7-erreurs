@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LanguageSelector from "../components/LanguageSelector";
 import "./LoginPage.css";
 
 type LoginPageProps = {
@@ -19,6 +20,8 @@ function LoginPage({ onLogin }: LoginPageProps) {
     }
 
     return (
+        <>
+        <LanguageSelector />
         <main className="page login-page">
         <p className="page__eyebrow">Cyber 7 erreurs</p>
         <h1>Connexion</h1>
@@ -36,6 +39,7 @@ function LoginPage({ onLogin }: LoginPageProps) {
             <button className="button" type="submit">Se connecter</button>
             </form>
         </main>
+        </>
     );
 }
 

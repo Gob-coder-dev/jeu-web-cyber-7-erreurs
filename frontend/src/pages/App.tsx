@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import GamePage from "./GamePage";
@@ -18,10 +18,12 @@ import {
   getScenariosCard,
   startScenario,
 } from "../services/apiClient";
+import { useLanguage } from "../i18n/useLanguage";
 
 type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
 
 function App() {
+  const { language } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<Page>("home");
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
@@ -37,11 +39,38 @@ function App() {
   const [isStartingGame, setIsStartingGame] = useState(false);
   const [startGameError, setStartGameError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (
+      user === null ||
+      page === "scenarioIntro" ||
+      page === "game" ||
+      page === "result"
+    ) {
+      return;
+    }
+
+    let shouldIgnoreResult = false;
+
+    getScenariosCard(language)
+      .then((cards) => {
+        if (!shouldIgnoreResult) {
+          setScenarioIntros(cards);
+        }
+      })
+      .catch((error) => {
+        console.error("Impossible de charger les scénarios", error);
+      });
+
+    return () => {
+      shouldIgnoreResult = true;
+    };
+  }, [language, page, user]);
+
   async function handleLogin(pseudo: string) {
     try {
       const [connectedUser, cards] = await Promise.all([
         getOrCreateUser(pseudo),
-        getScenariosCard(),
+        getScenariosCard(language),
       ]);
 
       setUser(connectedUser);
@@ -88,7 +117,11 @@ function App() {
     setStartGameError(null);
 
     try {
-      const startedGame = await startScenario(user.id, selectedScenarioId);
+      const startedGame = await startScenario(
+        user.id,
+        selectedScenarioId,
+        language,
+      );
       setGameSession(startedGame);
       setPage("game");
     } catch (error) {
