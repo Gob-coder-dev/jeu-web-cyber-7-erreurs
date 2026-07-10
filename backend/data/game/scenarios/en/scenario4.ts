@@ -4,6 +4,7 @@ export const scenario4: Scenario = {
   "id": "commute-security",
   "title": "The commute that had ears",
   "description": "Credo Agriculture is in crisis. A confidential document presented during a strategic meeting with an external contractor named Cedric Tset ended up in the hands of a competitor a few days later.\n\nCedric says he did not intentionally transmit anything.\n\nThe IT department finds no direct hacking on Credo Agriculture's servers. No internal account seems to have been forced. Yet the document did leave the circle of trust.\n\nYou will therefore retrace Cedric's movements to discover the cause of this problem.",
+  "difficulty": 2,
   "globalAttackScenario": "Probable method of operation: the attacker began by identifying the contractor's trip through a public post.\n\nDuring the commute, Cedric worked in a public space with a confidential document visible on his screen. Someone nearby could have read or photographed important information.\n\nOnce on site, the contractor connected to a Wi-Fi network that looked like an official network. The captive portal then asked him for too much information, potentially including professional credentials.\n\nOnce the account was compromised, the attacker could recover the documents they wanted without the systems detecting it.",
   "goodPractices": "When traveling, avoid displaying sensitive documents in public places, use a privacy filter, check Wi-Fi networks before connecting to them, and enable the company's VPN.",
   "questions": [

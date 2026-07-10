@@ -4,6 +4,7 @@ export const scenario2: Scenario = {
   "id": "phishing-inbox-melanie",
   "title": "Melanie's mailbox",
   "description": "Melanie, an administrative assistant, received several emails about suspicious login attempts on several of her online service customer accounts on the same day: UPS, Amazon, Sephora, and Decathlon. The next day, an unusual login attempt was detected on Melanie's account in the internal service.\n\nDetective, you examine Melanie's mailbox. You find suspicious messages there.",
+  "difficulty": 1,
   "globalAttackScenario": "Probable method of operation: the attacker flooded Melanie with several different lures on the same day. By relying on pressure, curiosity, reward, and habit, the attacker sent emails about urgent delivery, a gift, a limited offer, and a known brand. This likely pushed her, tempted by the possible gain, to click on these fake links and enter personal information. The hacker was then able to collect her information and use it to log in to the sites in question, hoping to abuse these accounts, attempt purchases with Melanie's card, or collect additional information about the victim.",
   "goodPractices": "Before clicking, check the sender's real address, the URL, the context of the request, and the level of urgency. When in doubt, do not click: use an official channel.",
   "questions": [

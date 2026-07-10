@@ -31,6 +31,11 @@ export const translations = {
       completed: "Terminé",
       play: "Jouer",
       scenariosLabel: "Scénarios",
+      difficulty: {
+        easy: "Facile",
+        medium: "Moyen",
+        hard: "Difficile",
+      },
     },
     replayModal: {
       title: "Rejouer ce scénario ?",
@@ -107,6 +112,11 @@ export const translations = {
       completed: "Completed",
       play: "Play",
       scenariosLabel: "Scenarios",
+      difficulty: {
+        easy: "Easy",
+        medium: "Medium",
+        hard: "Hard",
+      },
     },
     replayModal: {
       title: "Replay this scenario?",

@@ -53,6 +53,68 @@
 
 .home-page__scenarios {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.home-page__difficulty-section {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-page__difficulty-section--easy {
+  border-color: rgba(22, 163, 74, 0.22);
+  background: linear-gradient(180deg, rgba(22, 163, 74, 0.09), rgba(22, 163, 74, 0.05));
+}
+
+.home-page__difficulty-section--medium {
+  border-color: rgba(245, 158, 0, 0.24);
+  background: linear-gradient(180deg, rgba(245, 158, 0, 0.1), rgba(245, 158, 0, 0.06));
+}
+
+.home-page__difficulty-section--hard {
+  border-color: rgba(202, 54, 54, 0.22);
+  background: linear-gradient(180deg, rgba(202, 54, 54, 0.09), rgba(202, 54, 54, 0.05));
+}
+
+.home-page__difficulty-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary-dark);
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.home-page__difficulty-title::before {
+  content: "";
+  width: 8px;
+  height: 24px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.home-page__difficulty-section--easy .home-page__difficulty-title {
+  color: var(--color-success);
+}
+
+.home-page__difficulty-section--medium .home-page__difficulty-title {
+  color: var(--color-accent);
+}
+
+.home-page__difficulty-section--hard .home-page__difficulty-title {
+  color: var(--color-instruction);
+}
+
+.home-page__scenario-grid {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: stretch;
@@ -176,7 +238,7 @@
     justify-content: flex-start;
   }
 
-  .home-page__scenarios {
+  .home-page__scenario-grid {
     grid-template-columns: 1fr;
   }
 

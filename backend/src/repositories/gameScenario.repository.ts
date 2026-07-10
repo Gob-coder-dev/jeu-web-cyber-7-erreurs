@@ -31,6 +31,7 @@ export function getScenariosCard(
     id: scenario.id,
     title: scenario.title,
     description: scenario.description,
+    difficulty: scenario.difficulty ?? 1,
     numberOfQuestions: scenario.questions.length,
   }));
 }
