@@ -21,11 +21,12 @@ import {
   startScenario,
 } from "../services/apiClient";
 
-type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
+type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard" | "login" | "register";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [page, setPage] = useState<Page>("home");
+  const [page, setPage] = useState<Page>("login");
+  const [authPage, setAuthPage] = useState<"login" | "register">("login");
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
   const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
@@ -71,7 +72,8 @@ function App() {
 
   function handleLogout() {
     setUser(null);
-    setPage("home");
+    setPage("login");
+    setAuthPage("login");
     setSelectedScenarioId(null);
     setScenarioScore(0);
     setScenarioRoundScores([]);
@@ -82,6 +84,14 @@ function App() {
     setGameSession(null);
     setIsStartingGame(false);
     setStartGameError(null);
+  }
+
+  function handleGoToRegister() {
+    setAuthPage("register");
+  }
+
+  function handleGoToLogin() {
+    setAuthPage("login");
   }
 
   function handleStartScenario(scenarioId: string) {
@@ -156,7 +166,10 @@ function App() {
       ) ?? null);
 
   if (user === null) {
-    return <RegisterPage onRegister={handleRegister} />;
+    if (authPage === "register") {
+      return <RegisterPage onRegister={handleRegister} onGoToLogin={handleGoToLogin} />;
+    }
+    return <LoginPage onLogin={handleLogin} onGoToRegister={handleGoToRegister} />;
   }
 
   if (page === "scenarioIntro" && selectedScenarioId !== null) {

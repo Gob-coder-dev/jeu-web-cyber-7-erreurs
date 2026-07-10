@@ -3,9 +3,10 @@ import "./RegisterPage.css";
 
 type RegisterPageProps = {
   onRegister: (pseudo: string, password: string) => void;
+  onGoToLogin: () => void;
 };
 
-function RegisterPage({ onRegister }: RegisterPageProps) {
+function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
 
@@ -24,7 +25,7 @@ function RegisterPage({ onRegister }: RegisterPageProps) {
         <p className="page__eyebrow">Cyber 7 erreurs</p>
         <h1>Inscription</h1>
         <p className="page__intro">
-            Entre un pseudo, et un mot de passe pour vous inscrire.
+            Entre un pseudo et un mot de passe pour vous inscrire.
         </p>
             <form className="login-page__form" onSubmit={handleRegister}>
                 <input
@@ -41,6 +42,9 @@ function RegisterPage({ onRegister }: RegisterPageProps) {
                 />
                 
                 <button className="button" type="submit">S'inscrire</button>
+                <button type="button" className="login-page__register-link" onClick={onGoToLogin}>
+                    Vous avez déjà un compte ? Connectez-vous
+                </button>
             </form>
             
         </main>

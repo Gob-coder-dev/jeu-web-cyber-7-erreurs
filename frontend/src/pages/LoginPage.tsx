@@ -3,9 +3,10 @@ import "./LoginPage.css";
 
 type LoginPageProps = {
   onLogin: (pseudo: string, password: string) => void;
+  onGoToRegister: () => void;
 };
 
-function LoginPage({ onLogin }: LoginPageProps) {
+function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
 
@@ -43,6 +44,9 @@ function LoginPage({ onLogin }: LoginPageProps) {
                 />
 
                 <button className="button" type="submit">Se connecter</button>
+                <button type="button" className="login-page__register-link" onClick={onGoToRegister}>
+                    Pas encore de compte ? Inscrivez-vous
+                </button>
             </form>
         </main>
     );
