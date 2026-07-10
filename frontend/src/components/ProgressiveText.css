@@ -1,0 +1,43 @@
+.progressive-text {
+  position: relative;
+}
+
+.progressive-text__character {
+  white-space: inherit;
+  transition:
+    opacity 0.22s ease,
+    filter 0.22s ease,
+    text-shadow 0.22s ease;
+}
+
+.progressive-text__character--visible {
+  opacity: 1;
+  filter: blur(0);
+  text-shadow: none;
+}
+
+.progressive-text__character--wave {
+  opacity: 0.72;
+  filter: blur(2.4px);
+  text-shadow: 0 0 8px rgba(21, 29, 52, 0.28);
+}
+
+.progressive-text__character--hidden {
+  opacity: 0;
+  filter: blur(6px);
+  text-shadow: 0 0 12px rgba(21, 29, 52, 0.18);
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressive-text__character {
+    transition: none;
+  }
+
+  .progressive-text__character--wave,
+  .progressive-text__character--hidden {
+    opacity: 1;
+    text-shadow: none;
+    filter: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import PhaserGame, { type PhaserGameHandle } from "../game/PhaserGame";
+import ProgressiveText from "../components/ProgressiveText";
 import type { StartScenarioResult } from "../types/GameSession";
 import type { SubmitAnswersResult, PublicQuestion } from "../types/Question";
 import { startTimer, submitAnswers } from "../services/apiClient";
@@ -30,9 +31,16 @@ function GamePage({
   const [timerDisabled, setTimerDisabled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [correction, setCorrection] = useState<SubmitAnswersResult | null>(null);
+  const [revealedInstructionTextKey, setRevealedInstructionTextKey] = useState<string | null>(null);
 
   const question = gameSession.question;
-  const buttonReady = timerDisabled || countdown === 0;
+  const instructionTextKey = `${question.id}:${question.instruction}`;
+  const instructionTextRevealed = revealedInstructionTextKey === instructionTextKey;
+  const countdownReady = timerDisabled || countdown === 0;
+  const buttonReady = instructionTextRevealed && countdownReady;
+  const showImageButtonLabel = countdownReady
+    ? t.game.showImage
+    : `${t.game.showImageIn} ${countdown}s`;
   const [magnifierActive, setMagnifierActive] = useState(false);
 
   useEffect(() => {
@@ -140,7 +148,12 @@ function GamePage({
               t.common.pieceLabel,
             )}
           </h1>
-          <p className="page__intro">{question.instruction}</p>
+          <ProgressiveText
+            key={instructionTextKey}
+            text={question.instruction}
+            className="page__intro"
+            onComplete={() => setRevealedInstructionTextKey(instructionTextKey)}
+          />
         </header>
 
         {!showImage ? (
@@ -156,9 +169,7 @@ function GamePage({
                 setShowImage(true);
               }}
             >
-              {buttonReady
-                ? t.game.showImage
-                : `${t.game.showImageIn} ${countdown}s`}
+              {showImageButtonLabel}
             </button>
           </div>
         ) : (
