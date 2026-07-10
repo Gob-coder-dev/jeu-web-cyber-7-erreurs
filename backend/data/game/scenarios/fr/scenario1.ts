@@ -9,7 +9,7 @@ export const scenario1: Scenario = {
     {
       "id": "linkedin-post-sensitive-data",
       "title": "La photo qui en disait trop",
-      "instruction": "Comme vous essayez de comprendre ce qu’aurait pu faire le hackeur pour attaquer Orialys, vous allez chercher toutes les informations de l’entreprise trouvables facilement sur internet, à commencer par les réseaux sociaux.\n\nSur le LinkedIn, vous regardez le dernier post fait par Orialys qui vous paraît suspect : “Nous souhaitons la bienvenue à notre nouveau comptable Julien Duckey !”",
+      "instruction": "Comme vous essayez de comprendre ce qu’aurait pu faire le hackeur pour attaquer Orialys, vous allez chercher toutes les informations de l’entreprise trouvables facilement sur internet, à commencer par les réseaux sociaux.\n\nSur LinkedIn, vous regardez le dernier post fait par Orialys qui vous paraît suspect : “Nous souhaitons la bienvenue à notre nouveau comptable Julien Duckey !”",
       "attackScenario": "La publication avait l’air positive : accueillir un nouveau collègue, montrer la vie de l’entreprise, créer de la proximité. Mais pour un observateur malveillant, elle devient une fiche de renseignement. Nom, rôle, environnement technique, habitudes et centres d’intérêt : chaque détail alimente le dossier de l’attaquant.",
       "image": "/images/fr/scenario1/linkedin_post.png",
       "imageWidth": 1448,
@@ -35,6 +35,15 @@ export const scenario1: Scenario = {
         },
         {
           "id": "operating-system-visible",
+          "x": 290,
+          "y": 175,
+          "width": 385,
+          "height": 265,
+          "label": "Système d’exploitation visible",
+          "explanation": "L'écran de l'ordinateur affiche le système d'exploitation utilisé par l'entreprise. Cela peut aider un attaquant à cibler ses attaques en fonction des vulnérabilités de ce système."
+        },
+        {
+          "id": "operating-system-visible-2",
           "x": 0,
           "y": 306,
           "width": 165,
@@ -58,14 +67,14 @@ export const scenario1: Scenario = {
           "width": 400,
           "height": 520,
           "label": "Indice personnel lié aux vêtements",
-          "explanation": "Un t-shirt de manga est visible sur la photo. L'attaquant connaît donc des informations personnelles sur l'employé, ce qui peut l'aider à créer une attaque de phishing ciblée."
+          "explanation": "Un t-shirt faisant référence à des mangas est visible sur la photo. L'attaquant connaît donc des informations personnelles sur l'employé, ce qui peut l'aider à créer une attaque de phishing ciblée."
         }
       ]
     },
     {
       "id": "abandoned-workstation",
       "title": "Le poste abandonné pendant la pause",
-      "instruction": "Après avoir trouvé ce post problématique, vous retournez dans les locaux d’Orialys pour les informer de la situation. À l’entrée du bâtiment, vous croisez Julien en pause-café, et sur le chemin, vous passez devant son bureau. Vous jetez donc un œil sur son organisation de travail.",
+      "instruction": "Après avoir trouvé ce post problématique, vous retournez dans les locaux d’Orialys pour les informer de la situation. À l’entrée du bâtiment, vous croisez Julien en pause-café, et sur le chemin, vous passez devant son nouveau bureau. Vous jetez donc un œil sur son organisation de travail.",
       "attackScenario": "Cette scène montre des failles très simples mais très fréquentes : l’absence de verrouillage, une clé USB en libre accès et un ordinateur laissé allumé. C'est une mine d’or pour qui veut accéder à des informations critiques de l’entreprise.",
       "image": "/images/fr/scenario1/desktop.jpg",
       "imageWidth": 4080,

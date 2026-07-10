@@ -69,7 +69,7 @@ export const scenario4: Scenario = {
           "width": 900,
           "height": 880,
           "label": "Unprotected bag placed on the floor",
-          "explanation": "Cedric placed his bag containing company documents and hard drives on the floor without protection. A malicious person could steal them and recover all this information."
+          "explanation": "Cedric placed on the floor his bag that could contain critical information about his company (company documents, hard drives, a tablet...). A malicious person could steal them and recover all this information."
         },
         {
           "id": "public-transport-visible-badge",

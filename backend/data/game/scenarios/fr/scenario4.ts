@@ -47,7 +47,7 @@ export const scenario4: Scenario = {
     {
       "id": "working-in-public-transport",
       "title": "Le travail dans le train",
-      "instruction": "Pour retracer son parcours avant le vol de documents, Vous prenez les transports avec Cédric. Pendant ce déplacement, Cédric vous informe qu'il doit absolument travailler parce qu'avec toute cette histoire, il a pris du retard sur ses tâches. Il se met donc à travailler à côté de vous.",
+      "instruction": "Pour retracer son parcours avant le vol de documents, vous prenez les transports avec Cédric. Pendant ce déplacement, Cédric vous informe qu'il doit absolument travailler parce qu'avec toute cette histoire, il a pris du retard sur ses tâches. Il se met donc à travailler à côté de vous.",
       "attackScenario": "Avec un bon angle de vue, d’un appareil photo ou d’une personne inattentive, un inconnu peut accéder à beaucoup d’informations\n\nLe travail nomade est pratique, mais il transforme parfois les transports en salle de réunion ouverte ou en vol facile. Un document confidentiel affiché dans un train n’est plus seulement entre les mains du prestataire, il est devant tout le wagon.",
       "image": "/images/fr/scenario4/metro.jpg",
       "imageWidth": 4080,
@@ -69,7 +69,7 @@ export const scenario4: Scenario = {
           "width": 900,
           "height": 880,
           "label": "Sac posé par terre non protégé",
-          "explanation": "Cédric a posé son sac contenant des documents de l’entreprise et des disques durs sur le sol sans protection. Une personne malveillante pourrait les voler et récupérer toutes ces informations"
+          "explanation": "Cédric a posé par terre son sac ouvert pouvant contenir des informations critiques sur son entreprise (des documents de l’entreprise, des disques durs, une tablette…). Une personne malveillante pourrait les voler et récupérer toutes ces informations"
         },
         {
           "id": "public-transport-visible-badge",

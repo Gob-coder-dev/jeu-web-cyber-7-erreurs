@@ -193,15 +193,6 @@ export const scenario3: Scenario = {
           "explanation": "Once again, the displayed name may imitate the director, but the email address does not match. It uses direct0r instead of director."
         },
         {
-          "id": "confirmation-no-more-action",
-          "x": 315,
-          "y": 505,
-          "width": 460,
-          "height": 50,
-          "label": "No additional procedure",
-          "explanation": "The message states that everything is in order and that no further action is needed. The attacker tries to close the conversation and avoid any later verification."
-        },
-        {
           "id": "confirmation-informal-text",
           "x": 305,
           "y": 350,

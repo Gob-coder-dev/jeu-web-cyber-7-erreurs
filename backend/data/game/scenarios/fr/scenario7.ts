@@ -204,9 +204,18 @@ export const scenario7: Scenario = {
           "x": 880,
           "y": 315,
           "width": 90,
-          "height": 45,
+          "height": 300,
           "label": "Absence de classification",
           "explanation": "Un document sensible non marqué comme confidentiel sera traité comme un document ordinaire."
+        },        
+        {
+          "id": "guest-can-reshare",
+          "x": 1430,
+          "y": 530,
+          "width": 220,
+          "height": 70,
+          "label": "Les invités peuvent repartager",
+          "explanation": "Si les invités peuvent repartager le document, cela augmente le risque de distribution non autorisée."
         }
       ]
     },

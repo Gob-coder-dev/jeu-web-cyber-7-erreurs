@@ -35,6 +35,15 @@ export const scenario1: Scenario = {
         },
         {
           "id": "operating-system-visible",
+          "x": 290,
+          "y": 175,
+          "width": 385,
+          "height": 265,
+          "label": "Visible operating system",
+          "explanation": "The computer screen shows the operating system used by the company. This can help an attacker target attacks based on vulnerabilities in that system."
+        },
+        {
+          "id": "operating-system-visible-2",
           "x": 0,
           "y": 306,
           "width": 165,
@@ -58,14 +67,14 @@ export const scenario1: Scenario = {
           "width": 400,
           "height": 520,
           "label": "Personal clue linked to clothing",
-          "explanation": "A manga T-shirt is visible in the photo. The attacker therefore learns personal information about the employee, which can help them create a targeted phishing attack."
+          "explanation": "A T-shirt with a manga reference is visible in the photo. The attacker therefore learns personal information about the employee, which can help them create a targeted phishing attack."
         }
       ]
     },
     {
       "id": "abandoned-workstation",
       "title": "The workstation abandoned during the break",
-      "instruction": "After finding this problematic post, you return to Orialys's premises to inform them about the situation. At the building entrance, you run into Julien during his coffee break, and on the way you pass by his desk. You therefore take a look at his workstation setup.",
+      "instruction": "After finding this problematic post, you return to Orialys's premises to inform them about the situation. At the building entrance, you run into Julien during his coffee break, and on the way you pass by his new desk. You therefore take a look at his workstation setup.",
       "attackScenario": "This scene shows very simple but very common weaknesses: no locking, a USB drive left in free access, and a computer left on. It is a gold mine for anyone who wants to access critical company information.",
       "image": "/images/en/scenario1/desktop.jpg",
       "imageWidth": 4080,

@@ -3,13 +3,13 @@ import type { Scenario } from '../../../../src/types/GameData';
 export const scenario2: Scenario = {
   "id": "phishing-inbox-melanie",
   "title": "Melanie's mailbox",
-  "description": "Melanie, an administrative assistant, received several emails about unidentified login attempts on several of her online service customer accounts on the same day: UPS, Amazon, Sephora, and Decathlon. The next day, an unusual login attempt was detected on Melanie's account in the internal service.\n\nDetective, you examine Melanie's mailbox. You find suspicious messages there.",
+  "description": "Melanie, an administrative assistant, received several emails about suspicious login attempts on several of her online service customer accounts on the same day: UPS, Amazon, Sephora, and Decathlon. The next day, an unusual login attempt was detected on Melanie's account in the internal service.\n\nDetective, you examine Melanie's mailbox. You find suspicious messages there.",
   "globalAttackScenario": "Probable method of operation: the attacker flooded Melanie with several different lures on the same day. By relying on pressure, curiosity, reward, and habit, the attacker sent emails about urgent delivery, a gift, a limited offer, and a known brand. This likely pushed her, tempted by the possible gain, to click on these fake links and enter personal information. The hacker was then able to collect her information and use it to log in to the sites in question, hoping to abuse these accounts, attempt purchases with Melanie's card, or collect additional information about the victim.\n\nGood practice to remember\n\nBefore clicking, check the sender's real address, the URL, the context of the request, and the level of urgency. When in doubt, do not click: use an official channel.",
   "questions": [
     {
       "id": "ups-urgent-delivery",
       "title": "The package that was too urgent",
-      "instruction": "Melanie received this urgent UPS delivery email. An urgent delivery to validate.",
+      "instruction": "Melanie received this urgent UPS delivery email.",
       "attackScenario": "This message tries to create a feeling of urgency around an ordinary topic: a package delivery. That is exactly what makes it effective. The attacker does not need to be original; they only need to arrive at the right time, with the right pretext.",
       "image": "/images/en/scenario2/email_phishing_2.png",
       "imageWidth": 1074,
@@ -227,6 +227,15 @@ export const scenario2: Scenario = {
           "height": 190,
           "label": "Personal data displayed",
           "explanation": "The message displays an identifier and an email address. These elements can be used to make the attack more credible or to confirm that the address is active. However, the displayed information is extremely basic: a fake name and an email address."
+        },
+        {
+          "id": "sephora-approximate-logo",
+          "x": 600,
+          "y": 290,
+          "width": 310,
+          "height": 80,
+          "label": "Approximate logo",
+          "explanation": "The visual identity is slightly different from the official one. The logo is sloppy and approximate, and it does not look like the original."
         }
       ]
     }

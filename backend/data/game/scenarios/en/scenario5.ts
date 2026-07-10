@@ -9,29 +9,20 @@ export const scenario5: Scenario = {
     {
       "id": "overly-detailed-job-ad",
       "title": "The job ad that said too much",
-      "instruction": "Before looking at the CV, you go back to the source. The job offer published by Peashooter&Co seems ordinary. But sometimes, a job ad does not speak only to candidates.\n\n3 urgency signals in the image",
+      "instruction": "Before looking at the CV, you go back to the source. The job offer published by Peashooter&Co seems ordinary. But sometimes, a job ad does not speak only to candidates.",
       "attackScenario": "A job offer is meant to attract candidates. But here, it also attracts unwanted attention.\n\nThe ad gives a name, an address, context, urgency, and business vocabulary. For an attacker, it is almost a preparation sheet. They do not yet know how to get in, but they already know who to write to, when to do it, and what tone to use.",
       "image": "/images/en/scenario5/annonce.png",
       "imageWidth": 1449,
       "imageHeight": 1086,
       "hotspots": [
         {
-          "id": "recruiter-name-visible",
-          "x": 1080,
-          "y": 690,
-          "width": 260,
-          "height": 37,
-          "label": "Visible recruiter name",
-          "explanation": "The name of the person in charge of recruitment is displayed publicly. It directly presents a target."
-        },
-        {
-          "id": "direct-email-address",
-          "x": 1081,
-          "y": 745,
-          "width": 270,
-          "height": 35,
-          "label": "Direct email address",
-          "explanation": "The recruiter's professional address is visible. This makes it easier to send targeted phishing directly to their mailbox."
+          "id": "recruiter-name-and-contact-info-visible",
+          "x": 1070,
+          "y": 685,
+          "width": 280,
+          "height": 100,
+          "label": "Visible recruiter name and contact information",
+          "explanation": "The name and contact information of the person in charge of recruitment are displayed publicly. It directly presents a target."
         },
         {
           "id": "urgent-hiring-pressure",
@@ -107,15 +98,6 @@ export const scenario5: Scenario = {
           "label": "Request to open quickly",
           "explanation": "The candidate reminds the company of the urgency of the position and also mentions his own urgency due to many other applications at other companies. He therefore insists that the file be reviewed quickly."
         },
-        {
-          "id": "too-perfect-profile",
-          "x": 30,
-          "y": 470,
-          "width": 940,
-          "height": 170,
-          "label": "Perfect profile",
-          "explanation": "The message repeats exactly what the company needs. For such a short research period, this is suspicious. It is a perfect profile that is available immediately. This adds extra pressure on HR, who sees a major potential gain."
-        }
       ]
     },
     {

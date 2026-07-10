@@ -34,7 +34,7 @@ export const translations = {
     },
     replayModal: {
       title: "Rejouer ce scénario ?",
-      body: "Tu as déjà terminé ce scénario. Cette nouvelle tentative ne modifiera pas ton premier score ni ton score global.",
+      body: "Ce dossier a déjà été classifié. Cette nouvelle tentative ne modifiera pas ton premier score ni ton score global.",
       cancel: "Annuler",
       play: "Jouer",
     },
@@ -109,7 +109,7 @@ export const translations = {
     },
     replayModal: {
       title: "Replay this scenario?",
-      body: "You have already completed this scenario. This new attempt will not change your first score or your global score.",
+      body: "This scenario has already been classified. This new attempt will not change your first score or your global score.",
       cancel: "Cancel",
       play: "Play",
     },

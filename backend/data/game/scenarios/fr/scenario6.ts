@@ -99,15 +99,6 @@ export const scenario6: Scenario = {
           "explanation": "Un code de double authentification est personnel. Il ne doit jamais être communiqué, même au support informatique."
         },
         {
-          "id": "reassuring-directive-tone",
-          "x": 590,
-          "y": 230,
-          "width": 740,
-          "height": 45,
-          "label": "Ton rassurant mais directif",
-          "explanation": "L’attaquant utilise un ton professionnel pour pousser la victime à obéir sans poser de questions. Il utilise aussi le faux mail pour crédibiliser son intervention et rassurer la victime"
-        },
-        {
           "id": "time-pressure",
           "x": 590,
           "y": 580,

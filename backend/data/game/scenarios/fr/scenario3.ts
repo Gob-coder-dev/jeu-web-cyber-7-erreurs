@@ -2,14 +2,14 @@ import type { Scenario } from '../../../../src/types/GameData';
 
 export const scenario3: Scenario = {
   "id": "director-voice-fraud",
-  "title": "La voix du directeur fantôme",
-  "description": "L’entreprise PepsCorp est en état d’alerte. Selon les employés présents sur site, la comptable Claire Martin aurait effectué un virement urgent vers un nouveau RIB fournisseur après avoir reçu un appel du directeur lui-même.\n\nLe problème, c’est que le directeur affirme n’avoir jamais passé cet appel. Il était en congé à l’étranger au moment des faits et dit ne pas avoir eu accès à son téléphone professionnel pendant plusieurs heures.\n\nClaire est persuadée d’avoir suivi une consigne officielle. Aucun logiciel malveillant n’a été détecté sur le poste de la comptable. Aucun compte administrateur ne semble avoir été compromis.",
+  "title": "La voix de la directrice fantôme",
+  "description": "L’entreprise PepsCorp est en état d’alerte. Selon les employés présents sur site, la comptable Claire Martin aurait effectué un virement urgent vers un nouveau RIB fournisseur après avoir reçu un appel de la directrice elle-même.\n\nLe problème, c’est que la directrice affirme n’avoir jamais passé cet appel. Elle était en congé à l’étranger au moment des faits et dit ne pas avoir eu accès à son téléphone professionnel pendant plusieurs heures.\n\nClaire est persuadée d’avoir suivi une consigne officielle. Aucun logiciel malveillant n’a été détecté sur le poste de la comptable. Aucun compte administrateur ne semble avoir été compromis.",
   "globalAttackScenario": "Mode opératoire probable : l’attaquant a commencé par collecter des informations publiques sur la directrice de PepsCorp. Une publication lui a appris que la dirigeante était en déplacement, à l’étranger, et donc potentiellement moins joignable.\n\nIl a ensuite appelé la comptable en se faisant passer pour elle. Le scénario était simple mais efficace : mauvaise connexion, urgence, confidentialité, virement fournisseur et contournement exceptionnel de la procédure.\n\nPendant l’appel, il a envoyé un email contenant une facture et un nouveau RIB pour donner du poids à sa demande. Une fois le virement effectué, il a envoyé un dernier message de confirmation afin de rassurer la comptable et retarder les vérifications.\n\nBon réflexe à retenir\n\nToute demande de virement, de changement de RIB ou de paiement urgent doit être vérifiée par un canal indépendant et officiel. Il faut refuser les contournements de procédure, même lorsqu’ils semblent venir d’un supérieur hiérarchique.\n\nEn cas de doute, il faut suspendre l’action, contacter la personne via un numéro connu, prévenir un responsable et signaler la tentative.",
   "questions": [
     {
       "id": "director-public-trip-post",
       "title": "La carte postale numérique",
-      "instruction": "Avant d’interroger les systèmes, vous commencez par vérifier les informations publiques de l’entreprise. En commençant par la dernière publication du directeur.",
+      "instruction": "Avant d’interroger les systèmes, vous commencez par vérifier les informations publiques de l’entreprise. En commençant par la dernière publication de la directrice.",
       "attackScenario": "La publication de la directrice voulait simplement montrer un moment de voyage. Mais dans le carnet d’un attaquant, elle devient une fiche de renseignement énorme. Elle révèle une absence, un contexte, des responsabilités et parfois même les personnes à cibler.",
       "image": "/images/fr/scenario3/linkedin_post.png",
       "imageWidth": 708,
@@ -22,7 +22,7 @@ export const scenario3: Scenario = {
           "width": 180,
           "height": 40,
           "label": "Dates de vacances visibles",
-          "explanation": "Les dates d’absence du directeur sont publiques. Un attaquant peut s’en servir pour savoir quand il sera difficilement joignable."
+          "explanation": "Les dates d’absence de la directrice sont publiques. Un attaquant peut s’en servir pour savoir quand il sera difficilement joignable."
         },
         {
           "id": "director-trip-location",
@@ -40,7 +40,7 @@ export const scenario3: Scenario = {
           "width": 635,
           "height": 110,
           "label": "Nom de la personne remplaçante",
-          "explanation": "Le post indique qui gère certains sujets pendant l’absence du directeur. Une piste directe vers la bonne cible."
+          "explanation": "Le post indique qui gère certains sujets pendant l’absence de la directrice. Une piste directe vers la bonne cible."
         }
       ]
     },
@@ -48,7 +48,7 @@ export const scenario3: Scenario = {
       "id": "fake-director-call-transcript",
       "title": "La voix qui pressait le pas",
       "instruction": "Comme la comptable dit avoir reçu un appel de la directrice, vous regardez donc son historique d’appel pour voir la retranscription texte de l’appel. Elle affirme avoir reconnu le ton de la directrice.",
-      "attackScenario": "L’attaquant utilise l’absence du directeur, l’urgence, la confidentialité et l’autorité hiérarchique. Il pousse une personne à agir contre la procédure, en lui donnant l’impression d’aider son responsable et de bien faire les choses.",
+      "attackScenario": "L’attaquant utilise l’absence de la directrice, l’urgence, la confidentialité et l’autorité hiérarchique. Il pousse une personne à agir contre la procédure, en lui donnant l’impression d’aider son responsable et de bien faire les choses.",
       "image": "/images/fr/scenario3/discussion.png",
       "imageWidth": 1103,
       "imageHeight": 1426,
@@ -114,14 +114,14 @@ export const scenario3: Scenario = {
           "width": 805,
           "height": 62,
           "label": "Ton hiérarchique et Confirmation demandée après action",
-          "explanation": "L’attaquant utilise l’autorité supposée du directeur pour réduire la capacité de la comptable à questionner la demande. / L’attaquant veut savoir quand l’opération est terminée. Cela lui permet de suivre l’avancement de la fraude."
+          "explanation": "L’attaquant utilise l’autorité supposée de la directrice pour réduire la capacité de la comptable à questionner la demande. / L’attaquant veut savoir quand l’opération est terminée. Cela lui permet de suivre l’avancement de la fraude."
         }
       ]
     },
     {
       "id": "urgent-invoice-with-new-rib",
       "title": "La facture tombée pendant l’appel",
-      "instruction": "La comptable vous montre le mail qu’elle a reçu pendant l’appel. Le timing semble confirmer les paroles du directeur pendant l’appel.",
+      "instruction": "La comptable vous montre le mail qu’elle a reçu pendant l’appel. Le timing semble confirmer les paroles de la directrice pendant l’appel.",
       "attackScenario": "Le mail arrive comme une preuve, mais il joue surtout le rôle d’un accessoire. Il donne une forme administrative à l’ordre téléphonique.\n\nL’attaquant sait qu’une demande orale peut sembler fragile. Il ajoute donc une facture, un RIB, une pièce jointe, un ton professionnel ce qui rend l’histoire plus solide.",
       "image": "/images/fr/scenario3/email_phishing.png",
       "imageWidth": 1448,
@@ -191,15 +191,6 @@ export const scenario3: Scenario = {
           "height": 58,
           "label": "Adresse d’expéditeur suspecte",
           "explanation": "Encore une fois, le nom affiché peut imiter la directrice, mais l’adresse mail ne colle pas. On y voit direct0r au lieu de director."
-        },
-        {
-          "id": "confirmation-no-more-action",
-          "x": 315,
-          "y": 475,
-          "width": 470,
-          "height": 55,
-          "label": "Aucune procédure supplémentaire",
-          "explanation": "Précision que tout est en ordre et qu’aucune action supplémentaire n’est nécessaire. / L’attaquant cherche à fermer la conversation et à éviter toute vérification après coup."
         },
         {
           "id": "confirmation-informal-text",

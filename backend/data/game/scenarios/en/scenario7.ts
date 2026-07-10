@@ -148,7 +148,7 @@ export const scenario7: Scenario = {
         {
           "id": "anyone-with-link-access",
           "x": 1430,
-          "y": 270,
+          "y": 240,
           "width": 220,
           "height": 85,
           "label": "Link accessible to anyone who has it",
@@ -157,7 +157,7 @@ export const scenario7: Scenario = {
         {
           "id": "edit-allowed",
           "x": 1430,
-          "y": 420,
+          "y": 395,
           "width": 220,
           "height": 50,
           "label": "Editing allowed",
@@ -166,7 +166,7 @@ export const scenario7: Scenario = {
         {
           "id": "no-expiration-date",
           "x": 1430,
-          "y": 520,
+          "y": 495,
           "width": 220,
           "height": 50,
           "label": "No expiration date",
@@ -175,16 +175,16 @@ export const scenario7: Scenario = {
         {
           "id": "sensitive-document-in-large-channel",
           "x": 320,
-          "y": 335,
-          "width": 200,
+          "y": 320,
+          "width": 220,
           "height": 45,
           "label": "Sensitive document shared in a broad channel",
           "explanation": "A confidential document should not be published in a space accessible to guests or too many employees."
         },
         {
           "id": "confidential-project-name",
-          "x": 310,
-          "y": 65,
+          "x": 300,
+          "y": 60,
           "width": 520,
           "height": 60,
           "label": "Confidential project name in SharePoint",
@@ -193,7 +193,7 @@ export const scenario7: Scenario = {
         {
           "id": "download-enabled",
           "x": 1430,
-          "y": 475,
+          "y": 450,
           "width": 220,
           "height": 50,
           "label": "Download allowed",
@@ -201,12 +201,21 @@ export const scenario7: Scenario = {
         },
         {
           "id": "no-classification",
-          "x": 900,
-          "y": 335,
+          "x": 935,
+          "y": 315,
           "width": 80,
-          "height": 45,
+          "height": 300,
           "label": "No classification",
           "explanation": "A sensitive document not marked as confidential will be treated like an ordinary document."
+        },
+        {
+          "id": "guest-can-reshare",
+          "x": 1430,
+          "y": 545,
+          "width": 220,
+          "height": 70,
+          "label": "Guests can reshare",
+          "explanation": "If guests can reshare the document, it increases the risk of unauthorized distribution."
         }
       ]
     },

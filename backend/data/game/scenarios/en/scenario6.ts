@@ -99,15 +99,6 @@ export const scenario6: Scenario = {
           "explanation": "A two-factor authentication code is personal. It must never be communicated, even to IT support."
         },
         {
-          "id": "reassuring-directive-tone",
-          "x": 590,
-          "y": 230,
-          "width": 740,
-          "height": 45,
-          "label": "Reassuring but directive tone",
-          "explanation": "The attacker uses a professional tone to push the victim to obey without asking questions. They also use the fake email to make the intervention more credible and reassure the victim."
-        },
-        {
           "id": "time-pressure",
           "x": 590,
           "y": 580,

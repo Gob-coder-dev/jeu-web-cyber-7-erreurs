@@ -9,29 +9,20 @@ export const scenario5: Scenario = {
     {
       "id": "overly-detailed-job-ad",
       "title": "L’annonce qui parlait trop",
-      "instruction": "Avant de regarder le CV, vous retournez à la source. L’offre d’emploi publiée par Peashooter&Co semble classique. Mais parfois, une annonce ne parle pas seulement aux candidats.\n\n3 urgences sur l’image",
+      "instruction": "Avant de regarder le CV, vous retournez à la source. L’offre d’emploi publiée par Peashooter&Co semble classique. Mais parfois, une annonce ne parle pas seulement aux candidats.",
       "attackScenario": "Une offre d’emploi doit attirer des candidats. Mais ici, elle attire aussi des regards indésirables.\n\nL’annonce donne un nom, une adresse, un contexte, une urgence et du vocabulaire métier. Pour un attaquant, c’est presque une fiche de préparation. Il ne sait pas encore comment entrer, mais il sait déjà à qui écrire, quand le faire et quel ton utiliser.",
       "image": "/images/fr/scenario5/annonce.png",
       "imageWidth": 1448,
       "imageHeight": 1086,
       "hotspots": [
         {
-          "id": "recruiter-name-visible",
-          "x": 1060,
+          "id": "recruiter-name-and-contact-info-visible",
+          "x": 1070,
           "y": 685,
-          "width": 230,
-          "height": 35,
-          "label": "Nom du recruteur visible",
-          "explanation": "Le nom de la personne chargée du recrutement est affiché publiquement. Une cible directement présenté."
-        },
-        {
-          "id": "direct-email-address",
-          "x": 1080,
-          "y": 740,
-          "width": 270,
-          "height": 35,
-          "label": "Adresse email directe",
-          "explanation": "L’adresse professionnelle du recruteur est visible. Cela facilite l’envoi d’un phishing ciblé directement dans sa boîte mail."
+          "width": 280,
+          "height": 100,
+          "label": "Nom et coordonnées du recruteur visibles",
+          "explanation": "Le nom et les coordonnées de la personne chargée du recrutement sont affichés publiquement. Une cible directement présentée."
         },
         {
           "id": "urgent-hiring-pressure",
@@ -107,15 +98,6 @@ export const scenario5: Scenario = {
           "label": "Demande d’ouverture rapide",
           "explanation": "Le candidat rappelle l’urgence du poste pour l’entreprise et son urgence à lui avec d’autres nombreuses candidatures dans d’autres entreprises. Il insiste donc pour que le dossier soit consulté rapidement."
         },
-        {
-          "id": "too-perfect-profile",
-          "x": 30,
-          "y": 470,
-          "width": 890,
-          "height": 160,
-          "label": "Profil parfait",
-          "explanation": "Le message reprend exactement les besoins de l’entreprise. Ce qui en si peu de temps de recherche est suspect. C’est un profil parfait qui est disponible dès maintenant. Cela donne donc une pression supplémentaire au RH qui voit un gros gain potentiel."
-        }
       ]
     },
     {
@@ -158,10 +140,10 @@ export const scenario5: Scenario = {
       "hotspots": [
         {
           "id": "whole-company-access-all-folders",
-          "x": 560,
+          "x": 550,
           "y": 455,
           "width": 140,
-          "height": 300,
+          "height": 390,
           "label": "Toute l’entreprise à accès à tout",
           "explanation": "Tous les dossiers sont en accès libre par l’entreprise. Ces derniers devraient être limités à certaines personnes"
         },
