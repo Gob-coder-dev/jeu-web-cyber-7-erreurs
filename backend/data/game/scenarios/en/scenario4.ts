@@ -12,33 +12,33 @@ export const scenario4: Scenario = {
       "instruction": "Before following Cedric's movements, you start by looking at his social networks. You discover one of his posts from two weeks ago.",
       "attackScenario": "The post was simply meant to complain about public transport. But for an attacker who wants to track him, it is a gold mine of information. It gives a place, a date, and a target to reach a company. The attacker can simply go to this station and wait for Cedric to follow and spy on him.",
       "image": "/images/en/scenario4/tweet.png",
-      "imageWidth": 822,
-      "imageHeight": 976,
+      "imageWidth": 1142,
+      "imageHeight": 1378,
       "hotspots": [
         {
           "id": "commute-place-visible",
-          "x": 430,
-          "y": 100,
-          "width": 140,
-          "height": 50,
+          "x": 525,
+          "y": 140,
+          "width": 255,
+          "height": 75,
           "label": "Visible commute location",
           "explanation": "Cedric clearly says he uses metro line 6, and with the image added, it is clear which station he goes through every morning and evening, making it possible to follow him."
         },
         {
           "id": "commute-daily-work-complaint",
-          "x": 8,
-          "y": 150,
-          "width": 600,
-          "height": 40,
+          "x": 10,
+          "y": 215,
+          "width": 870,
+          "height": 60,
           "label": "Complaint about not being able to go to work",
           "explanation": "In his comment, he complains about not being able to go to work. We therefore understand that he uses this transport every day to go to work."
         },
         {
           "id": "tweet-send-time",
-          "x": 4,
-          "y": 780,
-          "width": 230,
-          "height": 45,
+          "x": 10,
+          "y": 1100,
+          "width": 330,
+          "height": 65,
           "label": "Sending time",
           "explanation": "The tweet's sending time clearly shows that Cedric sent it during his commute to work. We therefore know when to find him in public transport."
         }
@@ -93,9 +93,9 @@ export const scenario4: Scenario = {
       "hotspots": [
         {
           "id": "wifi-similar-network-names",
-          "x": 940,
-          "y": 395,
-          "width": 250,
+          "x": 960,
+          "y": 385,
+          "width": 235,
           "height": 40,
           "label": "Wi-Fi networks with very similar names",
           "explanation": "Several networks have almost identical names. An attacker can create a fake network that looks like the real one to trap users in a hurry."
@@ -103,9 +103,9 @@ export const scenario4: Scenario = {
         {
           "id": "wifi-open-network",
           "x": 940,
-          "y": 430,
-          "width": 470,
-          "height": 120,
+          "y": 425,
+          "width": 450,
+          "height": 110,
           "label": "Unsecured network",
           "explanation": "An open or poorly protected network increases the risks of interception or redirection to fake pages."
         }
@@ -121,18 +121,9 @@ export const scenario4: Scenario = {
       "imageHeight": 1086,
       "hotspots": [
         {
-          "id": "portal-professional-password-request",
-          "x": 305,
-          "y": 590,
-          "width": 830,
-          "height": 60,
-          "label": "Request for the professional password",
-          "explanation": "A Wi-Fi portal has no reason to ask for the password of a professional account. This is a major warning sign."
-        },
-        {
           "id": "portal-suspicious-url",
-          "x": 470,
-          "y": 82,
+          "x": 445,
+          "y": 80,
           "width": 655,
           "height": 40,
           "label": "Suspicious URL",
@@ -141,8 +132,8 @@ export const scenario4: Scenario = {
         {
           "id": "portal-not-secure",
           "x": 300,
-          "y": 82,
-          "width": 160,
+          "y": 80,
+          "width": 145,
           "height": 40,
           "label": "No HTTPS or doubtful certificate",
           "explanation": "An unsecured page that asks for personal or professional information should not be used."

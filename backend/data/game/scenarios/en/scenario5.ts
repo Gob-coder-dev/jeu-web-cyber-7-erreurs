@@ -12,22 +12,22 @@ export const scenario5: Scenario = {
       "instruction": "Before looking at the CV, you go back to the source. The job offer published by Peashooter&Co seems ordinary. But sometimes, a job ad does not speak only to candidates.\n\n3 urgency signals in the image",
       "attackScenario": "A job offer is meant to attract candidates. But here, it also attracts unwanted attention.\n\nThe ad gives a name, an address, context, urgency, and business vocabulary. For an attacker, it is almost a preparation sheet. They do not yet know how to get in, but they already know who to write to, when to do it, and what tone to use.",
       "image": "/images/en/scenario5/annonce.png",
-      "imageWidth": 1448,
+      "imageWidth": 1449,
       "imageHeight": 1086,
       "hotspots": [
         {
           "id": "recruiter-name-visible",
-          "x": 1060,
-          "y": 685,
-          "width": 230,
-          "height": 35,
+          "x": 1080,
+          "y": 690,
+          "width": 260,
+          "height": 37,
           "label": "Visible recruiter name",
           "explanation": "The name of the person in charge of recruitment is displayed publicly. It directly presents a target."
         },
         {
           "id": "direct-email-address",
-          "x": 1080,
-          "y": 740,
+          "x": 1081,
+          "y": 745,
           "width": 270,
           "height": 35,
           "label": "Direct email address",
@@ -35,17 +35,17 @@ export const scenario5: Scenario = {
         },
         {
           "id": "urgent-hiring-pressure",
-          "x": 965,
+          "x": 970,
           "y": 145,
-          "width": 400,
+          "width": 420,
           "height": 150,
           "label": "Recruitment urgency",
           "explanation": "The ad insists on the urgent nature of the recruitment. An attacker can exploit this pressure to send an application that will be opened quickly."
         },
         {
           "id": "urgent-hiring-pressure-2",
-          "x": 60,
-          "y": 155,
+          "x": 65,
+          "y": 160,
           "width": 280,
           "height": 50,
           "label": "Recruitment urgency",
@@ -64,7 +64,7 @@ export const scenario5: Scenario = {
           "id": "team-details-visible",
           "x": 970,
           "y": 345,
-          "width": 380,
+          "width": 390,
           "height": 90,
           "label": "Precise details about the team",
           "explanation": "The more details the ad gives about the team, project, or internal organization, the more the attacker can adapt their message."
@@ -82,17 +82,17 @@ export const scenario5: Scenario = {
       "hotspots": [
         {
           "id": "suspicious-attachment",
-          "x": 38,
-          "y": 288,
-          "width": 468,
-          "height": 72,
+          "x": 30,
+          "y": 290,
+          "width": 475,
+          "height": 85,
           "label": "Suspicious attachment",
           "explanation": "The CV is sent in an unusual or risky format, such as a compressed file or a document with an abnormal file name."
         },
         {
           "id": "shortened-portfolio-link",
           "x": 30,
-          "y": 727,
+          "y": 745,
           "width": 250,
           "height": 35,
           "label": "Shortened portfolio link",
@@ -100,9 +100,9 @@ export const scenario5: Scenario = {
         },
         {
           "id": "quick-opening-request",
-          "x": 35,
-          "y": 870,
-          "width": 820,
+          "x": 30,
+          "y": 875,
+          "width": 810,
           "height": 40,
           "label": "Request to open quickly",
           "explanation": "The candidate reminds the company of the urgency of the position and also mentions his own urgency due to many other applications at other companies. He therefore insists that the file be reviewed quickly."
@@ -111,8 +111,8 @@ export const scenario5: Scenario = {
           "id": "too-perfect-profile",
           "x": 30,
           "y": 470,
-          "width": 890,
-          "height": 160,
+          "width": 940,
+          "height": 170,
           "label": "Perfect profile",
           "explanation": "The message repeats exactly what the company needs. For such a short research period, this is suspicious. It is a perfect profile that is available immediately. This adds extra pressure on HR, who sees a major potential gain."
         }
@@ -130,9 +130,9 @@ export const scenario5: Scenario = {
         {
           "id": "enable-content-request",
           "x": 0,
-          "y": 212,
+          "y": 215,
           "width": 1536,
-          "height": 45,
+          "height": 55,
           "label": "Request to enable content",
           "explanation": "A document that asks to enable macros or active content can execute dangerous actions on the workstation."
         },
@@ -141,7 +141,7 @@ export const scenario5: Scenario = {
           "x": 405,
           "y": 385,
           "width": 735,
-          "height": 420,
+          "height": 445,
           "label": "Display issue pretext",
           "explanation": "The file pretends that the document is displayed incorrectly or protected. This pretext is used to push the user to click."
         }
@@ -158,26 +158,26 @@ export const scenario5: Scenario = {
       "hotspots": [
         {
           "id": "whole-company-access-all-folders",
-          "x": 560,
+          "x": 510,
           "y": 455,
-          "width": 140,
-          "height": 300,
+          "width": 190,
+          "height": 400,
           "label": "The whole company has access to everything",
           "explanation": "All folders are freely accessible by the company. They should be limited to specific people."
         },
         {
           "id": "subfolders-inherit-permissions",
           "x": 190,
-          "y": 870,
-          "width": 745,
+          "y": 880,
+          "width": 720,
           "height": 110,
           "label": "Subfolders inherit permissions",
           "explanation": "All folders are accessible, and in addition, subfolders are automatically accessible too. Browsing sensitive documents is extremely simple for anyone."
         },
         {
           "id": "subfolders-inherit-permissions-2",
-          "x": 970,
-          "y": 770,
+          "x": 971,
+          "y": 780,
           "width": 450,
           "height": 120,
           "label": "Subfolders inherit permissions",
@@ -186,16 +186,16 @@ export const scenario5: Scenario = {
         {
           "id": "whole-company-access",
           "x": 980,
-          "y": 255,
-          "width": 300,
-          "height": 50,
+          "y": 250,
+          "width": 320,
+          "height": 60,
           "label": "\"Entire company\" read access",
           "explanation": "The folder can be read by too many people. The more access there is, the greater the impact of a compromised account."
         },
         {
           "id": "external-edit-access",
           "x": 980,
-          "y": 355,
+          "y": 360,
           "width": 370,
           "height": 70,
           "label": "External account with edit rights",
@@ -204,7 +204,7 @@ export const scenario5: Scenario = {
         {
           "id": "anyone-link-can-edit",
           "x": 980,
-          "y": 475,
+          "y": 485,
           "width": 360,
           "height": 60,
           "label": "\"Anyone with the link can edit\" link",
@@ -213,18 +213,18 @@ export const scenario5: Scenario = {
         {
           "id": "no-expiration-link",
           "x": 980,
-          "y": 595,
+          "y": 600,
           "width": 250,
-          "height": 50,
+          "height": 60,
           "label": "Link without expiration date",
           "explanation": "A share without expiration remains active for a long time, even when the initial need has disappeared."
         },
         {
           "id": "download-allowed",
           "x": 980,
-          "y": 675,
-          "width": 255,
-          "height": 50,
+          "y": 685,
+          "width": 250,
+          "height": 60,
           "label": "Download allowed",
           "explanation": "If downloading is allowed, an attacker can easily copy documents outside the company."
         }

@@ -73,26 +73,26 @@ export const scenario1: Scenario = {
       "hotspots": [
         {
           "id": "unlocked-computer",
-          "x": 2750,
-          "y": 1000,
-          "width": 900,
+          "x": 2950,
+          "y": 1300,
+          "width": 950,
           "height": 700,
           "label": "Computer left on",
           "explanation": "The computer is left on and logged in, which may allow an attacker to access sensitive information if the user moves away from the workstation."
         },
         {
           "id": "password-post-it-workstation",
-          "x": 1860,
-          "y": 460,
-          "width": 170,
-          "height": 260,
+          "x": 1800,
+          "y": 750,
+          "width": 220,
+          "height": 230,
           "label": "Password visible on a sticky note",
           "explanation": "The user's password is written on a sticky note next to the computer, which can allow an attacker to find it easily and access the user's account."
         },
         {
           "id": "usb-drive-unattended",
           "x": 1960,
-          "y": 1420,
+          "y": 1730,
           "width": 260,
           "height": 160,
           "label": "USB drive left in free access",

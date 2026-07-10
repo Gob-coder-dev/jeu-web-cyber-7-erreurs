@@ -121,15 +121,6 @@ export const scenario4: Scenario = {
       "imageHeight": 1086,
       "hotspots": [
         {
-          "id": "portal-professional-password-request",
-          "x": 305,
-          "y": 590,
-          "width": 830,
-          "height": 60,
-          "label": "Demande du mot de passe professionnel",
-          "explanation": "Un portail Wi-Fi n’a pas à demander le mot de passe d’un compte professionnel. C’est un signal d’alerte majeur."
-        },
-        {
           "id": "portal-suspicious-url",
           "x": 470,
           "y": 82,

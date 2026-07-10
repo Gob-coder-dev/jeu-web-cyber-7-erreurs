@@ -83,7 +83,7 @@ export const scenario7: Scenario = {
         {
           "id": "external-guest-account",
           "x": 510,
-          "y": 495,
+          "y": 510,
           "width": 415,
           "height": 140,
           "label": "External guest account",
@@ -92,7 +92,7 @@ export const scenario7: Scenario = {
         {
           "id": "old-provider-still-present",
           "x": 1280,
-          "y": 655,
+          "y": 670,
           "width": 180,
           "height": 50,
           "label": "Former contractor still present",
@@ -101,7 +101,7 @@ export const scenario7: Scenario = {
         {
           "id": "same-member-rights",
           "x": 965,
-          "y": 495,
+          "y": 510,
           "width": 110,
           "height": 140,
           "label": "\"Member\" rights identical to internal users",
@@ -110,9 +110,9 @@ export const scenario7: Scenario = {
         {
           "id": "guest-download-allowed",
           "x": 510,
-          "y": 811,
-          "width": 440,
-          "height": 70,
+          "y": 830,
+          "width": 300,
+          "height": 55,
           "label": "Too many permissions for guests",
           "explanation": "If guests can download documents, files can easily leave the company."
         },
@@ -121,16 +121,16 @@ export const scenario7: Scenario = {
           "x": 555,
           "y": 70,
           "width": 440,
-          "height": 50,
+          "height": 60,
           "label": "Confidential project name in the channel",
           "explanation": "The project name becomes sensitive if the channel is not strictly limited to the people concerned."
         },
         {
           "id": "missing-account-owner",
-          "x": 1465,
-          "y": 500,
+          "x": 1475,
+          "y": 510,
           "width": 110,
-          "height": 200,
+          "height": 210,
           "label": "No account owner",
           "explanation": "If guests can download documents and share links, document leaks can become more frequent and harder to eliminate."
         }
@@ -138,7 +138,7 @@ export const scenario7: Scenario = {
     },
     {
       "id": "unlocked-shared-document",
-      "title": "The shared document without a lock",
+      "title": "The shared document",
       "instruction": "The channel contains several documents. One of them seems to be at the center of the case. It gathers the information later used in the phishing email.",
       "attackScenario": "The document was not forcibly stolen. It was shared too broadly.\n\nAn overly permissive SharePoint, a document rich in information, a channel with too many people.\n\nThis accumulation of flaws becomes a headache when trying to avoid document leaks.",
       "image": "/images/en/scenario7/sharepoint.png",
@@ -148,16 +148,16 @@ export const scenario7: Scenario = {
         {
           "id": "anyone-with-link-access",
           "x": 1430,
-          "y": 235,
+          "y": 270,
           "width": 220,
-          "height": 80,
+          "height": 85,
           "label": "Link accessible to anyone who has it",
           "explanation": "A link that is too open can circulate outside the channel without real control."
         },
         {
           "id": "edit-allowed",
           "x": 1430,
-          "y": 380,
+          "y": 420,
           "width": 220,
           "height": 50,
           "label": "Editing allowed",
@@ -166,7 +166,7 @@ export const scenario7: Scenario = {
         {
           "id": "no-expiration-date",
           "x": 1430,
-          "y": 480,
+          "y": 520,
           "width": 220,
           "height": 50,
           "label": "No expiration date",
@@ -175,7 +175,7 @@ export const scenario7: Scenario = {
         {
           "id": "sensitive-document-in-large-channel",
           "x": 320,
-          "y": 315,
+          "y": 335,
           "width": 200,
           "height": 45,
           "label": "Sensitive document shared in a broad channel",
@@ -183,17 +183,17 @@ export const scenario7: Scenario = {
         },
         {
           "id": "confidential-project-name",
-          "x": 290,
-          "y": 60,
-          "width": 530,
-          "height": 50,
+          "x": 310,
+          "y": 65,
+          "width": 520,
+          "height": 60,
           "label": "Confidential project name in SharePoint",
           "explanation": "The project name becomes sensitive if SharePoint is not strictly limited to the people concerned."
         },
         {
           "id": "download-enabled",
           "x": 1430,
-          "y": 435,
+          "y": 475,
           "width": 220,
           "height": 50,
           "label": "Download allowed",
@@ -201,9 +201,9 @@ export const scenario7: Scenario = {
         },
         {
           "id": "no-classification",
-          "x": 880,
-          "y": 315,
-          "width": 90,
+          "x": 900,
+          "y": 335,
+          "width": 80,
           "height": 45,
           "label": "No classification",
           "explanation": "A sensitive document not marked as confidential will be treated like an ordinary document."
@@ -221,7 +221,7 @@ export const scenario7: Scenario = {
       "hotspots": [
         {
           "id": "exact-project-name",
-          "x": 720,
+          "x": 700,
           "y": 230,
           "width": 550,
           "height": 45,
@@ -230,8 +230,8 @@ export const scenario7: Scenario = {
         },
         {
           "id": "project-manager-name",
-          "x": 790,
-          "y": 290,
+          "x": 780,
+          "y": 280,
           "width": 350,
           "height": 47,
           "label": "Project manager's name",
@@ -241,7 +241,7 @@ export const scenario7: Scenario = {
           "id": "real-calendar-reference",
           "x": 720,
           "y": 475,
-          "width": 500,
+          "width": 540,
           "height": 45,
           "label": "Reference to the real calendar",
           "explanation": "The message mentions a real date or meeting, which makes the trap credible."
@@ -249,8 +249,8 @@ export const scenario7: Scenario = {
         {
           "id": "login-request-and-link",
           "x": 720,
-          "y": 585,
-          "width": 450,
+          "y": 575,
+          "width": 400,
           "height": 70,
           "label": "Login request and external link",
           "explanation": "The email asks the user to log in to view a document. This may be an attempt to steal credentials. The link points to an external or unknown website."
@@ -259,7 +259,7 @@ export const scenario7: Scenario = {
           "id": "urgent-tone",
           "x": 720,
           "y": 525,
-          "width": 500,
+          "width": 400,
           "height": 45,
           "label": "Urgent tone",
           "explanation": "Urgency pushes employees to click quickly, especially if the message seems linked to a real project."
