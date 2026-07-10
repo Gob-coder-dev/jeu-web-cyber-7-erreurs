@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import * as bcrypt from "bcrypt";
 import type { CompanyData, ScenarioScore, User } from "../types/CompanyData";
 
 const companyFilePath = path.join(
@@ -26,14 +27,18 @@ const getCurrentDate = () => new Date().toISOString();
 
 const normalizeUsername = (username: string) => username.trim().toLowerCase();
 
-const createUserObject = (username: string, password: string): User => {
+const hashPassword = async (password: string): Promise<string> => {
+  return bcrypt.hash(password, 12);
+};
+
+const createUserObject = (username: string, hashedPassword: string): User => {
   const now = getCurrentDate();
 
   return {
     id: crypto.randomUUID(),
     pseudo: username,
     pseudoKey: normalizeUsername(username),
-    hashedPassword: password,
+    hashedPassword: hashedPassword,
     emailAddress: null,
     globalScore: 0,
     completedScenarioIds: [],
@@ -51,11 +56,16 @@ function findUserById(companyData: CompanyData, userId: string) {
   return companyData.users.find((user) => user.id === userId);
 }
 
-function findUser(companyData: CompanyData, username: string, password: string) {
+async function findUserByCredentials(companyData: CompanyData, username: string, password: string) {
   const normalizedUsername = normalizeUsername(username);
-  return companyData.users.find((user) =>
-    user.pseudoKey === normalizedUsername && user.hashedPassword === password,
-  );
+  const user = companyData.users.find((user) => user.pseudoKey === normalizedUsername);
+  
+  if (!user || !user.hashedPassword) {
+    return undefined;
+  }
+  
+  const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
+  return passwordMatch ? user : undefined;
 }
 
 function findUsername(companyData: CompanyData, username: string) {
@@ -74,7 +84,7 @@ function calculateGlobalScore(user: User) {
 export async function isUserInDatabase(userId: string, password: string) {
   const companyData = await readCompanyData();
 
-  return findUser(companyData, userId, password) !== undefined;
+  return (await findUserByCredentials(companyData, userId, password)) !== undefined;
 }
 
 export async function isUsernameInDatabase(username: string) {
@@ -86,7 +96,7 @@ export async function isUsernameInDatabase(username: string) {
 export async function getUserInDatabase(userId: string, password: string) {
   const companyData = await readCompanyData();
 
-  return findUser(companyData, userId, password);
+  return findUserByCredentials(companyData, userId, password);
 }
 
 export async function getUserInDatabaseById(userId: string) {
@@ -109,7 +119,8 @@ export async function createUserInDatabase(username: string, password: string) {
     return null;
   }
 
-  const newUser = createUserObject(username, password);
+  const hashedPassword = await hashPassword(password);
+  const newUser = createUserObject(username, hashedPassword);
   companyData.users.push(newUser);
 
   await writeCompanyData(companyData);
