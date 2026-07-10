@@ -4,7 +4,8 @@ export const scenario5: Scenario = {
   "id": "ransomware-cv-attachment",
   "title": "Le recrutement en urgence",
   "description": "L’entreprise Peashooter&Co est en crise. Depuis ce matin, plusieurs dossiers du service RH sont devenus illisibles. Les fichiers ont changé de nom, certains documents ne s’ouvrent plus, et un message de rançon est apparu sur plusieurs postes.\n\nLe service informatique pense à une attaque par ransomware. Le service RH, lui, ne comprend pas. D’après Léa, chargée de recrutement, elle n’a rien installé de particulier. Elle affirme que la dernière chose qu’elle ait faite avant l’attaque est d’avoir travaillé sur le recrutement pour une offre urgente publiée quelques jours plus tôt.\n\nAucun compte administrateur ne semble avoir été forcé. Aucune intrusion directe sur les serveurs n’est détectée.",
-  "globalAttackScenario": "Mode opératoire probable : l’attaquant a commencé par étudier l’offre d’emploi publiée par Peashooter&Co. Il y a trouvé le nom du recruteur, son adresse, le contexte du recrutement et l’urgence du besoin.\n\nIl a ensuite envoyé une fausse candidature très crédible, construite pour correspondre exactement au poste. Le fichier joint ne contenait pas seulement un CV : il demandait d’activer du contenu dangereux. Une fois cette action réalisée, le poste de Léa a probablement été compromis.\n\nL’attaque s’est ensuite propagée aux dossiers RH auxquels le compte avait accès. Les droits trop larges, les partages mal organisés et la synchronisation des fichiers ont augmenté l’impact jusqu’au chiffrement de nombreux documents.\n\nBon réflexe à retenir\n\nNe jamais activer les macros ou le contenu actif d’un document reçu par email sans vérification. Se méfier des pièces jointes inhabituelles, utiliser des plateformes de recrutement sécurisées, vérifier les candidats et limiter les droits d’accès aux dossiers sensibles.",
+  "globalAttackScenario": "Mode opératoire probable : l’attaquant a commencé par étudier l’offre d’emploi publiée par Peashooter&Co. Il y a trouvé le nom du recruteur, son adresse, le contexte du recrutement et l’urgence du besoin.\n\nIl a ensuite envoyé une fausse candidature très crédible, construite pour correspondre exactement au poste. Le fichier joint ne contenait pas seulement un CV : il demandait d’activer du contenu dangereux. Une fois cette action réalisée, le poste de Léa a probablement été compromis.\n\nL’attaque s’est ensuite propagée aux dossiers RH auxquels le compte avait accès. Les droits trop larges, les partages mal organisés et la synchronisation des fichiers ont augmenté l’impact jusqu’au chiffrement de nombreux documents.",
+  "goodPractices": "Ne jamais activer les macros ou le contenu actif d’un document reçu par email sans vérification. Se méfier des pièces jointes inhabituelles, utiliser des plateformes de recrutement sécurisées, vérifier les candidats et limiter les droits d’accès aux dossiers sensibles.",
   "questions": [
     {
       "id": "overly-detailed-job-ad",
@@ -97,7 +98,7 @@ export const scenario5: Scenario = {
           "height": 40,
           "label": "Demande d’ouverture rapide",
           "explanation": "Le candidat rappelle l’urgence du poste pour l’entreprise et son urgence à lui avec d’autres nombreuses candidatures dans d’autres entreprises. Il insiste donc pour que le dossier soit consulté rapidement."
-        },
+        }
       ]
     },
     {

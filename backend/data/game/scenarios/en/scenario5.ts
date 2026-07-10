@@ -4,7 +4,8 @@ export const scenario5: Scenario = {
   "id": "ransomware-cv-attachment",
   "title": "Urgent recruitment",
   "description": "Peashooter&Co is in crisis. Since this morning, several HR department folders have become unreadable. The files have changed names, some documents no longer open, and a ransom message has appeared on several workstations.\n\nThe IT department suspects a ransomware attack. The HR department does not understand. According to Lea, the recruitment officer, she did not install anything in particular. She says the last thing she did before the attack was work on recruitment for an urgent job offer published a few days earlier.\n\nNo administrator account seems to have been forced. No direct intrusion on the servers is detected.",
-  "globalAttackScenario": "Probable method of operation: the attacker began by studying the job offer published by Peashooter&Co. They found the recruiter's name, address, recruitment context, and urgency of the need.\n\nThey then sent a very credible fake application, built to match the position exactly. The attached file did not only contain a CV: it asked the user to enable dangerous content. Once this action was performed, Lea's workstation was probably compromised.\n\nThe attack then spread to the HR folders that the account could access. Overly broad rights, poorly organized shares, and file synchronization increased the impact until many documents were encrypted.\n\nGood practice to remember\n\nNever enable macros or active content in a document received by email without verification. Be wary of unusual attachments, use secure recruitment platforms, verify candidates, and limit access rights to sensitive folders.",
+  "globalAttackScenario": "Probable method of operation: the attacker began by studying the job offer published by Peashooter&Co. They found the recruiter's name, address, recruitment context, and urgency of the need.\n\nThey then sent a very credible fake application, built to match the position exactly. The attached file did not only contain a CV: it asked the user to enable dangerous content. Once this action was performed, Lea's workstation was probably compromised.\n\nThe attack then spread to the HR folders that the account could access. Overly broad rights, poorly organized shares, and file synchronization increased the impact until many documents were encrypted.",
+  "goodPractices": "Never enable macros or active content in a document received by email without verification. Be wary of unusual attachments, use secure recruitment platforms, verify candidates, and limit access rights to sensitive folders.",
   "questions": [
     {
       "id": "overly-detailed-job-ad",
@@ -97,7 +98,7 @@ export const scenario5: Scenario = {
           "height": 40,
           "label": "Request to open quickly",
           "explanation": "The candidate reminds the company of the urgency of the position and also mentions his own urgency due to many other applications at other companies. He therefore insists that the file be reviewed quickly."
-        },
+        }
       ]
     },
     {

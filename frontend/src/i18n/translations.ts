@@ -72,6 +72,7 @@ export const translations = {
       nextSlide: "Diapositive suivante",
       roundScoresLabel: "Scores par question",
       pieceDetails: "Détail par pièce",
+      goodPracticesTitle: "Bons réflexes à retenir",
     },
   },
   en: {
@@ -147,6 +148,7 @@ export const translations = {
       nextSlide: "Next slide",
       roundScoresLabel: "Scores by question",
       pieceDetails: "Piece details",
+      goodPracticesTitle: "Good practices to remember",
     },
   },
 } as const;

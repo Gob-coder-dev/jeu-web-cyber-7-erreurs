@@ -4,7 +4,8 @@ export const scenario2: Scenario = {
   "id": "phishing-inbox-melanie",
   "title": "La boîte mail de Mélanie",
   "description": "Mélanie, assistante administrative, a reçu plusieurs emails de tentatives de connexion suspectes dans la même journée sur plusieurs de ses comptes client de service en ligne : UPS, Amazon, Sephora et Decathlon. Le lendemain, une tentative de connexion inhabituelle est détectée sur le compte de Mélanie dans le service interne.\n\nDétective, vous examinez la boîte mail de Mélanie. Vous y découvrez des messages suspects.",
-  "globalAttackScenario": "Mode opératoire probable : l’attaquant a submergé Mélanie avec plusieurs appâts différents dans la même journée. En se reposant sur la pression, la curiosité, la récompense et l’habitude, l’attaquant a donc proposé des emails de livraison urgente, cadeau, offre limitée, marque connue. Ce qui a dû la pousser, avec l’appât du gain, à cliquer sur ces faux liens et à remplir des informations personnelles. Le hackeur a donc pu récolter ses informations et les utiliser pour se connecter sur les sites en question. Espérant pouvoir abuser de ces comptes et tenter des achats avec la carte de Mélanie ou récolter des informations supplémentaires sur la victime.\n\nBon réflexe à retenir\n\nAvant de cliquer, vérifier l’adresse réelle de l’expéditeur, l’URL, le contexte de la demande et le niveau d’urgence. En cas de doute, ne pas cliquer : passer par un canal officiel.",
+  "globalAttackScenario": "Mode opératoire probable : l’attaquant a submergé Mélanie avec plusieurs appâts différents dans la même journée. En se reposant sur la pression, la curiosité, la récompense et l’habitude, l’attaquant a donc proposé des emails de livraison urgente, cadeau, offre limitée, marque connue. Ce qui a dû la pousser, avec l’appât du gain, à cliquer sur ces faux liens et à remplir des informations personnelles. Le hackeur a donc pu récolter ses informations et les utiliser pour se connecter sur les sites en question. Espérant pouvoir abuser de ces comptes et tenter des achats avec la carte de Mélanie ou récolter des informations supplémentaires sur la victime.",
+  "goodPractices": "Avant de cliquer, vérifier l’adresse réelle de l’expéditeur, l’URL, le contexte de la demande et le niveau d’urgence. En cas de doute, ne pas cliquer : passer par un canal officiel.",
   "questions": [
     {
       "id": "ups-urgent-delivery",
@@ -228,7 +229,6 @@ export const scenario2: Scenario = {
           "label": "Données personnelles affichées",
           "explanation": "Le message affiche un identifiant et une adresse email. Ces éléments peuvent servir à rendre l’attaque plus crédible ou à confirmer que l’adresse est active. Or, les informations affichées sont des plus basiques, un faux nom et un email"
         },
-        
         {
           "id": "sephora-approximate-logo",
           "x": 650,

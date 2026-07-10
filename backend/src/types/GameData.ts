@@ -28,6 +28,7 @@ export type Scenario = {
   description: string;
   questions: Question[];
   globalAttackScenario?: string;
+  goodPractices?: string;
 };
 
 

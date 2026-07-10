@@ -4,7 +4,8 @@ export const scenario7: Scenario = {
   "id": "open-teams-channel",
   "title": "Le projet qui a fuité",
   "description": "L’entreprise MaugaOW a reçu un email de phishing particulièrement crédible. Le message mentionnait le nom exact d’un projet interne, le nom du chef de projet, le calendrier de livraison et même certains détails techniques. Heureusement personne n’a cliqué sur ce mail suspect, mais tout le monde se demande comment les informations du projet ont pu fuiter.\n\nLes employés sont persuadés que l’attaquant avait accès à des informations internes. Pourtant, aucune intrusion claire n’apparaît dans les serveurs. Aucun compte administrateur ne semble compromis.\n\nLe projet était extrêmement confidentiel et n’était traité que dans une discussion Teams utilisée depuis plusieurs mois pour suivre le projet.",
-  "globalAttackScenario": "Mode opératoire probable : l’attaquant a profité d’un canal Teams trop ouvert, dans lequel l’équipe projet partageait des informations sensibles : nom du projet, calendrier, documents, responsables et détails techniques.\n\nUn compte invité ou ancien prestataire, encore présent dans le canal, a pu consulter les échanges et télécharger un document partagé avec des droits trop larges. Ces informations ont ensuite servi à construire un phishing ciblé, beaucoup plus crédible qu’un message générique.\n\nLe mail frauduleux reprenait toutes les informations récoltées et le contexte réel du projet.\n\nBon réflexe à retenir\n\nLimiter les accès aux canaux de discussion, retirer les anciens invités, contrôler les liens de partage et éviter de publier des informations sensibles dans des espaces trop larges.\n\nUn message qui utilise des informations internes doit aussi être vérifié. Plus un phishing semble personnalisé, plus il peut être dangereux",
+  "globalAttackScenario": "Mode opératoire probable : l’attaquant a profité d’un canal Teams trop ouvert, dans lequel l’équipe projet partageait des informations sensibles : nom du projet, calendrier, documents, responsables et détails techniques.\n\nUn compte invité ou ancien prestataire, encore présent dans le canal, a pu consulter les échanges et télécharger un document partagé avec des droits trop larges. Ces informations ont ensuite servi à construire un phishing ciblé, beaucoup plus crédible qu’un message générique.\n\nLe mail frauduleux reprenait toutes les informations récoltées et le contexte réel du projet.",
+  "goodPractices": "Limiter les accès aux canaux de discussion, retirer les anciens invités, contrôler les liens de partage et éviter de publier des informations sensibles dans des espaces trop larges.\n\nUn message qui utilise des informations internes doit aussi être vérifié. Plus un phishing semble personnalisé, plus il peut être dangereux",
   "questions": [
     {
       "id": "public-project-channel",
@@ -207,7 +208,7 @@ export const scenario7: Scenario = {
           "height": 300,
           "label": "Absence de classification",
           "explanation": "Un document sensible non marqué comme confidentiel sera traité comme un document ordinaire."
-        },        
+        },
         {
           "id": "guest-can-reshare",
           "x": 1430,

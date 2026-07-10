@@ -55,6 +55,7 @@ function ResultPage({
     lastAttackSlideIndex
   );
   const currentAttackSlide = attackSlides[currentAttackSlideIndex];
+  const goodPractices = scenario?.goodPractices?.trim() ?? "";
 
   return (
     <main className="page result-page">
@@ -121,53 +122,64 @@ function ResultPage({
           </section>
         )}
 
-        {scenarioRoundScores.length > 0 && (
-          <section
-            className="result-page__round-scores"
-            aria-label={t.result.roundScoresLabel}
-          >
-            <h2>{t.result.pieceDetails}</h2>
+        {(scenarioRoundScores.length > 0 || goodPractices.length > 0) && (
+          <div className="result-page__side-content">
+            {scenarioRoundScores.length > 0 && (
+              <section
+                className="result-page__round-scores"
+                aria-label={t.result.roundScoresLabel}
+              >
+                <h2>{t.result.pieceDetails}</h2>
 
-            <ol className="result-page__round-score-list">
-              {scenarioRoundScores.map((score, index) => {
-                const question = scenario?.questions[index];
-                const isCurrentQuestionSlide =
-                  currentAttackSlide?.questionIndex === index;
+                <ol className="result-page__round-score-list">
+                  {scenarioRoundScores.map((score, index) => {
+                    const question = scenario?.questions[index];
+                    const isCurrentQuestionSlide =
+                      currentAttackSlide?.questionIndex === index;
 
-                return (
-                  <li
-                    className={`result-page__round-score-item${
-                      isCurrentQuestionSlide
-                        ? " result-page__round-score-item--current"
-                        : ""
-                    }`}
-                    key={question?.id ?? index}
-                  >
-                    <span className="result-page__round-score-rank">
-                      {formatPieceCode(index)}
-                    </span>
+                    return (
+                      <li
+                        className={`result-page__round-score-item${
+                          isCurrentQuestionSlide
+                            ? " result-page__round-score-item--current"
+                            : ""
+                        }`}
+                        key={question?.id ?? index}
+                      >
+                        <span className="result-page__round-score-rank">
+                          {formatPieceCode(index)}
+                        </span>
 
-                    <span className="result-page__round-score-label">
-                      {question !== undefined
-                        ? formatPieceTitle(question.title, index, t.common.pieceLabel)
-                        : `${t.common.pieceLabel} ${index + 1}`}
-                    </span>
+                        <span className="result-page__round-score-label">
+                          {question !== undefined
+                            ? formatPieceTitle(question.title, index, t.common.pieceLabel)
+                            : `${t.common.pieceLabel} ${index + 1}`}
+                        </span>
 
-                    <span
-                      className={`result-page__round-score-value${
-                        score < 0
-                          ? " result-page__round-score-value--negative"
-                          : ""
-                      }`}
-                    >
-                      {score >= 0 ? "+" : ""}
-                      {score} {t.common.points}
-                    </span>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
+                        <span
+                          className={`result-page__round-score-value${
+                            score < 0
+                              ? " result-page__round-score-value--negative"
+                              : ""
+                          }`}
+                        >
+                          {score >= 0 ? "+" : ""}
+                          {score} {t.common.points}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            )}
+
+            {goodPractices.length > 0 && (
+              <section className="result-page__good-practices">
+                <h2>{t.result.goodPracticesTitle}</h2>
+                <p>{goodPractices}</p>
+              </section>
+            )}
+          </div>
         )}
       </div>
 
