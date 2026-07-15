@@ -8,11 +8,10 @@ type ProgressiveTextProps = {
   onComplete?: () => void;
 };
 
-const TICK_MS = 26;
-const MIN_DURATION_MS = 2000;
-const MAX_DURATION_MS = 10000;
-const MS_BY_CHARACTER = 34;
-const WAVE_SIZE = 7;
+const TICK_MS = 34;
+const MIN_DURATION_MS = 5000;
+const MAX_DURATION_MS = 15000;
+const MS_BY_CHARACTER = 1000;
 
 function ProgressiveText({
   text,
@@ -86,12 +85,8 @@ function ProgressiveText({
   const complete = visibleCharacterCount >= characters.length;
 
   function getCharacterClassName(characterIndex: number) {
-    if (complete || characterIndex < visibleCharacterCount - WAVE_SIZE) {
+    if (complete || characterIndex < visibleCharacterCount) {
       return "progressive-text__character progressive-text__character--visible";
-    }
-
-    if (characterIndex < visibleCharacterCount) {
-      return "progressive-text__character progressive-text__character--wave";
     }
 
     return "progressive-text__character progressive-text__character--hidden";
