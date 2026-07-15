@@ -6,7 +6,9 @@ import {
   startTimerService,
 } from "../services/game.service";
 import { normalizeGameLanguage } from "../types/GameLanguage";
+import { translations } from "../i18n/translations";
 
+const t = translations.fr;
 
 export async function getScenariosCard(req: express.Request, res: express.Response) {
   const language = normalizeGameLanguage(req.query.lang);
@@ -17,7 +19,7 @@ export async function getScenariosCard(req: express.Request, res: express.Respon
   const scenariosCard = await getScenariosCardService(language, userId);
 
   if (scenariosCard.length === 0) {
-    return res.status(404).json({ message: "No scenarios found" });
+    return res.status(404).json({ message: t.errorMessageGame.noScenarioFound });
   }
 
   res.status(200).json(scenariosCard);
@@ -28,7 +30,7 @@ export async function startScenario(req: express.Request, res: express.Response)
 
   if (typeof userId !== "string" || typeof scenarioId !== "string") {
     return res.status(400).json({
-      message: "User ID and Scenario ID are required",
+      message: t.errorMessageGame.userIdAndScenarioIdRequired,
     });
   }
 
@@ -37,7 +39,7 @@ export async function startScenario(req: express.Request, res: express.Response)
 
   if (!cleanUserId || !cleanScenarioId) {
     return res.status(400).json({
-      message: "User ID and Scenario ID are required",
+      message: t.errorMessageGame.userIdAndScenarioIdRequired,
     });
   }
 
@@ -50,28 +52,28 @@ export async function startScenario(req: express.Request, res: express.Response)
 
     if (!result.success) {
       if (result.reason === "USER_NOT_FOUND") {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: t.errorMessageGame.userNotFound });
       }
 
       if (result.reason === "SCENARIO_NOT_FOUND") {
-        return res.status(404).json({ message: "Scenario not found" });
+        return res.status(404).json({ message: t.errorMessageGame.scenarioNotFound });
       }
 
       if (result.reason === "TUTORIAL_REQUIRED") {
         return res.status(403).json({
-          message: "Tutorial must be completed before starting this scenario",
+          message: t.errorMessageGame.tutorial,
         });
       }
 
       return res.status(409).json({
-        message: "Scenario does not contain any question",
+        message: t.errorMessageGame.noQuestion,
       });
     }
 
     return res.status(201).json(result.data);
   } catch (error) {
-    console.error("Unable to start scenario", error);
-    return res.status(500).json({ message: "Unable to start scenario" });
+    console.error(t.errorMessageGame.unableStratScenario, error);
+    return res.status(500).json({ message: t.errorMessageGame.unableStratScenario });
   }
 }
 
@@ -81,13 +83,13 @@ export async function submitAnswers(req: express.Request, res: express.Response)
 
   if (typeof attemptId !== "string" || typeof questionId !== "string") {
     return res.status(400).json({
-      message: "Attempt ID and question ID are required",
+      message: t.errorMessageGame.userIdAndAttemptIdRequired,
     });
   }
 
   if (!Array.isArray(selections)) {
     return res.status(400).json({
-      message: "Selections must be an array",
+      message: t.errorMessageGame.array,
     });
   }
 
@@ -104,7 +106,7 @@ export async function submitAnswers(req: express.Request, res: express.Response)
 
   if (hasInvalidSelection) {
     return res.status(400).json({
-      message: "Each selection must contain finite numeric x and y values",
+      message: t.errorMessageGame.invalidSelection,
     });
   }
 
@@ -122,17 +124,17 @@ export async function submitAnswers(req: express.Request, res: express.Response)
 
     if (!result.success) {
       if (result.reason === "ATTEMPT_NOT_FOUND") {
-        return res.status(404).json({ message: "Attempt not found" });
+        return res.status(404).json({ message: t.errorMessageGame.attemptNotFound });
       }
       if (result.reason === "SCENARIO_NOT_FOUND") {
-        return res.status(404).json({ message: "Scenario not found" });
+        return res.status(404).json({ message: t.errorMessageGame.scenarioNotFound });
       }
       if (result.reason === "QUESTION_NOT_FOUND") {
-        return res.status(404).json({ message: "Question not found" });
+        return res.status(404).json({ message: t.errorMessageGame.questionNotFound });
       }
       if (result.reason === "QUESTION_MISMATCH") {
         return res.status(409).json({
-          message: "Question does not match the current attempt question",
+          message: t.errorMessageGame.questionMismatch,
         });
       }
       return res.status(400).json({ message: result.reason });
@@ -140,8 +142,8 @@ export async function submitAnswers(req: express.Request, res: express.Response)
 
     return res.status(200).json(result.data);
   } catch (error) {
-    console.error("Unable to submit answers", error);
-    return res.status(500).json({ message: "Unable to submit answers" });
+    console.error(t.errorMessageGame.unableSubmitAnswers, error);
+    return res.status(500).json({ message: t.errorMessageGame.unableSubmitAnswers });
   }
 }
 
@@ -150,7 +152,7 @@ export async function startTimer(req: express.Request, res: express.Response) {
 
   if (typeof attemptId !== "string" || typeof questionId !== "string") {
     return res.status(400).json({
-      message: "Attempt ID and question ID are required",
+      message: t.errorMessageGame.userIdAndAttemptIdRequired,
     });
   }
 
@@ -159,17 +161,17 @@ export async function startTimer(req: express.Request, res: express.Response) {
 
     if (!result.success) {
       if (result.reason === "ATTEMPT_NOT_FOUND") {
-        return res.status(404).json({ message: "Attempt not found" });
+        return res.status(404).json({ message: t.errorMessageGame.attemptNotFound });
       }
       if (result.reason === "SCENARIO_NOT_FOUND") {
-        return res.status(404).json({ message: "Scenario not found" });
+        return res.status(404).json({ message: t.errorMessageGame.scenarioNotFound });
       }
       if (result.reason === "QUESTION_NOT_FOUND") {
-        return res.status(404).json({ message: "Question not found" });
+        return res.status(404).json({ message: t.errorMessageGame.questionNotFound });
       }
       if (result.reason === "QUESTION_MISMATCH") {
         return res.status(409).json({
-          message: "Question does not match the current attempt question",
+          message: t.errorMessageGame.questionMismatch,
         });
       }
       return res.status(400).json({ message: result.reason });
@@ -177,7 +179,7 @@ export async function startTimer(req: express.Request, res: express.Response) {
 
     return res.status(200).json(result);
   } catch (error) {
-    console.error("Unable to start timer", error);
-    return res.status(500).json({ message: "Unable to start timer" });
+    console.error(t.errorMessageGame.unableStartTimer, error);
+    return res.status(500).json({ message: t.errorMessageGame.unableStartTimer });
   }
 }

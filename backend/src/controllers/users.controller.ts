@@ -9,19 +9,19 @@ export async function getUserByPseudo(req: express.Request, res: express.Respons
   const username = req.body.pseudo;
   const password = req.body.password;
   if (!username) {
-    return res.status(400).json({ message: t.errorMessage.userId });
+    return res.status(400).json({ message: t.errorMessageUser.userId });
   }
 
   if (!password) {
-    return res.status(400).json({ message: t.errorMessage.password });
+    return res.status(400).json({ message: t.errorMessageUser.password });
   }
 
   if (typeof username !== "string") {
-    return res.status(400).json({ message: t.errorMessage.userIdError });
+    return res.status(400).json({ message: t.errorMessageUser.userIdError });
   }
 
   if (typeof password !== "string") {
-    return res.status(400).json({ message: t.errorMessage.passwordError });
+    return res.status(400).json({ message: t.errorMessageUser.passwordError });
   }
 
 
@@ -29,21 +29,21 @@ export async function getUserByPseudo(req: express.Request, res: express.Respons
   const cleanPassword = password.trim();
 
   if (cleanUsername.length > 15) {
-    return res.status(400).json({ message: t.errorMessage.userIdTooLong });
+    return res.status(400).json({ message: t.errorMessageUser.userIdTooLong });
   }
 
   if (cleanPassword.length > 15) {
-    return res.status(400).json({ message: t.errorMessage.passwordTooLong });
+    return res.status(400).json({ message: t.errorMessageUser.passwordTooLong });
   }
 
   if (cleanPassword.length < 6) {
-    return res.status(400).json({ message: t.errorMessage.passwordTooShort });
+    return res.status(400).json({ message: t.errorMessageUser.passwordTooShort });
   }
 
   const result = await getUserFromDatabase(cleanUsername, cleanPassword);
 
   if (!result) {
-    return res.status(404).json({ message: t.errorMessage.userNotFound });
+    return res.status(404).json({ message: t.errorMessageUser.userNotFound });
   }
 
   res.status(200).json(result);
@@ -54,40 +54,40 @@ export async function postNewUser(req: express.Request, res: express.Response) {
   const username = req.body.username;
   const password = req.body.password;
   if (!username) {
-    return res.status(400).json({ message: t.errorMessage.userId });
+    return res.status(400).json({ message: t.errorMessageUser.userId });
   }
 
   if (!password) {
-    return res.status(400).json({ message: t.errorMessage.password });
+    return res.status(400).json({ message: t.errorMessageUser.password });
   }
 
   if (typeof username !== "string") {
-    return res.status(400).json({ message: t.errorMessage.userIdError });
+    return res.status(400).json({ message: t.errorMessageUser.userIdError });
   }
 
   if (typeof password !== "string") {
-    return res.status(400).json({ message: t.errorMessage.passwordError });
+    return res.status(400).json({ message: t.errorMessageUser.passwordError });
   }
 
   const cleanUsername = username.trim();
   const cleanPassword = password.trim();
 
   if (cleanUsername.length > 15) {
-    return res.status(400).json({ message: t.errorMessage.userIdTooLong });
+    return res.status(400).json({ message: t.errorMessageUser.userIdTooLong });
   }
 
   if (cleanPassword.length > 15) {
-    return res.status(400).json({ message: t.errorMessage.passwordTooLong });
+    return res.status(400).json({ message: t.errorMessageUser.passwordTooLong });
   }
 
   if (cleanPassword.length < 6) {
-    return res.status(400).json({ message: t.errorMessage.passwordTooShort });
+    return res.status(400).json({ message: t.errorMessageUser.passwordTooShort });
   }
 
   const result = await createUserFromDatabase(cleanUsername, cleanPassword  );
 
   if (!result) {
-    return res.status(409).json({ message: t.errorMessage.userCreationFailed });
+    return res.status(409).json({ message: t.errorMessageUser.userCreationFailed });
   }
 
   res.status(201).json(result);
