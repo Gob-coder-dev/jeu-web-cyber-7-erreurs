@@ -1,23 +1,42 @@
 import { useState } from "react";
 import "./RegisterPage.css";
+import AlertModal from "../components/AlertModal";
+import PasswordCriteria from "../components/PasswordCriteria";
 
 type RegisterPageProps = {
-  onRegister: (pseudo: string, password: string) => void;
+  onRegister: (pseudo: string, password: string) => Promise<void>;
   onGoToLogin: () => void;
 };
 
 function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    function handleRegister(event: React.FormEvent<HTMLFormElement>) {
+    async function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (pseudo.trim() === "" || password.trim() === "") {
-            alert("Entre un pseudo et un mot de passe pour vous inscrire.");
+            setError("Veuillez entrer un pseudo et un mot de passe pour vous inscrire.");
             return;
         }
-        onRegister(pseudo.trim(), password.trim());
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await onRegister(pseudo.trim(), password.trim());
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : "Une erreur est survenue lors de l'inscription.";
+            if (errorMessage.includes("409")) {
+                setError("Ce pseudo est déjà utilisé. Veuillez en choisir un autre.");
+            } else {
+                setError(errorMessage);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -32,6 +51,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
                     placeholder="Entre ton pseudo"
+                    disabled={isLoading}
                 />
 
                 <input
@@ -39,14 +59,27 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     placeholder="Entre ton mot de passe"
+                    disabled={isLoading}
                 />
                 
-                <button className="button" type="submit">S'inscrire</button>
-                <button type="button" className="login-page__register-link" onClick={onGoToLogin}>
+                {password && <PasswordCriteria password={password} />}
+                
+                <button className="button" type="submit" disabled={isLoading}>
+                    {isLoading ? "Inscription en cours..." : "S'inscrire"}
+                </button>
+                <button type="button" className="login-page__register-link" onClick={onGoToLogin} disabled={isLoading}>
                     Vous avez déjà un compte ? Connectez-vous
                 </button>
             </form>
-            
+
+            {error && (
+                <AlertModal
+                    title="Erreur d'inscription"
+                    message={error}
+                    onClose={() => setError(null)}
+                    type="error"
+                />
+            )}
         </main>
     );
 }

@@ -1,24 +1,41 @@
 import { useState } from "react";
 import "./LoginPage.css";
+import AlertModal from "../components/AlertModal";
 
 type LoginPageProps = {
-  onLogin: (pseudo: string, password: string) => void;
+  onLogin: (pseudo: string, password: string) => Promise<void>;
   onGoToRegister: () => void;
 };
 
 function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (pseudo.trim() === "" || password.trim() === "" ) {
-            alert("Entre un pseudo et un mot de passe pour lancer la manche de sensibilisation.");
+        if (pseudo.trim() === "" || password.trim() === "") {
+            setError("Veuillez entrer un pseudo et un mot de passe pour vous connecter.");
             return;
         }
 
-        onLogin(pseudo.trim(), password.trim());
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await onLogin(pseudo.trim(), password.trim());
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : "Impossible de se connecter.";
+            if (errorMessage.includes("404")) {
+                setError("Pseudo ou mot de passe incorrect.");
+            } else {
+                setError(errorMessage);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -34,6 +51,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
                     placeholder="Entre ton pseudo"
+                    disabled={isLoading}
                 />
 
                 <input
@@ -41,13 +59,25 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     placeholder="Entre ton mot de passe"
+                    disabled={isLoading}
                 />
 
-                <button className="button" type="submit">Se connecter</button>
-                <button type="button" className="login-page__register-link" onClick={onGoToRegister}>
+                <button className="button" type="submit" disabled={isLoading}>
+                    {isLoading ? "Connexion en cours..." : "Se connecter"}
+                </button>
+                <button type="button" className="login-page__register-link" onClick={onGoToRegister} disabled={isLoading}>
                     Pas encore de compte ? Inscrivez-vous
                 </button>
             </form>
+
+            {error && (
+                <AlertModal
+                    title="Erreur de connexion"
+                    message={error}
+                    onClose={() => setError(null)}
+                    type="error"
+                />
+            )}
         </main>
     );
 }

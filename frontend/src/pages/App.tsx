@@ -41,33 +41,25 @@ function App() {
   const [startGameError, setStartGameError] = useState<string | null>(null);
 
   async function handleRegister(username: string, password: string) {
-    try {
-      const [registeredUser, cards] = await Promise.all([
-        postNewUser(username, password),
-        getScenariosCard(),
-      ]);
+    const [registeredUser, cards] = await Promise.all([
+      postNewUser(username, password),
+      getScenariosCard(),
+    ]);
 
-      setUser(registeredUser);
-      setScenarioIntros(cards);
-      setPage("home");
-    } catch (error) {
-      console.error("Impossible d'inscrire l'utilisateur", error);
-    }
+    setUser(registeredUser);
+    setScenarioIntros(cards);
+    setPage("home");
   }
 
   async function handleLogin(username: string, password: string) {
-    try {
-      const [connectedUser, cards] = await Promise.all([
-        getOrCreateUser(username, password),
-        getScenariosCard(),
-      ]);
+    const [connectedUser, cards] = await Promise.all([
+      getOrCreateUser(username, password),
+      getScenariosCard(),
+    ]);
 
-      setUser(connectedUser);
-      setScenarioIntros(cards);
-      setPage("home");
-    } catch (error) {
-      console.error("Impossible de connecter l'utilisateur", error);
-    }
+    setUser(connectedUser);
+    setScenarioIntros(cards);
+    setPage("home");
   }
 
   function handleLogout() {
