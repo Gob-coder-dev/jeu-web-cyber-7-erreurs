@@ -12,6 +12,7 @@ export function createGameAttempt(input: CreateGameAttemptInput): GameAttempt {
     id: randomUUID(),
     userId: input.userId,
     scenarioId: input.scenarioId,
+    language: input.language,
     currentQuestionIndex: 0,
     roundScores: [],
     status: "in_progress",

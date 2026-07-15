@@ -2,13 +2,34 @@
 
 Ce fichier sert de guide pour les prochaines interventions sur le projet.
 
+## Role attendu
+
+L'utilisateur veut apprendre. Par defaut, adopter un mode professeur assistant :
+
+- expliquer la cause d'un probleme avant de proposer la correction ;
+- proposer des corrections minimales ;
+- ne pas remplacer beaucoup de code sans explication ;
+- ne pas complexifier le prototype inutilement ;
+- garder la separation React / Phaser / backend claire ;
+- ne pas coder si l'utilisateur demande seulement un avis ou une explication.
+
+Quand l'utilisateur demande explicitement une modification, faire la modification proprement et expliquer ensuite ce qui a ete fait.
+
 ## Contexte du projet
 
 Le projet est un jeu web de sensibilisation a la cybersecurite base sur React, TypeScript, Vite et Phaser, avec un backend Node.js, Express et TypeScript.
 
-Le joueur se connecte avec un pseudo, choisit un scenario, observe des images et place des marqueurs sur les anomalies de securite. Chaque scenario contient plusieurs questions liees par une histoire.
+Le joueur se connecte avec un pseudo, choisit un dossier, lit une mise en situation, observe une image et place des marqueurs sur les anomalies de securite.
 
-Le frontend appelle maintenant le backend pour les utilisateurs, les cartes de scenarios, le demarrage d'une tentative, la validation des reponses, le score et le leaderboard.
+Le frontend appelle le backend pour :
+
+- les utilisateurs ;
+- les cartes de dossiers ;
+- le demarrage d'une tentative ;
+- le demarrage du timer serveur ;
+- la validation des reponses ;
+- le score ;
+- le leaderboard.
 
 ## Structure actuelle
 
@@ -17,7 +38,18 @@ frontend/
   package.json
   src/
     components/
+      ConfirmReplayModal.tsx
+      LanguageSelector.tsx
+      ProgressiveText.tsx
     game/
+      PhaserGame.tsx
+      scenes/
+        CyberDifferenceScene.ts
+    i18n/
+      LanguageProvider.tsx
+      translations.ts
+      useLanguage.ts
+      useTranslation.ts
     pages/
     services/
     types/
@@ -32,8 +64,12 @@ backend/
       demo.json
     game/
       scenarios/
+        fr/
+        en/
   public/
     images/
+      fr/
+      en/
   src/
     app.ts
     index.ts
@@ -44,7 +80,7 @@ backend/
     types/
 ```
 
-La racine contient la documentation et les fichiers de coordination :
+La racine contient :
 
 ```txt
 README.md
@@ -74,9 +110,9 @@ npm run check
 npm run build
 ```
 
-Apres une modification frontend, lancer au minimum `npm run build` et `npm run lint` dans `frontend/` quand c'est pertinent.
+Apres une modification frontend, lancer au minimum `npm run build` et `npm run lint` quand c'est pertinent.
 
-Apres une modification backend, lancer au minimum `npm run check` dans `backend/`. Lancer aussi `npm run build` si la modification touche la configuration TypeScript, les imports ou le packaging.
+Apres une modification backend, lancer au minimum `npm run check`. Lancer aussi `npm run build` si la modification touche la configuration TypeScript, les imports ou le packaging.
 
 ## Architecture frontend a respecter
 
@@ -86,7 +122,8 @@ React gere :
 
 - les pages ;
 - le login ;
-- le choix du scenario ;
+- la langue ;
+- le choix du dossier ;
 - le replay ;
 - les appels API ;
 - l'affichage des scores ;
@@ -110,6 +147,27 @@ Etats importants dans `App.tsx` :
 
 `frontend/src/services/apiClient.ts` est le point central des appels HTTP.
 
+### Internationalisation
+
+La langue est geree dans `frontend/src/i18n/`.
+
+`LanguageProvider` conserve la langue active dans le localStorage.
+
+`useTranslation` fournit les textes d'interface.
+
+Les scenarios viennent du backend avec le parametre `lang`. Les fichiers de scenario existent dans :
+
+```txt
+backend/data/game/scenarios/fr/
+backend/data/game/scenarios/en/
+```
+
+### Texte progressif
+
+`ProgressiveText.tsx` affiche progressivement les textes d'introduction de scenario et de piece.
+
+Attention : `WAVE_SIZE` doit rester coherent avec des index de caracteres entiers. Une valeur trop petite, comme `0.1`, rend quasiment impossible l'etat visuel `wave`.
+
 ### Phaser
 
 Phaser gere uniquement le gameplay dans l'image :
@@ -118,9 +176,11 @@ Phaser gere uniquement le gameplay dans l'image :
 - clics ;
 - marqueurs ;
 - collecte des selections en coordonnees originales ;
-- affichage de la correction apres validation.
+- loupe ;
+- affichage de la correction apres validation ;
+- bulles d'explication au survol des hotspots corriges.
 
-Ne pas mettre la logique de scenario, de score ou de navigation dans `CyberDifferenceScene`.
+Ne pas mettre la logique de dossier, de score ou de navigation dans `CyberDifferenceScene`.
 
 ### Pont React / Phaser
 
@@ -131,23 +191,26 @@ Methodes exposees actuellement :
 ```ts
 getSelections(): SelectionPoint[]
 showCorrection(hotspots): void
+toggleDebugHotspots(): void
+toggleMagnifier(isActive): void
 ```
 
 Ne pas recreer le jeu Phaser a chaque resize. Utiliser `phaserGameRef.current.scale.resize(...)` et `sceneRef.current?.resizeScene(...)`.
 
 ## Flux de jeu actuel
 
-1. `HomePage` affiche les cartes recues via `GET /api/game/scenarios`.
-2. Le joueur clique sur un scenario.
+1. `HomePage` affiche les cartes recues via `GET /api/game/scenarios?lang=...`.
+2. Le joueur clique sur un dossier.
 3. `ScenarioIntroPage` affiche la description publique.
 4. `App.tsx` appelle `POST /api/game/attempts`.
 5. Le backend cree une tentative en memoire et renvoie la premiere `PublicQuestion`.
-6. `GamePage` affiche le texte de la question.
+6. `GamePage` affiche le texte progressif de la piece.
 7. Quand l'image s'affiche, le frontend appelle `POST /api/game/attempts/:attemptId/questions/:questionId/start`.
 8. Phaser collecte les points cliques.
 9. Au clic sur `Valider`, le frontend appelle `POST /api/game/attempts/:attemptId/questions/:questionId/answers`.
-10. Le backend valide les selections, calcule le score, renvoie la correction et la question suivante ou les details de fin.
-11. A la fin du scenario, `ResultPage` affiche le score, le detail par piece et le debrief `globalAttackScenario` / `attackScenario`.
+10. Le backend valide les selections, calcule le score, renvoie la correction et la piece suivante ou les details de fin.
+11. Phaser affiche les zones corrigees et les bulles d'explication.
+12. A la fin du dossier, `ResultPage` affiche le score, le detail par piece, les bonnes pratiques et le debrief `globalAttackScenario` / `attackScenario`.
 
 ## Donnees de jeu
 
@@ -157,12 +220,18 @@ Les scenarios prives sont dans :
 backend/data/game/scenarios/
 ```
 
+Les images sont dans :
+
+```txt
+backend/public/images/
+```
+
 Le frontend ne recoit que :
 
 - les cartes publiques pour l'accueil ;
 - une `PublicQuestion` pendant le jeu ;
 - les hotspots seulement apres validation, dans la correction ;
-- `scenarioDetails` a la fin du scenario pour afficher le debrief.
+- `scenarioDetails` a la fin du dossier pour afficher le debrief.
 
 Les hotspots et les textes de correction ne doivent pas etre envoyes avant la validation.
 
@@ -176,7 +245,10 @@ frontend/src/types/Leaderboard.ts
 frontend/src/types/User.ts
 ```
 
-`Scenario` contient directement ses questions et peut contenir un `globalAttackScenario` affiche en fin de scenario.
+`Scenario` contient directement ses questions et peut contenir :
+
+- `globalAttackScenario` ;
+- `goodPractices`.
 
 ## Backend
 
@@ -189,18 +261,6 @@ Stack actuelle :
 - TypeScript ;
 - `tsx watch src/index.ts` pour le developpement ;
 - `node:test` via `tsx --test` pour les tests.
-
-Fichiers principaux :
-
-```txt
-backend/src/app.ts
-backend/src/index.ts
-backend/src/routes/
-backend/src/controllers/
-backend/src/services/
-backend/src/repositories/
-backend/src/types/
-```
 
 Separation attendue :
 
@@ -272,7 +332,7 @@ POST /api/game/attempts/:attemptId/questions/:questionId/answers
 
 `POST /api/game/attempts/:attemptId/questions/:questionId/start` demarre le timer serveur sans pouvoir le remettre a zero.
 
-`POST /api/game/attempts/:attemptId/questions/:questionId/answers` valide les selections et renvoie la correction.
+`POST /api/game/attempts/:attemptId/questions/:questionId/answers` valide les selections, calcule le score et renvoie la correction.
 
 Le CORS dans `app.ts` autorise actuellement `GET, POST, PUT, DELETE, OPTIONS`.
 
@@ -291,61 +351,9 @@ Etat actuel :
 - `backend/data/companies/demo.json` existe comme fichier d'exemple.
 - `backend/src/repositories/companyJson.repository.ts` lit et ecrit ce fichier JSON.
 - Les tentatives de jeu sont provisoirement conservees en memoire dans `gameAttempt.repository.ts`.
-- Le repository refuse d'ecraser un score de scenario deja existant.
+- Le repository refuse d'ecraser un score de dossier deja existant.
 
 Les vrais fichiers clients/scores ne doivent pas etre commits. Garder seulement des donnees d'exemple non sensibles.
-
-## Types backend
-
-Type principal :
-
-```txt
-backend/src/types/CompanyData.ts
-```
-
-Structure actuelle :
-
-```ts
-export type CompanyData = {
-  companyId: string;
-  companyName: string;
-  users: User[];
-};
-
-export type User = {
-  id: string;
-  pseudo: string;
-  pseudoKey: string;
-  hashedPassword: string | null;
-  emailAddress: string | null;
-  globalScore: number;
-  completedScenarioIds: string[];
-  scenarioScores: Record<string, ScenarioScore>;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type ScenarioScore = {
-  score: number;
-  completedAt: string;
-};
-```
-
-`scenarioScores` est volontairement un objet indexe par `scenarioId` pour faciliter :
-
-```ts
-user.scenarioScores[scenarioId]
-```
-
-Les types TypeScript ne valident pas les JSON au runtime. Une validation runtime pourra etre ajoutee plus tard.
-
-## Services frontend historiques
-
-`frontend/src/services/userServices.ts` et `frontend/src/services/scoreServices.ts` existent encore comme services historiques.
-
-Le flux principal actuel utilise `frontend/src/services/apiClient.ts`.
-
-Ne pas supprimer les anciens services sans verifier qu'aucune page ne les importe encore.
 
 ## Tests backend
 
@@ -377,11 +385,10 @@ Ajouter de preference les nouveaux tests pres du service concerne.
 - Ne pas supprimer les changements existants de l'utilisateur.
 - Garder les fichiers de scenario lisibles, meme si cela duplique certaines structures.
 - Garder les `id` techniques sans accents.
-- Les textes affiches peuvent utiliser des accents si l'encodage du fichier est sain.
 - Pour le backend, garder les controllers minces et placer les regles dans les services.
 - Pour le stockage backend, passer par le repository.
 - Le frontend ne doit jamais envoyer un score final a enregistrer.
-- Le backend doit calculer les scores et refuser l'ecrasement du premier score d'un scenario.
+- Le backend doit calculer les scores et refuser l'ecrasement du premier score d'un dossier.
 - Les hotspots ne doivent pas etre exposes avant validation.
 
 ## Raccourcis de debug
@@ -390,14 +397,15 @@ Ajouter de preference les nouveaux tests pres du service concerne.
 
 ## Points d'attention actuels
 
-Le projet est maintenant bien branche sur le backend, mais certains points techniques peuvent encore etre ameliores :
+Le projet est bien branche sur le backend, mais certains points techniques peuvent encore etre ameliores :
 
 - Les tentatives sont perdues au redemarrage du backend tant qu'elles restent en memoire.
+- Le timer serveur peut encore etre contourne par un utilisateur qui appelle directement l'API.
 - Le stockage JSON peut perdre une ecriture si plusieurs requetes ecrivent en meme temps.
 - `apiClient.ts` affiche encore des erreurs HTTP generiques au lieu de lire le message JSON du backend.
+- `apiClient.ts` doit encoder les valeurs inserees dans l'URL, notamment le pseudo.
 - `API_URL` est encore code en dur dans `apiClient.ts`.
 - `UserService` et `ScoreService` frontend peuvent devenir inutiles si tout le flux reste backend.
-- Les fichiers de texte peuvent contenir des caracteres accentues mal encodes si l'editeur n'est pas en UTF-8.
 - Le bundle frontend peut etre lourd a cause de Phaser ; le build Vite peut afficher un avertissement de chunk superieur a 500 kB.
 
 Ne pas corriger ces points sans demande explicite de l'utilisateur.

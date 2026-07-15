@@ -31,6 +31,7 @@ test("startTimerService starts the current question timer", async () => {
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
+    language: "fr",
     isReplay: true,
   });
 
@@ -46,6 +47,7 @@ test("startTimerService does not reset an already started question timer", async
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
+    language: "fr",
     isReplay: true,
   });
 
@@ -68,6 +70,7 @@ test("startTimerService rejects a question that does not match the current attem
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
+    language: "fr",
     isReplay: true,
   });
 

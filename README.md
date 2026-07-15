@@ -1,6 +1,6 @@
 # Cyber 7 erreurs
 
-Jeu web de sensibilisation a la cybersecurite. Le joueur parcourt des scenarios professionnels, observe des images et doit retrouver les anomalies de securite visibles.
+Jeu web de sensibilisation a la cybersecurite. Le joueur parcourt des dossiers professionnels, observe des pieces visuelles et doit retrouver les anomalies de securite visibles.
 
 Le projet est separe en deux applications :
 
@@ -9,65 +9,49 @@ Le projet est separe en deux applications :
 
 ## Principe du jeu
 
-Le joueur se connecte avec un pseudo. Le frontend appelle le backend pour recuperer ou creer cet utilisateur, charger les scenarios, demarrer une tentative de jeu, valider les selections et afficher le classement.
+Le joueur se connecte avec un pseudo. Le frontend appelle le backend pour recuperer ou creer cet utilisateur, charger les dossiers, demarrer une tentative de jeu, valider les selections et afficher le classement.
 
-Depuis l'accueil, le joueur choisit un scenario. Chaque scenario contient plusieurs questions liees par une histoire.
+Depuis l'accueil, le joueur choisit un dossier. Chaque dossier contient plusieurs pieces liees par une histoire.
 
-Avant chaque image, le jeu affiche un court ecran de presentation avec un compte a rebours. Quand l'image est visible, le joueur place des marqueurs sur les zones suspectes puis valide sa selection.
+Avant chaque image, le jeu affiche un texte progressif de mise en situation. Quand l'image est visible, le joueur place des marqueurs sur les zones suspectes puis valide sa selection. Apres validation, Phaser affiche les bonnes zones et les bulles d'explication au survol.
 
-Le backend calcule le score d'une question a partir de trois elements :
+Le backend calcule le score d'une piece a partir de trois elements :
 
 - anomalies trouvees ;
 - temps serveur ecoule depuis l'affichage de l'image ;
 - anomalies non trouvees.
 
-Le score d'un scenario correspond a la somme des scores de ses questions. Le score global correspond a la somme des scenarios termines par le joueur.
+Le score d'un dossier correspond a la somme des scores de ses pieces. Le score global correspond a la somme des dossiers termines par le joueur.
 
-Un scenario deja termine peut etre rejoue, mais son premier score conserve n'est pas remplace et le score global n'est pas modifie.
+Un dossier deja termine peut etre rejoue, mais son premier score conserve n'est pas remplace et le score global n'est pas modifie.
 
 ## Scenarios actuels
 
-### L'intrusion dans les locaux
+Les scenarios existent en francais et en anglais :
 
-Orialys a subi une intrusion discrete. L'enquete remonte jusqu'a Julien, le nouveau comptable, puis a une publication LinkedIn trop bavarde et a un poste de travail laisse vulnerable.
+```txt
+backend/data/game/scenarios/fr/
+backend/data/game/scenarios/en/
+```
 
-Questions :
+Les images correspondantes sont servies depuis :
 
-- La photo qui en disait trop ;
-- Le poste abandonne pendant la pause.
+```txt
+backend/public/images/fr/
+backend/public/images/en/
+```
 
-### La boite aux leurres de Melanie
+Dossiers actuellement exportes :
 
-Melanie recoit plusieurs emails suspects dans la meme journee. Livraison, gain, promotion et offre personnalisee cherchent a la faire cliquer trop vite.
+1. `scenario1` - Intrusion dans les locaux
+2. `scenario2` - La boite mail de Melanie
+3. `scenario3` - La voix de la directrice fantome
+4. `scenario4` - Le trajet qui avait des oreilles
+5. `scenario5` - Le recrutement en urgence
+6. `scenario6` - Le support informatique
+7. `scenario7` - Le projet qui a fuite
 
-Questions :
-
-- Le colis trop presse ;
-- Le cadeau tombe du ciel ;
-- La promotion qui force la main ;
-- La personnalisation maladroite.
-
-### La voix du directeur fantome
-
-Une comptable effectue un virement urgent apres un appel suppose du directeur. L'enquete montre une fraude preparee avec des informations publiques, un appel sous pression et des emails d'apparence professionnelle.
-
-Questions :
-
-- La carte postale numerique ;
-- La voix qui pressait le pas ;
-- La facture tombee pendant l'appel ;
-- La confirmation qui referme le piege.
-
-### Le trajet qui avait des oreilles
-
-Un document confidentiel de Credo Agriculture se retrouve chez un concurrent. L'enquete suit les deplacements du prestataire Cedric : reseaux sociaux, travail en transport, Wi-Fi douteux et faux portail captif.
-
-Questions :
-
-- La plainte du metro sur les reseaux ;
-- Le travail dans le train ;
-- La fin du trajet ;
-- Le portail trop curieux.
+Un fichier `tuto.ts` existe cote francais, mais il n'est pas exporte dans `fr/index.ts` actuellement.
 
 ## Architecture
 
@@ -76,11 +60,19 @@ frontend/
   src/
     components/
       ConfirmReplayModal.tsx
+      LanguageSelector.tsx
+      ProgressiveText.tsx
 
     game/
       PhaserGame.tsx
       scenes/
         CyberDifferenceScene.ts
+
+    i18n/
+      LanguageProvider.tsx
+      translations.ts
+      useLanguage.ts
+      useTranslation.ts
 
     pages/
       App.tsx
@@ -113,53 +105,37 @@ backend/
       demo.json
     game/
       scenarios/
+        fr/
+        en/
 
   public/
     images/
+      fr/
+      en/
 
   src/
     app.ts
     index.ts
     controllers/
-      game.controller.ts
-      leaderboard.controller.ts
-      scores.controller.ts
-      users.controller.ts
     repositories/
-      companyJson.repository.ts
-      gameAttempt.repository.ts
-      gameScenario.repository.ts
     routes/
-      game.routes.ts
-      leaderboard.routes.ts
-      scores.routes.ts
-      users.routes.ts
     services/
-      game.service.ts
-      gameScoring.service.ts
-      leaderboard.service.ts
-      scores.service.ts
-      users.service.ts
     types/
-      CompanyData.ts
-      GameData.ts
-      HomePageCard.ts
-      Leaderboard.ts
 ```
 
 ## Frontend
 
-React gere les pages, la navigation, le choix du scenario, l'affichage des scores, le replay et le classement.
+React gere les pages, la navigation, la langue, le choix du dossier, le replay, l'affichage des scores, le leaderboard et la page de resultat.
 
 `frontend/src/pages/App.tsx` contient l'etat principal :
 
 - utilisateur connecte ;
 - page active ;
-- scenario selectionne ;
+- dossier selectionne ;
 - tentative de jeu en cours ;
-- score du scenario termine ;
-- scores par question ;
-- details du scenario termine pour la page de resultat ;
+- score du dossier termine ;
+- scores par piece ;
+- details du dossier termine pour la page de resultat ;
 - donnees du leaderboard.
 
 `frontend/src/services/apiClient.ts` est le point d'entree des appels HTTP vers le backend.
@@ -167,11 +143,21 @@ React gere les pages, la navigation, le choix du scenario, l'affichage des score
 ### Pages principales
 
 - `LoginPage` : saisie du pseudo.
-- `HomePage` : cartes de scenarios, score global, replay et classement.
-- `ScenarioIntroPage` : description du scenario avant lancement.
-- `GamePage` : boucle de question, affichage Phaser et validation.
-- `ResultPage` : score final, detail par piece, debrief `globalAttackScenario` et `attackScenario`.
+- `HomePage` : cartes de dossiers, score global, replay, langue et classement.
+- `ScenarioIntroPage` : description du dossier avant lancement.
+- `GamePage` : boucle de piece, texte progressif, affichage Phaser, loupe et validation.
+- `ResultPage` : score final, detail par piece, bonnes pratiques et debrief `globalAttackScenario` / `attackScenario`.
 - `LeaderBoardPage` : top 12 et position du joueur connecte si necessaire.
+
+### Internationalisation
+
+La langue est geree par :
+
+```txt
+frontend/src/i18n/
+```
+
+`LanguageProvider` stocke la langue active dans le localStorage. `useTranslation` donne les textes d'interface. Les donnees de jeu viennent du backend avec le parametre `lang`.
 
 ### Phaser
 
@@ -181,7 +167,9 @@ Phaser gere uniquement la zone interactive de l'image :
 - clics du joueur ;
 - creation et suppression des marqueurs ;
 - collecte des selections dans les coordonnees originales de l'image ;
-- affichage de la correction apres validation serveur.
+- loupe optionnelle ;
+- affichage de la correction apres validation serveur ;
+- bulles d'explication au survol des hotspots corriges.
 
 La scene Phaser principale est `CyberDifferenceScene`.
 
@@ -200,9 +188,11 @@ Le pont expose a React :
 ```ts
 getSelections()
 showCorrection(hotspots)
+toggleDebugHotspots()
+toggleMagnifier(isActive)
 ```
 
-React decide quand valider. Phaser ne calcule pas le score et ne connait pas les scenarios complets.
+React decide quand valider. Phaser ne calcule pas le score et ne connait pas les dossiers complets.
 
 ## Backend
 
@@ -241,6 +231,7 @@ Les routes sont branchees dans `backend/src/app.ts`.
 /api/scores
 /api/leaderboard
 /api/game
+/images
 ```
 
 Routes utilisateurs :
@@ -259,7 +250,7 @@ GET /api/scores/users/:userId/scenarios/:scenarioId
 GET /api/scores/users/:userId
 ```
 
-Les scores ne sont plus enregistres par une route frontend directe. Le score de scenario est enregistre par le backend quand une tentative non replay est terminee.
+Les scores ne sont plus enregistres par une route frontend directe. Le score de dossier est enregistre par le backend quand une tentative non replay est terminee.
 
 Routes leaderboard :
 
@@ -273,7 +264,7 @@ GET /api/leaderboard/users/:userId
 Routes de jeu :
 
 ```txt
-GET  /api/game/scenarios
+GET  /api/game/scenarios?lang=fr
 POST /api/game/attempts
 POST /api/game/attempts/:attemptId/questions/:questionId/start
 POST /api/game/attempts/:attemptId/questions/:questionId/answers
@@ -285,7 +276,7 @@ POST /api/game/attempts/:attemptId/questions/:questionId/answers
 
 `POST /api/game/attempts/:attemptId/questions/:questionId/start` demarre le timer serveur de la question. Si le timer a deja demarre, l'appel reussit mais ne le remet pas a zero.
 
-`POST /api/game/attempts/:attemptId/questions/:questionId/answers` recoit les selections du joueur, valide les hotspots cote serveur, calcule le score de la question, renvoie la correction, puis renvoie la question suivante ou les details de fin de scenario.
+`POST /api/game/attempts/:attemptId/questions/:questionId/answers` recoit les selections du joueur, valide les hotspots cote serveur, calcule le score de la piece, renvoie la correction, puis renvoie la piece suivante ou les details de fin de dossier.
 
 ### Couches backend
 
@@ -307,107 +298,38 @@ repositories
 
 `companyJson.repository.ts` lit et ecrit le fichier de l'entreprise de demonstration.
 
-`gameScenario.repository.ts` expose les scenarios.
+`gameScenario.repository.ts` expose les scenarios selon la langue.
 
 `gameAttempt.repository.ts` conserve provisoirement les tentatives en memoire.
 
 `gameScoring.service.ts` contient les fonctions pures de scoring et de verification des hotspots.
 
-### Structure de donnees backend
+## Donnees et securite du gameplay
 
-Le type principal est defini dans :
+Le frontend ne recoit pas les hotspots avant validation. Il recoit seulement :
 
-```txt
-backend/src/types/CompanyData.ts
-```
+- les cartes publiques pour l'accueil ;
+- une `PublicQuestion` pendant le jeu ;
+- les hotspots corriges apres validation ;
+- `scenarioDetails` a la fin du dossier pour afficher le debrief.
 
-```ts
-export type CompanyData = {
-  companyId: string;
-  companyName: string;
-  users: User[];
-};
+Le backend reste responsable de :
 
-export type User = {
-  id: string;
-  pseudo: string;
-  pseudoKey: string;
-  hashedPassword: string | null;
-  emailAddress: string | null;
-  globalScore: number;
-  completedScenarioIds: string[];
-  scenarioScores: Record<string, ScenarioScore>;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type ScenarioScore = {
-  score: number;
-  completedAt: string;
-};
-```
-
-`scenarioScores` est un objet indexe par `scenarioId`, ce qui permet de retrouver rapidement le score d'un scenario :
-
-```ts
-user.scenarioScores[scenarioId]
-```
-
-Le repository refuse d'ecraser un score de scenario deja existant. C'est la protection finale contre le replay qui modifierait le premier score.
-
-## Gestion des scenarios
-
-Un scenario backend est defini par le type suivant :
-
-```ts
-export type Scenario = {
-  id: string;
-  title: string;
-  description: string;
-  questions: Question[];
-  globalAttackScenario?: string;
-};
-```
-
-Chaque fichier de scenario contient directement ses questions. Cela permet de garder ensemble :
-
-- l'histoire ;
-- les images ;
-- les instructions ;
-- les hotspots ;
-- les explications ;
-- le scenario d'attaque complet affiche en fin de scenario.
-
-Le frontend ne recoit pas les hotspots avant validation. Les hotspots sont renvoyes seulement avec la correction.
-
-## Progression et leaderboard
-
-Le stockage serveur actuel repose sur :
-
-```txt
-backend/data/companies/*.json
-```
-
-Le fichier `demo.json` sert d'exemple. Les vrais fichiers clients et scores ne doivent pas etre exposes publiquement ni commits s'ils contiennent des donnees reelles.
-
-Etat actuel :
-
-- le frontend charge l'utilisateur depuis le backend ;
-- le frontend charge les cartes de scenarios depuis le backend ;
-- le frontend demarre les tentatives via le backend ;
-- le backend garde les hotspots prives jusqu'a la validation ;
-- le backend calcule le score de chaque question ;
-- le backend sauvegarde le score du scenario seulement lors de la premiere tentative terminee ;
-- le frontend affiche le debrief de fin a partir des details renvoyes par le backend ;
-- le leaderboard vient du backend.
+- verifier les selections ;
+- calculer le score ;
+- avancer dans la tentative ;
+- refuser l'ecrasement du premier score d'un dossier deja termine.
 
 ## Limites connues
 
 - Les tentatives de jeu sont stockees en memoire dans `gameAttempt.repository.ts`. Elles sont perdues au redemarrage du backend.
+- Le timer serveur demarre actuellement apres l'appel frontend d'affichage de l'image. Un utilisateur technique peut encore contourner une partie de cette logique en appelant directement l'API.
 - Le stockage JSON peut avoir des problemes de concurrence si plusieurs ecritures arrivent exactement en meme temps.
 - Les types TypeScript documentent la structure attendue, mais ne valident pas les JSON au runtime.
 - La connexion par pseudo reste volontairement simple pour le prototype.
+- `API_URL` est encore code en dur dans `apiClient.ts`.
 - `scoreServices.ts` et `userServices.ts` existent encore comme services historiques frontend et pourront etre retires plus tard si tout passe definitivement par le backend.
+- Le bundle frontend peut etre lourd a cause de Phaser.
 
 ## Raccourcis de debug
 
@@ -482,12 +404,11 @@ npm test
 
 ## Notes de developpement
 
-- Les questions ne sont plus choisies aleatoirement.
-- Les questions sont jouees dans l'ordre defini par leur scenario.
-- Phaser ne connait pas les scenarios : il ne recoit qu'une question publique a la fois.
+- Les pieces sont jouees dans l'ordre defini par leur dossier.
+- Phaser ne connait pas les dossiers : il ne recoit qu'une question publique a la fois.
 - Le resize du canvas Phaser ne doit pas recreer toute la scene pour ne pas perdre les marqueurs.
-- Le backend doit rester separe du frontend : React appelle une API, le backend decide et stocke.
+- React appelle une API ; le backend decide et stocke.
 - Le repository backend doit rester la seule couche responsable de la lecture/ecriture JSON.
 - Les calculs de score doivent rester cote backend.
 - Les hotspots ne doivent pas etre envoyes avant validation.
-- Le README et `agent.md` doivent etre mis a jour quand le flux de jeu ou le backend change.
+- Le README et `agent.md` doivent etre mis a jour quand le flux de jeu, la structure des donnees ou le backend change.

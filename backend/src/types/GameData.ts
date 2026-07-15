@@ -1,4 +1,5 @@
 import type { User } from "./CompanyData";
+import type { GameLanguage } from "./GameLanguage";
 
 export type Hotspot = {
   id: string;
@@ -21,12 +22,16 @@ export type Question = {
   hotspots: Hotspot[];
 };
 
+export type ScenarioDifficulty = 1 | 2 | 3;
+
 export type Scenario = {
   id: string;
   title: string;
   description: string;
+  difficulty?: ScenarioDifficulty;
   questions: Question[];
   globalAttackScenario?: string;
+  goodPractices?: string;
 };
 
 
@@ -46,6 +51,7 @@ export type GameAttempt = {
   id: string;
   userId: string;
   scenarioId: string;
+  language: GameLanguage;
   currentQuestionIndex: number;
   roundScores: number[];
   status: GameAttemptStatus;
@@ -58,6 +64,7 @@ export type GameAttempt = {
 export type CreateGameAttemptInput = {
   userId: string;
   scenarioId: string;
+  language: GameLanguage;
   isReplay: boolean;
 };
 

@@ -15,9 +15,12 @@ import type {
   SubmitAnswersResult,
 } from "../types/GameData";
 import type { User } from "../types/CompanyData";
+import type { GameLanguage } from "../types/GameLanguage";
 
-export function getScenariosCardService(): ReturnType<typeof getScenariosCard> {
-  return getScenariosCard();
+export function getScenariosCardService(
+  language: GameLanguage,
+): ReturnType<typeof getScenariosCard> {
+  return getScenariosCard(language);
 }
 
 type StartScenarioFailure =
@@ -47,14 +50,18 @@ function toPublicQuestion(question: Question): PublicQuestion {
   };
 }
 
-export async function startScenarioService(userId: string, scenarioId: string): Promise<StartScenarioServiceResult> {
+export async function startScenarioService(
+  userId: string,
+  scenarioId: string,
+  language: GameLanguage,
+): Promise<StartScenarioServiceResult> {
   const user = await getUserInDatabaseById(userId);
 
   if (user === undefined) {
     return { success: false, reason: "USER_NOT_FOUND" };
   }
 
-  const scenario = getScenarioById(scenarioId);
+  const scenario = getScenarioById(scenarioId, language);
 
   if (scenario === undefined) {
     return { success: false, reason: "SCENARIO_NOT_FOUND" };
@@ -67,7 +74,12 @@ export async function startScenarioService(userId: string, scenarioId: string): 
   }
 
   const isReplay = user.completedScenarioIds.includes(scenarioId);
-  const attempt = createGameAttempt({userId, scenarioId, isReplay});
+  const attempt = createGameAttempt({
+    userId,
+    scenarioId,
+    language,
+    isReplay,
+  });
 
   return {
     success: true,
@@ -95,7 +107,7 @@ export async function submitAnswersService(
     return { success: false, reason: "ATTEMPT_NOT_FOUND" };
   }
 
-  const scenario = getScenarioById(attempt.scenarioId);
+  const scenario = getScenarioById(attempt.scenarioId, attempt.language);
   if (!scenario) {
     return { success: false, reason: "SCENARIO_NOT_FOUND" };
   }
@@ -198,7 +210,7 @@ export async function startTimerService(
     return { success: false, reason: "ATTEMPT_NOT_FOUND" };
   }
 
-  const scenario = getScenarioById(attempt.scenarioId);
+  const scenario = getScenarioById(attempt.scenarioId, attempt.language);
   if (!scenario) {
     return { success: false, reason: "SCENARIO_NOT_FOUND" };
   }

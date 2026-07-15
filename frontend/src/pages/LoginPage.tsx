@@ -1,4 +1,6 @@
 import { useState } from "react";
+import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "../i18n/useTranslation";
 import "./LoginPage.css";
 import AlertModal from "../components/AlertModal";
 
@@ -8,6 +10,7 @@ type LoginPageProps = {
 };
 
 function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
+    const t = useTranslation();
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -38,18 +41,20 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
     }
 
     return (
+        <>
+        <LanguageSelector />
         <main className="page login-page">
-        <p className="page__eyebrow">Cyber 7 erreurs</p>
-        <h1>Connexion</h1>
+        <p className="page__eyebrow">{t.login.eyebrow}</p>
+        <h1>{t.login.title}</h1>
         <p className="page__intro">
-            Entre un pseudo et un mot de passe pour lancer la manche de sensibilisation.
+            {t.login.intro}
         </p>
 
             <form className="login-page__form" onSubmit={handleLogin}>
                 <input
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
-                    placeholder="Entre ton pseudo"
+                    placeholder={t.login.placeholder}
                     disabled={isLoading}
                 />
 
@@ -62,6 +67,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                 />
 
                 <button className="button" type="submit" disabled={isLoading}>
+                    {t.login.submit}
                     {isLoading ? "Connexion en cours..." : "Se connecter"}
                 </button>
                 <button type="button" className="login-page__register-link" onClick={onGoToRegister} disabled={isLoading}>
@@ -78,6 +84,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                 />
             )}
         </main>
+        </>
     );
 }
 

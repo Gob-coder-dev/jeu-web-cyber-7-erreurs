@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
@@ -20,10 +20,14 @@ import {
   postNewUser,
   startScenario,
 } from "../services/apiClient";
+import { useLanguage } from "../i18n/useLanguage";
+import { useTranslation } from "../i18n/useTranslation";
 
 type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard" | "login" | "register";
 
 function App() {
+  const { language } = useLanguage();
+  const t = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<Page>("login");
   const [authPage, setAuthPage] = useState<"login" | "register">("login");
@@ -40,12 +44,41 @@ function App() {
   const [isStartingGame, setIsStartingGame] = useState(false);
   const [startGameError, setStartGameError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (
+      user === null ||
+      page === "scenarioIntro" ||
+      page === "game" ||
+      page === "result"
+    ) {
+      return;
+    }
+
+    let shouldIgnoreResult = false;
+
+    getScenariosCard(language)
+      .then((cards) => {
+        if (!shouldIgnoreResult) {
+          setScenarioIntros(cards);
+        }
+      })
+      .catch((error) => {
+        console.error("Impossible de charger les scénarios", error);
+      });
+
+    return () => {
+      shouldIgnoreResult = true;
+    };
+  }, [language, page, user]);
+
+  
+
   async function handleRegister(username: string, password: string) {
     const [registeredUser, cards] = await Promise.all([
       postNewUser(username, password),
-      getScenariosCard(),
+      getScenariosCard(language),
     ]);
-
+    
     setUser(registeredUser);
     setScenarioIntros(cards);
     setPage("home");
@@ -54,7 +87,7 @@ function App() {
   async function handleLogin(username: string, password: string) {
     const [connectedUser, cards] = await Promise.all([
       getOrCreateUser(username, password),
-      getScenariosCard(),
+      getScenariosCard(language),
     ]);
 
     setUser(connectedUser);
@@ -107,13 +140,17 @@ function App() {
     setStartGameError(null);
 
     try {
-      const startedGame = await startScenario(user.id, selectedScenarioId);
+      const startedGame = await startScenario(
+        user.id,
+        selectedScenarioId,
+        language,
+      );
       setGameSession(startedGame);
       setPage("game");
     } catch (error) {
       console.error("Impossible de démarrer le scénario", error);
       setStartGameError(
-        "Le scénario ne peut pas être démarré pour le moment.",
+        t.app.startScenarioError,
       );
     } finally {
       setIsStartingGame(false);
@@ -168,9 +205,9 @@ function App() {
     if (selectedScenarioIntro === null) {
       return (
         <main className="page">
-          <h1>Scénario introuvable</h1>
+          <h1>{t.app.scenarioNotFound}</h1>
           <button className="button" onClick={handleBackHome}>
-            Retour aux scénarios
+            {t.common.backToScenarios}
           </button>
         </main>
       );
@@ -191,9 +228,9 @@ function App() {
     if (gameSession === null) {
       return (
         <main className="page">
-          <h1>Partie introuvable</h1>
+          <h1>{t.app.gameNotFound}</h1>
           <button className="button" onClick={handleBackHome}>
-            Retour aux scénarios
+            {t.common.backToScenarios}
           </button>
         </main>
       );
@@ -240,10 +277,10 @@ function App() {
         scenario={completedScenarioDetails ?? undefined}
         scenarioTitle={
           completedScenarioDetails !== null
-            ? `Dossier - ${completedScenarioDetails.title}`
+            ? `${t.common.caseLabel} - ${completedScenarioDetails.title}`
             : selectedScenarioIntro !== null
-              ? `Dossier - ${selectedScenarioIntro.title}`
-            : "Scenario"
+              ? `${t.common.caseLabel} - ${selectedScenarioIntro.title}`
+            : t.app.fallbackScenarioTitle
         }
         scenarioScore={scenarioScore}
         scenarioRoundScores={scenarioRoundScores}

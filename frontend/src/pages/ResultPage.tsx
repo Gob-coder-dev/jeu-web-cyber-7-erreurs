@@ -2,6 +2,7 @@ import "./ResultPage.css";
 import { useState } from "react";
 import type { Scenario } from "../types/Scenario";
 import { formatPieceCode, formatPieceTitle } from "../utils/formatGameLabels";
+import { useTranslation } from "../i18n/useTranslation";
 
 type ResultPageProps = {
   scenario?: Scenario;
@@ -22,13 +23,14 @@ function ResultPage({
   onBackHome,
   onGoLeaderBoard,
 }: ResultPageProps) {
+  const t = useTranslation();
   const [attackSlideIndex, setAttackSlideIndex] = useState(0);
   const globalAttackSlides =
     scenario?.globalAttackScenario !== undefined &&
     scenario.globalAttackScenario.trim().length > 0
       ? [
           {
-            title: "Scénario d'attaque complet",
+            title: t.result.completeAttackScenario,
             text: scenario.globalAttackScenario,
             questionIndex: null,
           },
@@ -37,9 +39,10 @@ function ResultPage({
   const questionAttackSlides =
     scenario?.questions
       .map((question, index) => ({
-        title: `Explication d'attaque - ${formatPieceTitle(
+        title: `${t.result.attackExplanation} - ${formatPieceTitle(
           question.title,
-          index
+          index,
+          t.common.pieceLabel,
         )}`,
         text: question.attackScenario,
         questionIndex: index,
@@ -52,21 +55,22 @@ function ResultPage({
     lastAttackSlideIndex
   );
   const currentAttackSlide = attackSlides[currentAttackSlideIndex];
+  const goodPractices = scenario?.goodPractices?.trim() ?? "";
 
   return (
     <main className="page result-page">
       <header className="result-page__hero">
         <div className="result-page__hero-main">
-          <p className="page__eyebrow">Fin de scénario</p>
+          <p className="page__eyebrow">{t.result.eyebrow}</p>
           <h1>{scenarioTitle}</h1>
         </div>
 
         <div className="result-page__scores">
           <div className="result-page__score result-page__score--scenario">
-            Score du scénario : {scenarioScore} pts
+            {t.result.scenarioScore} : {scenarioScore} {t.common.points}
           </div>
           <div className="result-page__score result-page__score--global">
-            Score global : {globalScore} pts
+            {t.result.globalScore} : {globalScore} {t.common.points}
           </div>
         </div>
       </header>
@@ -84,7 +88,7 @@ function ResultPage({
                   )
                 }
                 disabled={currentAttackSlideIndex <= 0}
-                aria-label="Diapositive précédente"
+                aria-label={t.result.previousSlide}
               >
                 {"<"}
               </button>
@@ -100,7 +104,7 @@ function ResultPage({
                   )
                 }
                 disabled={currentAttackSlideIndex >= lastAttackSlideIndex}
-                aria-label="Diapositive suivante"
+                aria-label={t.result.nextSlide}
               >
                 {">"}
               </button>
@@ -118,63 +122,74 @@ function ResultPage({
           </section>
         )}
 
-        {scenarioRoundScores.length > 0 && (
-          <section
-            className="result-page__round-scores"
-            aria-label="Scores par question"
-          >
-            <h2>Détail par pièce</h2>
+        {(scenarioRoundScores.length > 0 || goodPractices.length > 0) && (
+          <div className="result-page__side-content">
+            {scenarioRoundScores.length > 0 && (
+              <section
+                className="result-page__round-scores"
+                aria-label={t.result.roundScoresLabel}
+              >
+                <h2>{t.result.pieceDetails}</h2>
 
-            <ol className="result-page__round-score-list">
-              {scenarioRoundScores.map((score, index) => {
-                const question = scenario?.questions[index];
-                const isCurrentQuestionSlide =
-                  currentAttackSlide?.questionIndex === index;
+                <ol className="result-page__round-score-list">
+                  {scenarioRoundScores.map((score, index) => {
+                    const question = scenario?.questions[index];
+                    const isCurrentQuestionSlide =
+                      currentAttackSlide?.questionIndex === index;
 
-                return (
-                  <li
-                    className={`result-page__round-score-item${
-                      isCurrentQuestionSlide
-                        ? " result-page__round-score-item--current"
-                        : ""
-                    }`}
-                    key={question?.id ?? index}
-                  >
-                    <span className="result-page__round-score-rank">
-                      {formatPieceCode(index)}
-                    </span>
+                    return (
+                      <li
+                        className={`result-page__round-score-item${
+                          isCurrentQuestionSlide
+                            ? " result-page__round-score-item--current"
+                            : ""
+                        }`}
+                        key={question?.id ?? index}
+                      >
+                        <span className="result-page__round-score-rank">
+                          {formatPieceCode(index)}
+                        </span>
 
-                    <span className="result-page__round-score-label">
-                      {question !== undefined
-                        ? formatPieceTitle(question.title, index)
-                        : `Pièce ${index + 1}`}
-                    </span>
+                        <span className="result-page__round-score-label">
+                          {question !== undefined
+                            ? formatPieceTitle(question.title, index, t.common.pieceLabel)
+                            : `${t.common.pieceLabel} ${index + 1}`}
+                        </span>
 
-                    <span
-                      className={`result-page__round-score-value${
-                        score < 0
-                          ? " result-page__round-score-value--negative"
-                          : ""
-                      }`}
-                    >
-                      {score >= 0 ? "+" : ""}
-                      {score} pts
-                    </span>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
+                        <span
+                          className={`result-page__round-score-value${
+                            score < 0
+                              ? " result-page__round-score-value--negative"
+                              : ""
+                          }`}
+                        >
+                          {score >= 0 ? "+" : ""}
+                          {score} {t.common.points}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            )}
+
+            {goodPractices.length > 0 && (
+              <section className="result-page__good-practices">
+                <h2>{t.result.goodPracticesTitle}</h2>
+                <p>{goodPractices}</p>
+              </section>
+            )}
+          </div>
         )}
       </div>
 
       <div className="page__actions">
         <button className="button" onClick={onBackHome}>
-          Retour aux scénarios
+          {t.common.backToScenarios}
         </button>
 
         <button className="button button--secondary" onClick={onGoLeaderBoard}>
-          Voir le classement
+          {t.common.leaderboard}
         </button>
       </div>
     </main>
