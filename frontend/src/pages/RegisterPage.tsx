@@ -22,7 +22,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
         event.preventDefault();
 
         if (pseudo.trim() === "" || password.trim() === "") {
-            setError("Veuillez entrer un pseudo et un mot de passe pour vous inscrire.");
+            setError(t.register.intro);
             return;
         }
 
@@ -35,7 +35,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
             setError(
                 err instanceof Error
                     ? err.message
-                    : "Impossible de se connecter."
+                    : t.register.errorMessage
             );
         } finally {
             setIsLoading(false);
@@ -45,13 +45,13 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
     return (
         <>
         <LanguageSelector />
-        <main className="page login-page">
+        <main className="page register-page">
         <p className="page__eyebrow">{t.register.eyebrow}</p>
         <h1>{t.register.title}</h1>
         <p className="page__intro">
             {t.register.intro}
         </p>
-            <form className="login-page__form" onSubmit={handleRegister}>
+            <form className="register-page__form" onSubmit={handleRegister}>
                 <input
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
@@ -70,16 +70,16 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
                 {password && <PasswordCriteria password={password} />}
                 
                 <button className="button" type="submit" disabled={isLoading}>
-                    {isLoading ? t.login.submitting : t.login.submit}
+                    {isLoading ? t.register.submitting : t.register.submit}
                 </button>
-                <button type="button" className="login-page__register-link" onClick={onGoToLogin} disabled={isLoading}>
+                <button type="button" className="register-page__login-link" onClick={onGoToLogin} disabled={isLoading}>
                     {t.register.redirection}
                 </button>
             </form>
 
             {error && (
                 <AlertModal
-                    title="Erreur d'inscription"
+                    title= {t.register.errorTitle}
                     message={error}
                     onClose={() => setError(null)}
                     type="error"
