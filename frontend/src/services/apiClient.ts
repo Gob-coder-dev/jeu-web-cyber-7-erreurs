@@ -17,7 +17,19 @@ export async function getOrCreateUser(pseudo: string, password: string): Promise
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -33,7 +45,19 @@ export async function postNewUser(username: string, password: string): Promise<U
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -45,7 +69,19 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -59,7 +95,19 @@ export async function getLeaderboardUser(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -73,7 +121,19 @@ export async function getScenariosCard(): Promise<ScenarioIntro[]> {
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -92,7 +152,19 @@ export async function startScenario(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -112,7 +184,19 @@ export async function submitAnswers(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -129,7 +213,19 @@ export async function startTimer(
         },
     });
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
-    return response.json();
+        return response.json();
 }

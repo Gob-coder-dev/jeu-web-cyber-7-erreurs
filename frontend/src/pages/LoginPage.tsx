@@ -27,12 +27,11 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
         try {
             await onLogin(pseudo.trim(), password.trim());
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "Impossible de se connecter.";
-            if (errorMessage.includes("404")) {
-                setError("Pseudo ou mot de passe incorrect.");
-            } else {
-                setError(errorMessage);
-            }
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Impossible de se connecter."
+            );
         } finally {
             setIsLoading(false);
         }

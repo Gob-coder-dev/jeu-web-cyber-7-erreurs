@@ -28,12 +28,11 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
         try {
             await onRegister(pseudo.trim(), password.trim());
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "Une erreur est survenue lors de l'inscription.";
-            if (errorMessage.includes("409")) {
-                setError("Ce pseudo est déjà utilisé. Veuillez en choisir un autre.");
-            } else {
-                setError(errorMessage);
-            }
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Impossible de se connecter."
+            );
         } finally {
             setIsLoading(false);
         }
