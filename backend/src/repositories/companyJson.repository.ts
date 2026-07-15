@@ -52,10 +52,12 @@ function findUser(companyData: CompanyData, userId: string) {
 }
 
 function calculateGlobalScore(user: User) {
-  return Object.values(user.scenarioScores).reduce(
-    (total, scenarioScore) => total + scenarioScore.score,
-    0,
-  );
+  return Object.entries(user.scenarioScores)
+    .filter(([scenarioId]) => scenarioId !== 'ceci-est-un-tutoriel')
+    .reduce(
+      (total, [, scenarioScore]) => total + scenarioScore.score,
+      0,
+    );
 }
 
 // User functions

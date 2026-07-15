@@ -116,6 +116,7 @@ function GamePage({
       setCorrection(null);
       setShowImage(false);
       setCountdown(3);
+      setMagnifierActive(false);
     }
   }
 

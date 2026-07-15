@@ -7,9 +7,12 @@ import type { Language } from "../i18n/language";
 
 const API_URL = "http://localhost:3000/api";
 
+function encodePathParam(value: string) {
+    return encodeURIComponent(value);
+}
 
 export async function getOrCreateUser(pseudo: string): Promise<User> {
-    const response = await fetch(`${API_URL}/users/${pseudo}`, {
+    const response = await fetch(`${API_URL}/users/${encodePathParam(pseudo)}`, {
         method: "GET",
     });
 
@@ -35,7 +38,7 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
 export async function getLeaderboardUser(
     userId: string,
 ): Promise<LeaderboardUserResult> {
-    const response = await fetch(`${API_URL}/leaderboard/users/${userId}`, {
+    const response = await fetch(`${API_URL}/leaderboard/users/${encodePathParam(userId)}`, {
         method: "GET",
     });
 
@@ -48,8 +51,18 @@ export async function getLeaderboardUser(
 
 
 
-export async function getScenariosCard(language: Language): Promise<ScenarioIntro[]> {
-    const response = await fetch(`${API_URL}/game/scenarios?lang=${language}`, {
+export async function getScenariosCard(
+    language: Language,
+    userId?: string,
+): Promise<ScenarioIntro[]> {
+    const url = new URL(`${API_URL}/game/scenarios`);
+    url.searchParams.set("lang", language);
+
+    if (userId) {
+        url.searchParams.set("userId", userId);
+    }
+
+    const response = await fetch(url.toString(), {
         method: "GET",
     });
 
@@ -85,7 +98,7 @@ export async function submitAnswers(
     questionId: string,
     selections: SelectionPoint[],
 ): Promise<SubmitAnswersResult> {
-    const response = await fetch(`${API_URL}/game/attempts/${attemptId}/questions/${questionId}/answers`, {
+    const response = await fetch(`${API_URL}/game/attempts/${encodePathParam(attemptId)}/questions/${encodePathParam(questionId)}/answers`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -104,7 +117,7 @@ export async function startTimer(
     attemptId: string,
     questionId: string,
 ): Promise<{ success: boolean; reason?: string }> {
-    const response = await fetch(`${API_URL}/game/attempts/${attemptId}/questions/${questionId}/start`, {
+    const response = await fetch(`${API_URL}/game/attempts/${encodePathParam(attemptId)}/questions/${encodePathParam(questionId)}/start`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

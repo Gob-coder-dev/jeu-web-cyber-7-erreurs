@@ -10,7 +10,11 @@ import { normalizeGameLanguage } from "../types/GameLanguage";
 
 export async function getScenariosCard(req: express.Request, res: express.Response) {
   const language = normalizeGameLanguage(req.query.lang);
-  const scenariosCard = getScenariosCardService(language);
+  const userId =
+    typeof req.query.userId === "string" && req.query.userId.trim().length > 0
+      ? req.query.userId.trim()
+      : undefined;
+  const scenariosCard = await getScenariosCardService(language, userId);
 
   if (scenariosCard.length === 0) {
     return res.status(404).json({ message: "No scenarios found" });
@@ -51,6 +55,12 @@ export async function startScenario(req: express.Request, res: express.Response)
 
       if (result.reason === "SCENARIO_NOT_FOUND") {
         return res.status(404).json({ message: "Scenario not found" });
+      }
+
+      if (result.reason === "TUTORIAL_REQUIRED") {
+        return res.status(403).json({
+          message: "Tutorial must be completed before starting this scenario",
+        });
       }
 
       return res.status(409).json({

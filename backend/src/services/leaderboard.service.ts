@@ -1,10 +1,17 @@
 import { getAllUsersInDatabase, getUserInDatabase } from '../repositories/companyJson.repository';
+import { TUTORIAL_SCENARIO_ID } from '../repositories/gameScenario.repository';
 import type { User } from '../types/CompanyData';
 import type { LeaderboardEntry, LeaderboardUserResult } from '../types/Leaderboard';
 
+function hasCompletedPlayableScenario(user: User) {
+    return user.completedScenarioIds.some(
+        (scenarioId) => scenarioId !== TUTORIAL_SCENARIO_ID,
+    );
+}
+
 function getPlayedUsersSortedByScore(users: User[]) {
     return users
-        .filter((user) => user.completedScenarioIds.length > 0)
+        .filter(hasCompletedPlayableScenario)
         .sort((a, b) => b.globalScore - a.globalScore);
 }
 

@@ -53,7 +53,7 @@ function App() {
 
     let shouldIgnoreResult = false;
 
-    getScenariosCard(language)
+    getScenariosCard(language, user.id)
       .then((cards) => {
         if (!shouldIgnoreResult) {
           setScenarioIntros(cards);
@@ -70,10 +70,8 @@ function App() {
 
   async function handleLogin(pseudo: string) {
     try {
-      const [connectedUser, cards] = await Promise.all([
-        getOrCreateUser(pseudo),
-        getScenariosCard(language),
-      ]);
+      const connectedUser = await getOrCreateUser(pseudo);
+      const cards = await getScenariosCard(language, connectedUser.id);
 
       setUser(connectedUser);
       setScenarioIntros(cards);
@@ -136,11 +134,21 @@ function App() {
     }
   }
 
-  function handleBackHome() {
+  async function handleBackHome() {
     setSelectedScenarioId(null);
     setGameSession(null);
     setCompletedScenarioDetails(null);
     setStartGameError(null);
+    if (user !== null) {
+      try {
+        const updatedUser = await getOrCreateUser(user.pseudo);
+        setUser(updatedUser);
+        const refreshedScenarios = await getScenariosCard(language, updatedUser.id);
+        setScenarioIntros(refreshedScenarios);
+      } catch (error) {
+        console.error("Erreur lors du rafraîchissement", error);
+      }
+    }
     setPage("home");
   }
 

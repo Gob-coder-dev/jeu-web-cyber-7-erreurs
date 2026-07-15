@@ -3,6 +3,7 @@ import { createGameAttempt, getGameAttemptById } from "../repositories/gameAttem
 import {
   getScenarioById,
   getScenariosCard,
+  TUTORIAL_SCENARIO_ID,
 } from "../repositories/gameScenario.repository";
 import {
   calculateRoundScore,
@@ -19,14 +20,16 @@ import type { GameLanguage } from "../types/GameLanguage";
 
 export function getScenariosCardService(
   language: GameLanguage,
+  userId?: string,
 ): ReturnType<typeof getScenariosCard> {
-  return getScenariosCard(language);
+  return getScenariosCard(language, userId);
 }
 
 type StartScenarioFailure =
   | "USER_NOT_FOUND"
   | "SCENARIO_NOT_FOUND"
-  | "SCENARIO_EMPTY";
+  | "SCENARIO_EMPTY"
+  | "TUTORIAL_REQUIRED";
 
 type StartScenarioServiceResult =
   | {
@@ -65,6 +68,12 @@ export async function startScenarioService(
 
   if (scenario === undefined) {
     return { success: false, reason: "SCENARIO_NOT_FOUND" };
+  }
+
+  const tutorialCompleted = user.completedScenarioIds.includes(TUTORIAL_SCENARIO_ID);
+
+  if (scenarioId !== TUTORIAL_SCENARIO_ID && !tutorialCompleted) {
+    return { success: false, reason: "TUTORIAL_REQUIRED" };
   }
 
   const firstQuestion = scenario.questions[0];

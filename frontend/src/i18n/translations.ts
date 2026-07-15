@@ -29,6 +29,8 @@ export const translations = {
       globalScore: "Score global",
       logout: "Se déconnecter",
       completed: "Terminé",
+      locked: "Verrouillé",
+      completeTutorialToUnlock: "Complétez le tutoriel pour accéder à ce scénario.",
       play: "Jouer",
       scenariosLabel: "Scénarios",
       difficulty: {
@@ -110,6 +112,8 @@ export const translations = {
       globalScore: "Global score",
       logout: "Log out",
       completed: "Completed",
+      locked: "Locked",
+      completeTutorialToUnlock: "Complete the tutorial to access this scenario.",
       play: "Play",
       scenariosLabel: "Scenarios",
       difficulty: {

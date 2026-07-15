@@ -62,7 +62,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
     this.hotspotTooltip = this.add
       .text(0, 0, "", {
-        fontSize: "14px",
+        fontSize: "22px",
         color: "#000000",
         backgroundColor: "rgba(255, 255, 255, 1)",
         padding: { x: 10, y: 8 },
@@ -145,7 +145,6 @@ export class CyberDifferenceScene extends Phaser.Scene {
 
   public showCorrection(hotspots: CorrectedHotspot[]) {
     this.isReadOnly = true;
-    this.hideMagnifier();
 
     this.correctionRects.forEach(({ rect }) => {
       rect.destroy();
@@ -242,8 +241,7 @@ export class CyberDifferenceScene extends Phaser.Scene {
   private updateMagnifier(pointer: Phaser.Input.Pointer) {
     if (
       this.magnifierCamera === undefined ||
-      !this.isMagnifierEnabled ||
-      this.isReadOnly
+      !this.isMagnifierEnabled
     ) {
       this.hideMagnifier();
       return;

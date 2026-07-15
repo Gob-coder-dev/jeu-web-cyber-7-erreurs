@@ -4,6 +4,9 @@ import type { ScenarioIntro } from '../types/HomePageCard';
 import { DEFAULT_GAME_LANGUAGE } from '../types/GameLanguage';
 import { scenarios as englishScenarios } from '../../data/game/scenarios/en';
 import { scenarios as frenchScenarios } from '../../data/game/scenarios/fr';
+import { getUserInDatabase } from './companyJson.repository';
+
+export const TUTORIAL_SCENARIO_ID = "ceci-est-un-tutoriel";
 
 const scenariosByLanguage: Record<GameLanguage, Scenario[]> = {
   fr: frenchScenarios,
@@ -22,9 +25,18 @@ export function getScenarioById(
   return scenarios.find((scenario) => scenario.id === scenarioId);
 }
 
-export function getScenariosCard(
+export async function getScenariosCard(
   language: GameLanguage = DEFAULT_GAME_LANGUAGE,
-): ScenarioIntro[] {
+  userId?: string,
+): Promise<ScenarioIntro[]> {
+  let tutorialCompleted = false;
+
+  if (userId) {
+    const user = await getUserInDatabase(userId);
+    tutorialCompleted =
+      user?.completedScenarioIds?.includes(TUTORIAL_SCENARIO_ID) ?? false;
+  }
+  
   const scenarios = getScenariosByLanguage(language);
 
   return scenarios.map((scenario) => ({
@@ -33,5 +45,6 @@ export function getScenariosCard(
     description: scenario.description,
     difficulty: scenario.difficulty ?? 1,
     numberOfQuestions: scenario.questions.length,
+    isLocked: scenario.id !== TUTORIAL_SCENARIO_ID && !tutorialCompleted,
   }));
 }

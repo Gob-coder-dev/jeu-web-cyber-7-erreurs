@@ -5,5 +5,7 @@ export type ScenarioIntro = {
   title: string;
   description: string;
   difficulty: ScenarioDifficulty;
+  isLocked?: boolean;
   numberOfQuestions: number;
 };
+

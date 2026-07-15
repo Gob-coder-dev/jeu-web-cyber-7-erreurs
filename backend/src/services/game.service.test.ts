@@ -10,8 +10,8 @@ import {
 } from "../repositories/gameScenario.repository";
 import { startTimerService } from "./game.service";
 
-function getFirstScenarioQuestion() {
-  const [scenarioCard] = getScenariosCard();
+async function getFirstScenarioQuestion() {
+  const [scenarioCard] = await getScenariosCard();
   assert.ok(scenarioCard);
 
   const scenario = getScenarioById(scenarioCard.id);
@@ -27,7 +27,7 @@ function getFirstScenarioQuestion() {
 }
 
 test("startTimerService starts the current question timer", async () => {
-  const { scenario, question } = getFirstScenarioQuestion();
+  const { scenario, question } = await getFirstScenarioQuestion();
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
@@ -43,7 +43,7 @@ test("startTimerService starts the current question timer", async () => {
 });
 
 test("startTimerService does not reset an already started question timer", async () => {
-  const { scenario, question } = getFirstScenarioQuestion();
+  const { scenario, question } = await getFirstScenarioQuestion();
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
@@ -66,7 +66,7 @@ test("startTimerService does not reset an already started question timer", async
 });
 
 test("startTimerService rejects a question that does not match the current attempt", async () => {
-  const { scenario } = getFirstScenarioQuestion();
+  const { scenario } = await getFirstScenarioQuestion();
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
