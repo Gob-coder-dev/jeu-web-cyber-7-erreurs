@@ -99,17 +99,6 @@ export const translations = {
       pieceDetails: "Détail par pièce",
       goodPracticesTitle: "Bons réflexes à retenir",
     },
-    errorMessage: {
-      userNotFound: "L'utilisateur n'a pas été trouvé",
-      userId: "Un nom d'utilisateur est requis",
-      password: "Un mot de passe est requis",
-      userIdError: "Il y a une erreur avec le nom d'utilisateur",
-      passwordError: "Il y a une erreur avec le mot de passe",
-      userIdTooLong: "Le nom d'utilisateur doit faire au maximum 15 caractères",
-      passwordTooLong: "Le mot de passe doit faire au maximum 15 caractères",
-      passwordTooShort: "Le mot de passe doit faire au minimum 6 caractères",
-      userCreationFailed: "L'utilisateur n'a pas pu être créé",
-    },
   },
   en: {
     common: {
@@ -210,17 +199,6 @@ export const translations = {
       roundScoresLabel: "Scores by question",
       pieceDetails: "Piece details",
       goodPracticesTitle: "Good practices to remember",
-    },
-    errorMessage: {
-      userNotFound: "User not found",
-      userId: "User ID is required",
-      password: "Password is required",
-      userIdError: "Error with User ID",
-      passwordError: "Error with password",
-      userIdTooLong: "User ID must be at most 15 characters long",
-      passwordTooLong: "Password must be at most 15 characters long",
-      passwordTooShort: "Password must be at least 6 characters long",
-      userCreationFailed: "User could not be created",
     },
   },
 } as const;

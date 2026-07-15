@@ -1,4 +1,4 @@
-.login-page {
+.register-page {
   max-width: 720px;
   margin: 0 auto;
   display: flex;
@@ -12,9 +12,29 @@
   align-self: flex-start;
 }
 
-.login-page__form {
+.button{
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+.register-page__form {
   width: min(100%, 460px);
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.register-page__login-link {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.register-page__login-link:hover {
+  opacity: 0.7;
 }
