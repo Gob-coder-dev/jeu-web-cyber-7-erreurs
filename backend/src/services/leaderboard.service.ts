@@ -1,4 +1,4 @@
-import { getAllUsersInDatabase, getUserInDatabase } from '../repositories/companyJson.repository';
+import { getAllUsersInDatabase, getUserInDatabaseById } from '../repositories/companyJson.repository';
 import { TUTORIAL_SCENARIO_ID } from '../repositories/gameScenario.repository';
 import type { User } from '../types/CompanyData';
 import type { LeaderboardEntry, LeaderboardUserResult } from '../types/Leaderboard';
@@ -31,7 +31,7 @@ export async function getLeaderboardFromDatabase(): Promise<LeaderboardEntry[]> 
 export async function getLeaderboardUserFromDatabase(
     userId: string,
 ): Promise<LeaderboardUserResult> {
-    const user = await getUserInDatabase(userId);
+    const user = await getUserInDatabaseById(userId);
 
     if (!user) {
         return {

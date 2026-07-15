@@ -11,13 +11,57 @@ function encodePathParam(value: string) {
     return encodeURIComponent(value);
 }
 
-export async function getOrCreateUser(pseudo: string): Promise<User> {
-    const response = await fetch(`${API_URL}/users/${encodePathParam(pseudo)}`, {
-        method: "GET",
+export async function getOrCreateUser(pseudo: string, password: string): Promise<User> {
+    const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({pseudo, password }),
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
+    }
+
+    return response.json();
+}
+
+export async function postNewUser(username: string, password: string): Promise<User> {
+    const response = await fetch(`${API_URL}/users/create`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({username, password}),
+    });
+
+    if (!response.ok) {
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -29,7 +73,19 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -43,7 +99,19 @@ export async function getLeaderboardUser(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -67,7 +135,19 @@ export async function getScenariosCard(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -87,7 +167,19 @@ export async function startScenario(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -107,7 +199,19 @@ export async function submitAnswers(
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -124,7 +228,19 @@ export async function startTimer(
         },
     });
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error! status: ${response.status}`;
+
+        try {
+            const data = await response.json();
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // la réponse n'est pas du JSON
+        }
+
+        throw new Error(message);
     }
-    return response.json();
+        return response.json();
 }

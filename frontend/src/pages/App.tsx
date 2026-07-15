@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
+import RegisterPage from "./RegisterPage";
 import GamePage from "./GamePage";
 import ResultPage from "./ResultPage";
 import ScenarioIntroPage from "./ScenarioIntroPage";
@@ -16,18 +17,20 @@ import {
   getLeaderboardUser,
   getOrCreateUser,
   getScenariosCard,
+  postNewUser,
   startScenario,
 } from "../services/apiClient";
 import { useLanguage } from "../i18n/useLanguage";
 import { useTranslation } from "../i18n/useTranslation";
 
-type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard";
+type Page = "home" | "scenarioIntro" | "game" | "result" | "leaderboard" | "login" | "register";
 
 function App() {
   const { language } = useLanguage();
   const t = useTranslation();
   const [user, setUser] = useState<User | null>(null);
-  const [page, setPage] = useState<Page>("home");
+  const [page, setPage] = useState<Page>("login");
+  const [authPage, setAuthPage] = useState<"login" | "register">("login");
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [scenarioScore, setScenarioScore] = useState(0);
   const [scenarioRoundScores, setScenarioRoundScores] = useState<number[]>([]);
@@ -68,22 +71,32 @@ function App() {
     };
   }, [language, page, user]);
 
-  async function handleLogin(pseudo: string) {
-    try {
-      const connectedUser = await getOrCreateUser(pseudo);
-      const cards = await getScenariosCard(language, connectedUser.id);
+  async function handleRegister(username: string, password: string) {
+    const [registeredUser, cards] = await Promise.all([
+      postNewUser(username, password),
+      getScenariosCard(language),
+    ]);
+    
+    setUser(registeredUser);
+    setScenarioIntros(cards);
+    setPage("home");
+  }
 
-      setUser(connectedUser);
-      setScenarioIntros(cards);
-      setPage("home");
-    } catch (error) {
-      console.error("Impossible de connecter l'utilisateur", error);
-    }
+  async function handleLogin(username: string, password: string) {
+    const [connectedUser, cards] = await Promise.all([
+      getOrCreateUser(username, password),
+      getScenariosCard(language),
+    ]);
+
+    setUser(connectedUser);
+    setScenarioIntros(cards);
+    setPage("home");
   }
 
   function handleLogout() {
     setUser(null);
-    setPage("home");
+    setPage("login");
+    setAuthPage("login");
     setSelectedScenarioId(null);
     setScenarioScore(0);
     setScenarioRoundScores([]);
@@ -94,6 +107,14 @@ function App() {
     setGameSession(null);
     setIsStartingGame(false);
     setStartGameError(null);
+  }
+
+  function handleGoToRegister() {
+    setAuthPage("register");
+  }
+
+  function handleGoToLogin() {
+    setAuthPage("login");
   }
 
   function handleStartScenario(scenarioId: string) {
@@ -182,7 +203,10 @@ function App() {
       ) ?? null);
 
   if (user === null) {
-    return <LoginPage onLogin={handleLogin} />;
+    if (authPage === "register") {
+      return <RegisterPage onRegister={handleRegister} onGoToLogin={handleGoToLogin} />;
+    }
+    return <LoginPage onLogin={handleLogin} onGoToRegister={handleGoToRegister} />;
   }
 
   if (page === "scenarioIntro" && selectedScenarioId !== null) {

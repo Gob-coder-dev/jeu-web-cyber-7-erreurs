@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import * as bcrypt from "bcrypt";
 import type { CompanyData, ScenarioScore, User } from "../types/CompanyData";
 
 const companyFilePath = path.join(
@@ -24,16 +25,20 @@ async function writeCompanyData(companyData: CompanyData): Promise<void> {
 
 const getCurrentDate = () => new Date().toISOString();
 
-const normalizePseudo = (pseudo: string) => pseudo.trim().toLowerCase();
+const normalizeUsername = (username: string) => username.trim().toLowerCase();
 
-const createUserObject = (userId: string): User => {
+const hashPassword = async (password: string): Promise<string> => {
+  return bcrypt.hash(password, 12);
+};
+
+const createUserObject = (username: string, hashedPassword: string): User => {
   const now = getCurrentDate();
 
   return {
-    id: userId,
-    pseudo: userId,
-    pseudoKey: normalizePseudo(userId),
-    hashedPassword: null,
+    id: crypto.randomUUID(),
+    pseudo: username,
+    pseudoKey: normalizeUsername(username),
+    hashedPassword: hashedPassword,
     emailAddress: null,
     globalScore: 0,
     completedScenarioIds: [],
@@ -43,12 +48,29 @@ const createUserObject = (userId: string): User => {
   };
 };
 
-function findUserIndex(companyData: CompanyData, userId: string) {
-  return companyData.users.findIndex((user) => user.id === userId);
+function findUserIndex(companyData: CompanyData, username: string) {
+  return companyData.users.findIndex((user) => user.id === username);
 }
 
-function findUser(companyData: CompanyData, userId: string) {
+function findUserById(companyData: CompanyData, userId: string) {
   return companyData.users.find((user) => user.id === userId);
+}
+
+async function findUserByCredentials(companyData: CompanyData, username: string, password: string) {
+  const normalizedUsername = normalizeUsername(username);
+  const user = companyData.users.find((user) => user.pseudoKey === normalizedUsername);
+  
+  if (!user || !user.hashedPassword) {
+    return undefined;
+  }
+  
+  const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
+  return passwordMatch ? user : undefined;
+}
+
+function findUsername(companyData: CompanyData, username: string) {
+  const normalizedUsername = normalizeUsername(username);
+  return companyData.users.find((user) => user.pseudoKey === normalizedUsername);
 }
 
 function calculateGlobalScore(user: User) {
@@ -61,16 +83,28 @@ function calculateGlobalScore(user: User) {
 }
 
 // User functions
-export async function isUserInDatabase(userId: string) {
+export async function isUserInDatabase(userId: string, password: string) {
   const companyData = await readCompanyData();
 
-  return findUserIndex(companyData, userId) !== -1;
+  return (await findUserByCredentials(companyData, userId, password)) !== undefined;
 }
 
-export async function getUserInDatabase(userId: string) {
+export async function isUsernameInDatabase(username: string) {
   const companyData = await readCompanyData();
 
-  return findUser(companyData, userId);
+  return findUsername(companyData, username) !== undefined;
+}
+
+export async function getUserInDatabase(userId: string, password: string) {
+  const companyData = await readCompanyData();
+
+  return findUserByCredentials(companyData, userId, password);
+}
+
+export async function getUserInDatabaseById(userId: string) {
+  const companyData = await readCompanyData();
+
+  return findUserById(companyData, userId);
 }
 
 export async function getAllUsersInDatabase() {
@@ -79,15 +113,16 @@ export async function getAllUsersInDatabase() {
   return [...companyData.users];
 }
 
-export async function createUserInDatabase(userId: string) {
+export async function createUserInDatabase(username: string, password: string) {
   const companyData = await readCompanyData();
-  const existingUser = findUser(companyData, userId);
+  const existingUser = findUsername(companyData, username);
 
   if (existingUser) {
-    return existingUser;
+    return null;
   }
 
-  const newUser = createUserObject(userId);
+  const hashedPassword = await hashPassword(password);
+  const newUser = createUserObject(username, hashedPassword);
   companyData.users.push(newUser);
 
   await writeCompanyData(companyData);
@@ -98,7 +133,7 @@ export async function createUserInDatabase(userId: string) {
 // Score functions
 export async function isScoreInDatabase(userId: string, scenarioId: string) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return false;
@@ -109,7 +144,7 @@ export async function isScoreInDatabase(userId: string, scenarioId: string) {
 
 export async function getScoreInDatabase(userId: string, scenarioId: string) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return undefined;
@@ -120,7 +155,7 @@ export async function getScoreInDatabase(userId: string, scenarioId: string) {
 
 export async function getTotalScoreInDatabase(userId: string) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return null;
@@ -135,7 +170,7 @@ export async function createScoreInDatabase(
   score: number,
 ) {
   const companyData = await readCompanyData();
-  const user = findUser(companyData, userId);
+  const user = findUserById(companyData, userId);
 
   if (!user) {
     return null;

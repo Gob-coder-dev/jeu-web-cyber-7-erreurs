@@ -1,26 +1,28 @@
 import { useState } from "react";
 import { useTranslation } from "../i18n/useTranslation";
-import LanguageSelector from "../components/LanguageSelector";
-import "./LoginPage.css";
+import "./RegisterPage.css";
 import AlertModal from "../components/AlertModal";
+import PasswordCriteria from "../components/PasswordCriteria";
+import LanguageSelector from "../components/LanguageSelector";
 
-type LoginPageProps = {
-  onLogin: (pseudo: string, password: string) => Promise<void>;
-  onGoToRegister: () => void;
+
+type RegisterPageProps = {
+  onRegister: (pseudo: string, password: string) => Promise<void>;
+  onGoToLogin: () => void;
 };
 
-function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
+function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
     const t = useTranslation();
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    async function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (pseudo.trim() === "" || password.trim() === "") {
-            setError(t.login.intro);
+            setError("Veuillez entrer un pseudo et un mot de passe pour vous inscrire.");
             return;
         }
 
@@ -28,7 +30,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
         setError(null);
 
         try {
-            await onLogin(pseudo.trim(), password.trim());
+            await onRegister(pseudo.trim(), password.trim());
         } catch (err) {
             setError(
                 err instanceof Error
@@ -44,17 +46,16 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
         <>
         <LanguageSelector />
         <main className="page login-page">
-        <p className="page__eyebrow">{t.login.eyebrow}</p>
-        <h1>{t.login.title}</h1>
+        <p className="page__eyebrow">{t.register.eyebrow}</p>
+        <h1>{t.register.title}</h1>
         <p className="page__intro">
-            {t.login.intro}
+            {t.register.intro}
         </p>
-
-            <form className="login-page__form" onSubmit={handleLogin}>
+            <form className="login-page__form" onSubmit={handleRegister}>
                 <input
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
-                    placeholder={t.login.placeholder_username}
+                    placeholder={t.register.placeholder_username}
                     disabled={isLoading}
                 />
 
@@ -62,22 +63,23 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    placeholder={t.login.placeholder_password}
+                    placeholder={t.register.placeholder_password}
                     disabled={isLoading}
                 />
-
+                
+                {password && <PasswordCriteria password={password} />}
+                
                 <button className="button" type="submit" disabled={isLoading}>
-                    
                     {isLoading ? t.login.submitting : t.login.submit}
                 </button>
-                <button type="button" className="login-page__register-link" onClick={onGoToRegister} disabled={isLoading}>
-                    {t.login.redirection}
+                <button type="button" className="login-page__register-link" onClick={onGoToLogin} disabled={isLoading}>
+                    {t.register.redirection}
                 </button>
             </form>
 
             {error && (
                 <AlertModal
-                    title="Erreur de connexion"
+                    title="Erreur d'inscription"
                     message={error}
                     onClose={() => setError(null)}
                     type="error"
@@ -88,4 +90,4 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
     );
 }
 
-export default LoginPage;
+export default RegisterPage;

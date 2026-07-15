@@ -1,3 +1,5 @@
+import type { register } from "echarts/types/src/component/axisPointer/globalListener.js";
+
 export const translations = {
   fr: {
     common: {
@@ -18,9 +20,22 @@ export const translations = {
     login: {
       eyebrow: "Cyber 7 erreurs",
       title: "Connexion",
-      intro: "Entre un pseudo pour lancer la manche de sensibilisation.",
-      placeholder: "Entre ton pseudo",
+      intro: "Entre un nom d'utilisateur et un mot de passe pour lancer la manche de sensibilisation.",
+      placeholder_username: "Entre ton pseudo",
+      placeholder_password: "Entre ton mot de passe",
       submit: "Se connecter",
+      submitting: "Connexion en cours...",
+      redirection: "Pas encore de compte ? Inscrivez-vous"
+    },
+    register: {
+      eyebrow: "Cyber 7 erreurs",
+      title: "Inscription",
+      intro: "Entre un pseudo et un mot de passe pour vous inscrire.",
+      placeholder_username: "Entre ton pseudo",
+      placeholder_password: "Entre ton mot de passe",
+      submit: "S'inscrire",
+      submitting: "Inscription en cours...",
+      redirection: "Vous avez déjà un compte ? Connectez-vous"
     },
     home: {
       eyebrow: "Simulation cybersécurité",
@@ -81,6 +96,17 @@ export const translations = {
       pieceDetails: "Détail par pièce",
       goodPracticesTitle: "Bons réflexes à retenir",
     },
+    errorMessage: {
+      userNotFound: "L'utilisateur n'a pas été trouvé",
+      userId: "Un nom d'utilisateur est requis",
+      password: "Un mot de passe est requis",
+      userIdError: "Il y a une erreur avec le nom d'utilisateur",
+      passwordError: "Il y a une erreur avec le mot de passe",
+      userIdTooLong: "Le nom d'utilisateur doit faire au maximum 15 caractères",
+      passwordTooLong: "Le mot de passe doit faire au maximum 15 caractères",
+      passwordTooShort: "Le mot de passe doit faire au minimum 6 caractères",
+      userCreationFailed: "L'utilisateur n'a pas pu être créé",
+    },
   },
   en: {
     common: {
@@ -101,9 +127,22 @@ export const translations = {
     login: {
       eyebrow: "Cyber 7 errors",
       title: "Login",
-      intro: "Enter a nickname to start the awareness session.",
-      placeholder: "Enter your nickname",
+      intro: "Enter a nickname and password to start the awareness session.",
+      placeholder_username: "Enter your nickname",
+      placeholder_password: "Enter your password",
       submit: "Log in",
+      submitting: "Logging in...",
+      redirection : "Not registered yet? Sign up"
+    },
+    register: {
+      eyebrow: "Cyber 7 errors",
+      title: "Register",
+      intro: "Enter a nickname and password to create an account.",
+      placeholder_username: "Enter your nickname",
+      placeholder_password: "Enter your password",
+      submit: "Register",
+      submitting: "Registering...",
+      redirection: "You already have an account? Log in"
     },
     home: {
       eyebrow: "Cybersecurity simulation",
@@ -163,6 +202,17 @@ export const translations = {
       roundScoresLabel: "Scores by question",
       pieceDetails: "Piece details",
       goodPracticesTitle: "Good practices to remember",
+    },
+    errorMessage: {
+      userNotFound: "User not found",
+      userId: "User ID is required",
+      password: "Password is required",
+      userIdError: "Error with User ID",
+      passwordError: "Error with Password",
+      userIdTooLong: "User ID must be at most 15 characters long",
+      passwordTooLong: "Password must be at most 15 characters long",
+      passwordTooShort: "Password must be at least 6 characters long",
+      userCreationFailed: "User could not be created",
     },
   },
 } as const;
