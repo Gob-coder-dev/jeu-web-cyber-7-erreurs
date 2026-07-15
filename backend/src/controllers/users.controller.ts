@@ -29,7 +29,11 @@ export async function getUserByPseudo(req: express.Request, res: express.Respons
     return res.status(400).json({ message: "User ID must be at most 15 characters long" });
   }
 
-   if (cleanPassword.length < 6) {
+  if (cleanPassword.length > 15) {
+    return res.status(400).json({ message: "Password must be at most 15 characters long" });
+  }
+
+  if (cleanPassword.length < 6) {
     return res.status(400).json({ message: "Password must be at least 6 characters long" });
   }
 
@@ -67,6 +71,10 @@ export async function postNewUser(req: express.Request, res: express.Response) {
 
   if (cleanUsername.length > 15) {
     return res.status(400).json({ message: "User ID must be at most 15 characters long" });
+  }
+
+  if (cleanPassword.length > 15) {
+    return res.status(400).json({ message: "Password must be at most 15 characters long" });
   }
 
   if (cleanPassword.length < 6) {
