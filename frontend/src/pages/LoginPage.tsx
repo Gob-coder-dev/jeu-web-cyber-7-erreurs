@@ -1,6 +1,6 @@
 import { useState } from "react";
-import LanguageSelector from "../components/LanguageSelector";
 import { useTranslation } from "../i18n/useTranslation";
+import LanguageSelector from "../components/LanguageSelector";
 import "./LoginPage.css";
 import AlertModal from "../components/AlertModal";
 
@@ -20,7 +20,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
         event.preventDefault();
 
         if (pseudo.trim() === "" || password.trim() === "") {
-            setError("Veuillez entrer un pseudo et un mot de passe pour vous connecter.");
+            setError(t.login.intro);
             return;
         }
 
@@ -54,7 +54,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                 <input
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
-                    placeholder={t.login.placeholder}
+                    placeholder={t.login.placeholder_username}
                     disabled={isLoading}
                 />
 
@@ -62,16 +62,16 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Entre ton mot de passe"
+                    placeholder={t.login.placeholder_password}
                     disabled={isLoading}
                 />
 
                 <button className="button" type="submit" disabled={isLoading}>
-                    {t.login.submit}
-                    {isLoading ? "Connexion en cours..." : "Se connecter"}
+                    
+                    {isLoading ? t.login.submitting : t.login.submit}
                 </button>
                 <button type="button" className="login-page__register-link" onClick={onGoToRegister} disabled={isLoading}>
-                    Pas encore de compte ? Inscrivez-vous
+                    {t.login.redirection}
                 </button>
             </form>
 

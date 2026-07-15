@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "../i18n/useTranslation";
 import "./RegisterPage.css";
 import AlertModal from "../components/AlertModal";
 import PasswordCriteria from "../components/PasswordCriteria";
+import LanguageSelector from "../components/LanguageSelector";
+
 
 type RegisterPageProps = {
   onRegister: (pseudo: string, password: string) => Promise<void>;
@@ -9,6 +12,7 @@ type RegisterPageProps = {
 };
 
 function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
+    const t = useTranslation();
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -39,17 +43,19 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
     }
 
     return (
+        <>
+        <LanguageSelector />
         <main className="page login-page">
-        <p className="page__eyebrow">Cyber 7 erreurs</p>
-        <h1>Inscription</h1>
+        <p className="page__eyebrow">{t.register.eyebrow}</p>
+        <h1>{t.register.title}</h1>
         <p className="page__intro">
-            Entre un pseudo et un mot de passe pour vous inscrire.
+            {t.register.intro}
         </p>
             <form className="login-page__form" onSubmit={handleRegister}>
                 <input
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
-                    placeholder="Entre ton pseudo"
+                    placeholder={t.register.placeholder_username}
                     disabled={isLoading}
                 />
 
@@ -57,17 +63,17 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Entre ton mot de passe"
+                    placeholder={t.register.placeholder_password}
                     disabled={isLoading}
                 />
                 
                 {password && <PasswordCriteria password={password} />}
                 
                 <button className="button" type="submit" disabled={isLoading}>
-                    {isLoading ? "Inscription en cours..." : "S'inscrire"}
+                    {isLoading ? t.login.submitting : t.login.submit}
                 </button>
                 <button type="button" className="login-page__register-link" onClick={onGoToLogin} disabled={isLoading}>
-                    Vous avez déjà un compte ? Connectez-vous
+                    {t.register.redirection}
                 </button>
             </form>
 
@@ -80,6 +86,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
                 />
             )}
         </main>
+        </>
     );
 }
 
