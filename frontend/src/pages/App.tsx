@@ -72,10 +72,8 @@ function App() {
   }, [language, page, user]);
 
   async function handleRegister(username: string, password: string) {
-    const [registeredUser, cards] = await Promise.all([
-      postNewUser(username, password),
-      getScenariosCard(language),
-    ]);
+    const registeredUser = await postNewUser(username, password);
+    const cards = await getScenariosCard(language, registeredUser.id);
     
     setUser(registeredUser);
     setScenarioIntros(cards);
@@ -83,10 +81,8 @@ function App() {
   }
 
   async function handleLogin(username: string, password: string) {
-    const [connectedUser, cards] = await Promise.all([
-      getOrCreateUser(username, password),
-      getScenariosCard(language),
-    ]);
+    const connectedUser = await getOrCreateUser(username, password);
+    const cards = await getScenariosCard(language, connectedUser.id);
 
     setUser(connectedUser);
     setScenarioIntros(cards);
@@ -162,9 +158,7 @@ function App() {
     setStartGameError(null);
     if (user !== null) {
       try {
-        const updatedUser = await getOrCreateUser(user.pseudo);
-        setUser(updatedUser);
-        const refreshedScenarios = await getScenariosCard(language, updatedUser.id);
+        const refreshedScenarios = await getScenariosCard(language, user.id);
         setScenarioIntros(refreshedScenarios);
       } catch (error) {
         console.error("Erreur lors du rafraîchissement", error);

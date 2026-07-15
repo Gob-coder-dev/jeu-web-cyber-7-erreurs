@@ -1,5 +1,3 @@
-import type { register } from "echarts/types/src/component/axisPointer/globalListener.js";
-
 export const translations = {
   fr: {
     common: {
@@ -20,12 +18,14 @@ export const translations = {
     login: {
       eyebrow: "Cyber 7 erreurs",
       title: "Connexion",
-      intro: "Entre un nom d'utilisateur et un mot de passe pour lancer la manche de sensibilisation.",
+      intro: "Entre un nom d'utilisateur et un mot de passe pour lancer la session de sensibilisation.",
       placeholder_username: "Entre ton pseudo",
       placeholder_password: "Entre ton mot de passe",
       submit: "Se connecter",
       submitting: "Connexion en cours...",
-      redirection: "Pas encore de compte ? Inscrivez-vous"
+      redirection: "Pas encore de compte ? Inscrivez-vous",
+      genericError: "Impossible de se connecter.",
+      modalTitle: "Erreur de connexion",
     },
     register: {
       eyebrow: "Cyber 7 erreurs",
@@ -35,7 +35,10 @@ export const translations = {
       placeholder_password: "Entre ton mot de passe",
       submit: "S'inscrire",
       submitting: "Inscription en cours...",
-      redirection: "Vous avez déjà un compte ? Connectez-vous"
+      redirection: "Vous avez déjà un compte ? Connectez-vous",
+      missingFields: "Veuillez entrer un pseudo et un mot de passe pour vous inscrire.",
+      genericError: "Impossible de créer le compte.",
+      modalTitle: "Erreur d'inscription",
     },
     home: {
       eyebrow: "Simulation cybersécurité",
@@ -132,7 +135,9 @@ export const translations = {
       placeholder_password: "Enter your password",
       submit: "Log in",
       submitting: "Logging in...",
-      redirection : "Not registered yet? Sign up"
+      redirection: "Not registered yet? Sign up",
+      genericError: "Unable to log in.",
+      modalTitle: "Login error",
     },
     register: {
       eyebrow: "Cyber 7 errors",
@@ -142,7 +147,10 @@ export const translations = {
       placeholder_password: "Enter your password",
       submit: "Register",
       submitting: "Registering...",
-      redirection: "You already have an account? Log in"
+      redirection: "Already have an account? Log in",
+      missingFields: "Please enter a nickname and password to register.",
+      genericError: "Unable to create the account.",
+      modalTitle: "Registration error",
     },
     home: {
       eyebrow: "Cybersecurity simulation",
@@ -208,7 +216,7 @@ export const translations = {
       userId: "User ID is required",
       password: "Password is required",
       userIdError: "Error with User ID",
-      passwordError: "Error with Password",
+      passwordError: "Error with password",
       userIdTooLong: "User ID must be at most 15 characters long",
       passwordTooLong: "Password must be at most 15 characters long",
       passwordTooShort: "Password must be at least 6 characters long",

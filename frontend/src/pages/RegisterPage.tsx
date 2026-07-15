@@ -22,7 +22,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
         event.preventDefault();
 
         if (pseudo.trim() === "" || password.trim() === "") {
-            setError("Veuillez entrer un pseudo et un mot de passe pour vous inscrire.");
+            setError(t.register.missingFields);
             return;
         }
 
@@ -35,7 +35,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
             setError(
                 err instanceof Error
                     ? err.message
-                    : "Impossible de se connecter."
+                    : t.register.genericError
             );
         } finally {
             setIsLoading(false);
@@ -70,7 +70,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
                 {password && <PasswordCriteria password={password} />}
                 
                 <button className="button" type="submit" disabled={isLoading}>
-                    {isLoading ? t.login.submitting : t.login.submit}
+                    {isLoading ? t.register.submitting : t.register.submit}
                 </button>
                 <button type="button" className="login-page__register-link" onClick={onGoToLogin} disabled={isLoading}>
                     {t.register.redirection}
@@ -79,7 +79,7 @@ function RegisterPage({ onRegister, onGoToLogin }: RegisterPageProps) {
 
             {error && (
                 <AlertModal
-                    title="Erreur d'inscription"
+                    title={t.register.modalTitle}
                     message={error}
                     onClose={() => setError(null)}
                     type="error"

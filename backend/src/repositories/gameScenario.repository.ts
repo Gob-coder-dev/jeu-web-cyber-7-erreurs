@@ -4,7 +4,7 @@ import type { ScenarioIntro } from '../types/HomePageCard';
 import { DEFAULT_GAME_LANGUAGE } from '../types/GameLanguage';
 import { scenarios as englishScenarios } from '../../data/game/scenarios/en';
 import { scenarios as frenchScenarios } from '../../data/game/scenarios/fr';
-import { getUserInDatabase } from './companyJson.repository';
+import { getUserInDatabaseById } from './companyJson.repository';
 
 export const TUTORIAL_SCENARIO_ID = "ceci-est-un-tutoriel";
 
@@ -32,7 +32,7 @@ export async function getScenariosCard(
   let tutorialCompleted = false;
 
   if (userId) {
-    const user = await getUserInDatabase(userId);
+    const user = await getUserInDatabaseById(userId);
     tutorialCompleted =
       user?.completedScenarioIds?.includes(TUTORIAL_SCENARIO_ID) ?? false;
   }

@@ -33,7 +33,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
             setError(
                 err instanceof Error
                     ? err.message
-                    : "Impossible de se connecter."
+                    : t.login.genericError
             );
         } finally {
             setIsLoading(false);
@@ -77,7 +77,7 @@ function LoginPage({ onLogin, onGoToRegister }: LoginPageProps) {
 
             {error && (
                 <AlertModal
-                    title="Erreur de connexion"
+                    title={t.login.modalTitle}
                     message={error}
                     onClose={() => setError(null)}
                     type="error"

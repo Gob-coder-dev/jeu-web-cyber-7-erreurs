@@ -26,6 +26,17 @@ async function getFirstScenarioQuestion() {
   };
 }
 
+async function getScenarioWithMultipleQuestions() {
+  const scenarioCards = await getScenariosCard();
+  const scenario = scenarioCards
+    .map((scenarioCard) => getScenarioById(scenarioCard.id))
+    .find((candidateScenario) => candidateScenario !== undefined && candidateScenario.questions.length > 1);
+
+  assert.ok(scenario);
+
+  return scenario;
+}
+
 test("startTimerService starts the current question timer", async () => {
   const { scenario, question } = await getFirstScenarioQuestion();
   const attempt = createGameAttempt({
@@ -66,15 +77,17 @@ test("startTimerService does not reset an already started question timer", async
 });
 
 test("startTimerService rejects a question that does not match the current attempt", async () => {
-  const { scenario } = await getFirstScenarioQuestion();
+  const scenario = await getScenarioWithMultipleQuestions();
   const attempt = createGameAttempt({
     userId: "test-user",
     scenarioId: scenario.id,
     language: "fr",
     isReplay: true,
   });
+  const nextQuestion = scenario.questions[1];
+  assert.ok(nextQuestion);
 
-  const result = await startTimerService(attempt.id, "wrong-question-id");
+  const result = await startTimerService(attempt.id, nextQuestion.id);
 
   assert.equal(result.success, false);
   assert.equal(result.reason, "QUESTION_MISMATCH");
